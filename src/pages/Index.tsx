@@ -6,6 +6,7 @@ import { Building2, Bed, Bath, MapPin } from "lucide-react"
 import { Link } from "react-router-dom"
 import StarryBackground from "@/components/background/StarryBackground"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([])
