@@ -23,13 +23,16 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    console.log("Attempting authentication:", { isSignUp, email }) // Log attempt
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
         })
+        console.log("Sign up response:", { data, error }) // Log response
+
         if (error) throw error
         
         toast({
@@ -37,11 +40,18 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
           description: "Please check your email to verify your account",
         })
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
-        if (error) throw error
+        console.log("Sign in response:", { data, error }) // Log response
+
+        if (error) {
+          if (error.message === "Invalid login credentials") {
+            throw new Error("Invalid email or password. Please try again.")
+          }
+          throw error
+        }
 
         toast({
           title: "Success",
@@ -93,6 +103,7 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={6}
             />
           </div>
           <div className="space-y-4">
