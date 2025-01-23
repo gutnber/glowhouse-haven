@@ -44,19 +44,21 @@ const Properties = () => {
         {properties?.map((property) => (
           <Card key={property.id} className="overflow-hidden group">
             <div className="relative">
-              <AspectRatio ratio={16 / 9}>
-                {property.images && property.images.length > 0 ? (
-                  <img
-                    src={property.images[0]}
-                    alt={property.name}
-                    className="object-cover w-full h-full rounded-t-lg"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-muted flex items-center justify-center">
-                    <House className="h-12 w-12 text-muted-foreground" />
-                  </div>
-                )}
-              </AspectRatio>
+              <Link to={`/properties/${property.id}`}>
+                <AspectRatio ratio={16 / 9}>
+                  {property.images && property.images.length > 0 ? (
+                    <img
+                      src={property.images[0]}
+                      alt={property.name}
+                      className="object-cover w-full h-full rounded-t-lg transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <House className="h-12 w-12 text-muted-foreground" />
+                    </div>
+                  )}
+                </AspectRatio>
+              </Link>
               <Button
                 variant="secondary"
                 size="icon"
@@ -71,7 +73,9 @@ const Properties = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <House className="h-5 w-5" />
-                {property.name}
+                <Link to={`/properties/${property.id}`} className="hover:underline">
+                  {property.name}
+                </Link>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -101,18 +105,6 @@ const Properties = () => {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Info className="h-4 w-4" />
                   ARV: ${property.arv.toLocaleString()}
-                </div>
-              )}
-              {property.features && property.features.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {property.features.map((feature, index) => (
-                    <span
-                      key={index}
-                      className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm"
-                    >
-                      {feature}
-                    </span>
-                  ))}
                 </div>
               )}
             </CardContent>

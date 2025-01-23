@@ -7,6 +7,7 @@ import Index from "@/pages/Index"
 import Properties from "@/pages/Properties"
 import AddProperty from "@/pages/AddProperty"
 import EditProperty from "@/pages/EditProperty"
+import PropertyProfile from "@/pages/PropertyProfile"
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/properties" element={<Properties />} />
           <Route path="/add-property" element={<AddProperty />} />
           <Route path="/properties/:id/edit" element={<EditProperty />} />
+          <Route path="/properties/:id" element={<PropertyProfile />} />
         </Route>
       </Routes>
     </TooltipProvider>
