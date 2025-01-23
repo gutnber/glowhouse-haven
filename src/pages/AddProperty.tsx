@@ -39,15 +39,21 @@ const AddProperty = () => {
       build_year: new Date().getFullYear(),
       description: "",
       price: 0,
+      arv: undefined,
       features: "",
     },
   })
 
   const mutation = useMutation({
     mutationFn: async (values: PropertyFormValues) => {
+      const propertyData = {
+        ...values,
+        features: values.features, // This is now correctly typed as string[]
+      }
+      
       const { error } = await supabase
         .from('properties')
-        .insert([values])
+        .insert([propertyData])
       
       if (error) throw error
     },
