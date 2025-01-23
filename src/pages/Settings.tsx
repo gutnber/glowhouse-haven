@@ -36,7 +36,6 @@ export default function Settings() {
     },
   })
 
-  // Load initial profile data
   useEffect(() => {
     const loadProfile = async () => {
       try {
