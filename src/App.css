@@ -15,7 +15,7 @@
   filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 );
 }
 
 @keyframes logo-spin {
@@ -48,4 +48,12 @@
   object-fit: contain;
   align-self: flex-start;
   margin: 0;
+}
+
+/* Ensure logo container is properly aligned */
+.sidebar-header > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start !important;
+  width: 100%;
 }

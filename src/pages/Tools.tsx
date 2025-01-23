@@ -61,11 +61,18 @@ export default function Tools() {
     const sidebarLogo = document.querySelector('.sidebar-header img') as HTMLImageElement
     if (sidebarLogo) {
       sidebarLogo.src = uploadedLogoPath
+      
+      // Ensure the container has the correct styles
+      const headerDiv = sidebarLogo.closest('.sidebar-header > div')
+      if (headerDiv) {
+        headerDiv.classList.add('items-start')
+      }
+      
       console.log('Logo updated in sidebar:', uploadedLogoPath)
       
       toast({
         title: "Success",
-        description: "Logo has been updated",
+        description: "Logo has been updated and positioned in the top-left corner",
       })
     }
   }
