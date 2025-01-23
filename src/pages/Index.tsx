@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { supabase } from "@/integrations/supabase/client"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -84,9 +83,11 @@ const Index = () => {
                     </div>
                     <CardHeader>
                       <CardTitle className="text-white">{property.name}</CardTitle>
-                      <CardDescription className="text-white/70 flex items-start gap-2">
-                        <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
-                        <span>{property.address}</span>
+                      <CardDescription className="text-white/70">
+                        <div className="flex items-start gap-2">
+                          <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
+                          <span className="line-clamp-2">{property.address}</span>
+                        </div>
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
