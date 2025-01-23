@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { PropertyForm } from "@/components/property/PropertyForm"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 const propertyFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -85,17 +86,19 @@ const AddProperty = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <Building2 className="h-6 w-6" />
-        <h1 className="text-3xl font-bold">Add New Property</h1>
+    <TooltipProvider>
+      <div className="space-y-6">
+        <div className="flex items-center gap-2">
+          <Building2 className="h-6 w-6" />
+          <h1 className="text-3xl font-bold">Add New Property</h1>
+        </div>
+        <PropertyForm 
+          form={form} 
+          onSubmit={onSubmit} 
+          isSubmitting={mutation.isPending} 
+        />
       </div>
-      <PropertyForm 
-        form={form} 
-        onSubmit={onSubmit} 
-        isSubmitting={mutation.isPending} 
-      />
-    </div>
+    </TooltipProvider>
   )
 }
 
