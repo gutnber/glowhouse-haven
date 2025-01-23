@@ -58,6 +58,7 @@ const AddProperty = () => {
           price: values.price,
           arv: values.arv,
           features: values.features,
+          images: values.images,
         })
       
       if (error) throw error
@@ -78,10 +79,6 @@ const AddProperty = () => {
       })
     },
   })
-
-  const onSubmit = (values: PropertyFormValues) => {
-    mutation.mutate(values)
-  }
 
   return (
     <div className="space-y-6">
