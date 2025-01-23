@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { supabase } from "@/integrations/supabase/client"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Building2, Bed, Bath, DollarSign } from "lucide-react"
+import { Building2, Bed, Bath, DollarSign, MapPin } from "lucide-react"
 import { Link } from "react-router-dom"
 import StarryBackground from "@/components/background/StarryBackground"
+import { Badge } from "@/components/ui/badge"
 
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([])
@@ -27,6 +28,15 @@ const Index = () => {
     fetchFeaturedProperties()
   }, [])
 
+  // Function to check if a property is new (less than 7 days old)
+  const isNewProperty = (createdAt: string) => {
+    const propertyDate = new Date(createdAt)
+    const now = new Date()
+    const diffTime = Math.abs(now.getTime() - propertyDate.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays <= 7
+  }
+
   return (
     <>
       <StarryBackground />
@@ -46,38 +56,64 @@ const Index = () => {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {featuredProperties.map((property) => (
                 <Link key={property.id} to={`/properties/${property.id}`}>
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10 border-white/20">
-                    <AspectRatio ratio={16/9}>
-                      {property.feature_image_url ? (
-                        <img
-                          src={property.feature_image_url}
-                          alt={property.name}
-                          className="object-cover w-full h-full"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-muted flex items-center justify-center">
-                          <Building2 className="h-12 w-12 text-muted-foreground" />
-                        </div>
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10 border-white/20 group">
+                    <div className="relative">
+                      <AspectRatio ratio={16/9}>
+                        {property.feature_image_url ? (
+                          <img
+                            src={property.feature_image_url}
+                            alt={property.name}
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-muted flex items-center justify-center">
+                            <Building2 className="h-12 w-12 text-muted-foreground" />
+                          </div>
+                        )}
+                      </AspectRatio>
+                      {/* Price ribbon */}
+                      <div className="absolute top-4 -right-8 rotate-45 bg-destructive text-destructive-foreground px-10 py-1 text-sm font-semibold shadow-lg transform group-hover:scale-110 transition-transform">
+                        ${property.price.toLocaleString()}
+                      </div>
+                      {/* New tag */}
+                      {isNewProperty(property.created_at) && (
+                        <Badge className="absolute top-4 left-4 bg-yellow-500 hover:bg-yellow-600 text-black">
+                          New
+                        </Badge>
                       )}
-                    </AspectRatio>
+                    </div>
                     <CardHeader>
                       <CardTitle className="text-white">{property.name}</CardTitle>
-                      <CardDescription className="text-white/70">{property.address}</CardDescription>
+                      <CardDescription className="text-white/70 flex items-start gap-2">
+                        <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
+                        <span>{property.address}</span>
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex items-center justify-between text-sm text-white/60">
-                        <div className="flex items-center gap-1">
-                          <Bed className="h-4 w-4" />
-                          <span>{property.bedrooms}</span>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-3 gap-4 text-sm text-white/60">
+                          <div className="flex items-center gap-1">
+                            <Bed className="h-4 w-4" />
+                            <span>{property.bedrooms} Beds</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Bath className="h-4 w-4" />
+                            <span>{property.bathrooms} Baths</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Building2 className="h-4 w-4" />
+                            <span>{property.build_year}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Bath className="h-4 w-4" />
-                          <span>{property.bathrooms}</span>
-                        </div>
-                        <div className="flex items-center gap-1 font-semibold text-white">
-                          <DollarSign className="h-4 w-4" />
-                          <span>{property.price.toLocaleString()}</span>
-                        </div>
+                        {property.features && property.features.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {property.features.slice(0, 3).map((feature: string, index: number) => (
+                              <Badge key={index} variant="secondary" className="bg-white/10">
+                                {feature}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
