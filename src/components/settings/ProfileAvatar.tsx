@@ -1,6 +1,7 @@
 import { useState } from "react"
-import { Upload } from "lucide-react"
+import { Upload, CheckCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { supabase } from "@/integrations/supabase/client"
@@ -15,14 +16,14 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
 export function ProfileAvatar({ avatarUrl, fullName, onAvatarChange }: ProfileAvatarProps) {
   const [isUploading, setIsUploading] = useState(false)
-  const { toast } = useToast()
+  const { toast: toastHook } = useToast()
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
     if (file.size > MAX_FILE_SIZE) {
-      toast({
+      toastHook({
         title: "Error",
         description: "File size must be less than 5MB",
         variant: "destructive",
@@ -48,15 +49,25 @@ export function ProfileAvatar({ avatarUrl, fullName, onAvatarChange }: ProfileAv
         .from('avatars')
         .getPublicUrl(filePath)
 
+      // Update the profile with the new avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', session.user.id)
+
+      if (updateError) throw updateError
+
       onAvatarChange(publicUrl)
       
-      toast({
-        title: "Success",
-        description: "Profile picture uploaded successfully",
+      // Show success notification using Sonner toast
+      toast.success("Profile picture updated", {
+        description: "Your profile picture has been successfully updated",
+        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
       })
+
     } catch (error) {
       console.error('Error uploading image:', error)
-      toast({
+      toastHook({
         title: "Error",
         description: "Failed to upload profile picture",
         variant: "destructive",
