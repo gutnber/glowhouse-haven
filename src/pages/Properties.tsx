@@ -1,10 +1,11 @@
-import { House, MapPin, Bed, Bath, DollarSign, Info, CalendarClock, ListPlus } from "lucide-react"
+import { House, MapPin, Bed, Bath, DollarSign, Info, CalendarClock, ListPlus, Pencil } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { Tables } from "@/integrations/supabase/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 
 const Properties = () => {
   const { data: properties, isLoading } = useQuery({
@@ -37,7 +38,28 @@ const Properties = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {properties?.map((property) => (
-          <Card key={property.id}>
+          <Card key={property.id} className="overflow-hidden">
+            {property.images && property.images.length > 0 && (
+              <div className="relative">
+                <AspectRatio ratio={16 / 9}>
+                  <img
+                    src={property.images[0]}
+                    alt={property.name}
+                    className="object-cover w-full h-full"
+                  />
+                </AspectRatio>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="absolute top-2 right-2"
+                  asChild
+                >
+                  <Link to={`/properties/${property.id}/edit`}>
+                    <Pencil className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            )}
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <House className="h-5 w-5" />
