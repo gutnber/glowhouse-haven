@@ -69,7 +69,7 @@ const RootLayout = () => {
               <img 
                 src="/placeholder.svg" 
                 alt="Logo" 
-                className="h-8 w-auto"
+                className="max-h-[100px] w-auto"
               />
               <h2 className="text-lg font-semibold">My App</h2>
             </div>

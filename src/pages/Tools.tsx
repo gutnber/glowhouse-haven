@@ -55,12 +55,11 @@ export default function Tools() {
           <Input
             id="logo"
             type="file"
-            accept="image/*"
             onChange={handleLogoUpload}
             disabled={isUploading}
           />
           <p className="text-sm text-muted-foreground">
-            Recommended size: 32x32px. Supported formats: PNG, JPG, SVG
+            The logo will be displayed with a maximum height of 100px while maintaining its aspect ratio
           </p>
         </div>
       </div>
