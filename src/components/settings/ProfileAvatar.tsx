@@ -1,82 +1,51 @@
 import { useState } from "react"
-import { Upload, CheckCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { supabase } from "@/integrations/supabase/client"
+import { AvatarDisplay } from "./avatar/AvatarDisplay"
+import { AvatarUploader } from "./avatar/AvatarUploader"
 
 interface ProfileAvatarProps {
-  avatarUrl: string
-  fullName: string
+  userId: string
+  avatarUrl?: string | null
   onAvatarChange: (url: string) => void
 }
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-
-export function ProfileAvatar({ avatarUrl, fullName, onAvatarChange }: ProfileAvatarProps) {
+export function ProfileAvatar({ userId, avatarUrl, onAvatarChange }: ProfileAvatarProps) {
   const [isUploading, setIsUploading] = useState(false)
-  const { toast: toastHook } = useToast()
+  const { toast } = useToast()
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-
-    if (file.size > MAX_FILE_SIZE) {
-      toastHook({
-        title: "Error",
-        description: "File size must be less than 5MB",
-        variant: "destructive",
-      })
-      return
-    }
-
+  const uploadAvatar = async (file: File) => {
     try {
       setIsUploading(true)
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) throw new Error('Not authenticated')
+      console.log('Starting avatar upload for user:', userId)
 
       const fileExt = file.name.split('.').pop()
-      const filePath = `${session.user.id}.${fileExt}`
+      const filePath = `${userId}/avatar.${fileExt}`
 
-      console.log('Uploading avatar:', filePath)
-
-      const { error: uploadError } = await supabase.storage
+      console.log('Uploading file to path:', filePath)
+      const { error: uploadError, data } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, { upsert: true })
 
       if (uploadError) throw uploadError
 
+      console.log('Upload successful, getting public URL')
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(filePath)
 
-      console.log('Avatar uploaded, public URL:', publicUrl)
-
-      // Update the profile with the new avatar URL
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: publicUrl })
-        .eq('id', session.user.id)
-
-      if (updateError) throw updateError
-
-      console.log('Profile updated with new avatar URL')
-
-      // Update the UI
+      console.log('Public URL obtained:', publicUrl)
       onAvatarChange(publicUrl)
-      
-      // Show success notification using Sonner toast
-      toast.success("Profile picture updated", {
-        description: "Your profile picture has been successfully updated",
-        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
-      })
 
+      toast({
+        title: "Avatar updated",
+        description: "Your profile picture has been updated successfully.",
+      })
     } catch (error) {
-      console.error('Error uploading image:', error)
-      toastHook({
+      console.error('Error uploading avatar:', error)
+      toast({
         title: "Error",
-        description: "Failed to upload profile picture",
+        description: "There was an error uploading your avatar.",
         variant: "destructive",
       })
     } finally {
@@ -85,37 +54,15 @@ export function ProfileAvatar({ avatarUrl, fullName, onAvatarChange }: ProfileAv
   }
 
   return (
-    <div className="mb-8">
-      <div className="flex items-center gap-4">
-        <Avatar className="h-20 w-20">
-          <AvatarImage src={avatarUrl} />
-          <AvatarFallback>
-            {fullName?.charAt(0) || '?'}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <input
-            type="file"
-            id="avatar"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageUpload}
-            disabled={isUploading}
-          />
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isUploading}
-            onClick={() => document.getElementById('avatar')?.click()}
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            {isUploading ? "Uploading..." : "Change Picture"}
-          </Button>
-          <p className="text-sm text-muted-foreground mt-1">
-            Maximum file size: 5MB
-          </p>
-        </div>
-      </div>
+    <div className="flex flex-col items-center gap-4">
+      <AvatarDisplay 
+        avatarUrl={avatarUrl} 
+        fallbackText={userId.slice(0, 2).toUpperCase()} 
+      />
+      <AvatarUploader 
+        onUpload={uploadAvatar}
+        isUploading={isUploading}
+      />
     </div>
   )
 }

@@ -2,9 +2,12 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Loader2 } from "lucide-react"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
+import { NameField } from "./form-fields/NameField"
+import { EmailField } from "./form-fields/EmailField"
+import { PhoneField } from "./form-fields/PhoneField"
+import { CompanyField } from "./form-fields/CompanyField"
 
 const profileSchema = z.object({
   full_name: z.string().min(2, "Name must be at least 2 characters"),
@@ -27,79 +30,28 @@ export function ProfileForm({ initialValues, onSubmit, isLoading }: ProfileFormP
     resolver: zodResolver(profileSchema),
     defaultValues: {
       ...initialValues,
-      avatar_url: initialValues.avatar_url || '', // Ensure avatar_url is included
+      avatar_url: initialValues.avatar_url || '',
     },
   })
 
-  console.log('Form initial values:', initialValues) // Debug log
+  console.log('Form initial values:', initialValues)
 
   const handleSubmit = async (values: ProfileFormValues) => {
-    console.log('Submitting form with values:', values) // Debug log
+    console.log('Submitting form with values:', values)
     await onSubmit({
       ...values,
-      avatar_url: values.avatar_url || initialValues.avatar_url, // Preserve avatar_url
+      avatar_url: values.avatar_url || initialValues.avatar_url,
     })
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="full_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your full name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="Enter your email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone</FormLabel>
-              <FormControl>
-                <Input type="tel" placeholder="Enter your phone number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="company"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Company (Optional)</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your company name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        <NameField form={form} />
+        <EmailField form={form} />
+        <PhoneField form={form} />
+        <CompanyField form={form} />
+        
         {/* Hidden field for avatar_url */}
         <input type="hidden" {...form.register('avatar_url')} />
 
