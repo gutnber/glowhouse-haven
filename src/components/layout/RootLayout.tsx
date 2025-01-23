@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarTrigger, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar"
-import { Home, Settings, Users, Building2, LogIn, LogOut } from "lucide-react"
+import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench } from "lucide-react"
 import { Link, Outlet, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { AuthDialog } from "@/components/auth/AuthDialog"
@@ -34,17 +34,14 @@ const RootLayout = () => {
   const handleSignOut = async () => {
     console.log("Starting sign out process...")
     try {
-      // First try to sign out from Supabase
       const { error } = await supabase.auth.signOut()
       
       if (error) {
         console.error("Supabase signout error:", error)
-        // Even if Supabase signout fails, we'll continue to clear local state
       } else {
         console.log("Supabase signout successful")
       }
 
-      // Clear local session state after Supabase attempt
       setSession(null)
       
       toast({
@@ -54,7 +51,6 @@ const RootLayout = () => {
       navigate("/")
     } catch (error) {
       console.error("Error in signout flow:", error)
-      // Ensure we clear local state even if there's an error
       setSession(null)
       toast({
         title: "Notice",
@@ -69,7 +65,14 @@ const RootLayout = () => {
       <div className="min-h-screen flex w-full">
         <Sidebar>
           <SidebarHeader className="border-b border-border p-4">
-            <h2 className="text-lg font-semibold">My App</h2>
+            <div className="flex flex-col items-center gap-2">
+              <img 
+                src="/placeholder.svg" 
+                alt="Logo" 
+                className="h-8 w-auto"
+              />
+              <h2 className="text-lg font-semibold">My App</h2>
+            </div>
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
@@ -92,14 +95,24 @@ const RootLayout = () => {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   {isAdmin && (
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link to="/users">
-                          <Users className="h-4 w-4" />
-                          <span>Users</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    <>
+                      <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                          <Link to="/users">
+                            <Users className="h-4 w-4" />
+                            <span>Users</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                      <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                          <Link to="/tools">
+                            <Wrench className="h-4 w-4" />
+                            <span>Tools</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    </>
                   )}
                   {session && (
                     <SidebarMenuItem>

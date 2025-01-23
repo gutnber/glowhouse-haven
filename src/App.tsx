@@ -10,6 +10,7 @@ import AddProperty from "@/pages/AddProperty"
 import EditProperty from "@/pages/EditProperty"
 import Users from "@/pages/Users"
 import Settings from "@/pages/Settings"
+import Tools from "@/pages/Tools"
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/properties/:id" element={<PropertyProfile />} />
           <Route path="/users" element={<Users />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/tools" element={<Tools />} />
         </Route>
       </Routes>
     </TooltipProvider>
