@@ -10,6 +10,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
+import { PropertyForm } from "@/components/property/PropertyForm"
 
 const propertyFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -20,7 +21,7 @@ const propertyFormSchema = z.object({
   description: z.string().optional(),
   price: z.coerce.number().positive("Price must be greater than 0"),
   arv: z.coerce.number().positive("ARV must be greater than 0").optional(),
-  features: z.string().transform(str => str.split(',').map(s => s.trim()).filter(Boolean)),
+  features: z.string().transform(str => str ? str.split(',').map(s => s.trim()).filter(Boolean) : []),
 })
 
 type PropertyFormValues = z.infer<typeof propertyFormSchema>
@@ -40,7 +41,7 @@ const AddProperty = () => {
       description: "",
       price: 0,
       arv: undefined,
-      features: "",
+      features: [],
     },
   })
 
@@ -89,145 +90,11 @@ const AddProperty = () => {
         <Building2 className="h-6 w-6" />
         <h1 className="text-3xl font-bold">Add New Property</h1>
       </div>
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Property Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter property name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter property address" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="bedrooms"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bedrooms</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="bathrooms"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bathrooms</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="build_year"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Build Year</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="arv"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ARV (Optional)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>After Repair Value</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="features"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Features</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Garage, Pool, etc. (comma-separated)" {...field} />
-                  </FormControl>
-                  <FormDescription>Enter features separated by commas</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description (Optional)</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Enter property description" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button type="submit" disabled={mutation.isPending}>
-            {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Add Property
-          </Button>
-        </form>
-      </Form>
+      <PropertyForm 
+        form={form} 
+        onSubmit={onSubmit} 
+        isSubmitting={mutation.isPending} 
+      />
     </div>
   )
 }
