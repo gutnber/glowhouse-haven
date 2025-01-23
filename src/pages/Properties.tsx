@@ -1,5 +1,6 @@
 import { House, MapPin, Bed, Bath, DollarSign, Info, CalendarClock, ListPlus } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
+import { Link } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { Tables } from "@/integrations/supabase/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,9 +27,11 @@ const Properties = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-bold">Properties</h1>
-        <Button>
-          <ListPlus className="mr-2 h-4 w-4" />
-          Add Property
+        <Button asChild>
+          <Link to="/add-property">
+            <ListPlus className="mr-2 h-4 w-4" />
+            Add Property
+          </Link>
         </Button>
       </div>
 
