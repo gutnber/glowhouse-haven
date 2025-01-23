@@ -25,12 +25,25 @@ interface ProfileFormProps {
 export function ProfileForm({ initialValues, onSubmit, isLoading }: ProfileFormProps) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: initialValues,
+    defaultValues: {
+      ...initialValues,
+      avatar_url: initialValues.avatar_url || '', // Ensure avatar_url is included
+    },
   })
+
+  console.log('Form initial values:', initialValues) // Debug log
+
+  const handleSubmit = async (values: ProfileFormValues) => {
+    console.log('Submitting form with values:', values) // Debug log
+    await onSubmit({
+      ...values,
+      avatar_url: values.avatar_url || initialValues.avatar_url, // Preserve avatar_url
+    })
+  }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="full_name"
@@ -86,6 +99,9 @@ export function ProfileForm({ initialValues, onSubmit, isLoading }: ProfileFormP
             </FormItem>
           )}
         />
+
+        {/* Hidden field for avatar_url */}
+        <input type="hidden" {...form.register('avatar_url')} />
 
         <Button type="submit" disabled={isLoading}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
