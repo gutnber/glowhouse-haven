@@ -28,12 +28,14 @@ const Users = () => {
   const { toast } = useToast()
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null)
 
-  const { data: users, isLoading: isUsersLoading } = useQuery({
-    queryKey: ["users"],
+  const { data: profiles, isLoading: isProfilesLoading } = useQuery({
+    queryKey: ["profiles"],
     queryFn: async () => {
-      const { data: users, error } = await supabase.auth.admin.listUsers()
+      const { data: profiles, error } = await supabase
+        .from("profiles")
+        .select("*")
       if (error) throw error
-      return users.users
+      return profiles
     },
     enabled: isAdmin,
   })
@@ -77,7 +79,7 @@ const Users = () => {
     }
   }
 
-  if (isAdminLoading || isUsersLoading || isRolesLoading) {
+  if (isAdminLoading || isProfilesLoading || isRolesLoading) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -107,34 +109,35 @@ const Users = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Email</TableHead>
+              <TableHead>User ID</TableHead>
+              <TableHead>Name</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead>Last Sign In</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users?.map((user) => {
+            {profiles?.map((profile) => {
               const userRole = userRoles?.find(
-                (role) => role.user_id === user.id
+                (role) => role.user_id === profile.id
               )
               return (
-                <TableRow key={user.id}>
+                <TableRow key={profile.id}>
+                  <TableCell>{profile.id}</TableCell>
                   <TableCell>
-                    {user.email}
-                    {user.email === "help@ignishomes.com" && (
+                    {profile.full_name || "No name provided"}
+                    {profile.id === "help@ignishomes.com" && (
                       <Badge variant="secondary" className="ml-2">
                         Admin
                       </Badge>
                     )}
                   </TableCell>
                   <TableCell>
-                    {user.email === "help@ignishomes.com" ? (
+                    {profile.id === "help@ignishomes.com" ? (
                       <Badge>Admin</Badge>
                     ) : (
                       <Select
-                        disabled={updatingUserId === user.id}
+                        disabled={updatingUserId === profile.id}
                         value={userRole?.role || "user"}
-                        onValueChange={(value: AppRole) => updateUserRole(user.id, value)}
+                        onValueChange={(value: AppRole) => updateUserRole(profile.id, value)}
                       >
                         <SelectTrigger className="w-32">
                           <SelectValue />
@@ -145,11 +148,6 @@ const Users = () => {
                         </SelectContent>
                       </Select>
                     )}
-                  </TableCell>
-                  <TableCell>
-                    {user.last_sign_in_at
-                      ? new Date(user.last_sign_in_at).toLocaleDateString()
-                      : "Never"}
                   </TableCell>
                 </TableRow>
               )
