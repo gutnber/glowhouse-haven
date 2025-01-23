@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { supabase } from "@/integrations/supabase/client"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Building2, Bed, Bath, DollarSign, MapPin } from "lucide-react"
+import { Building2, Bed, Bath, MapPin } from "lucide-react"
 import { Link } from "react-router-dom"
 import StarryBackground from "@/components/background/StarryBackground"
 import { Badge } from "@/components/ui/badge"
@@ -90,30 +90,19 @@ const Index = () => {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-3 gap-4 text-sm text-white/60">
-                          <div className="flex items-center gap-1">
-                            <Bed className="h-4 w-4" />
-                            <span>{property.bedrooms} Beds</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Bath className="h-4 w-4" />
-                            <span>{property.bathrooms} Baths</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Building2 className="h-4 w-4" />
-                            <span>{property.build_year}</span>
-                          </div>
+                      <div className="grid grid-cols-3 gap-4 text-sm text-white/60">
+                        <div className="flex items-center gap-1">
+                          <Bed className="h-4 w-4" />
+                          <span>{property.bedrooms} Beds</span>
                         </div>
-                        {property.features && property.features.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {property.features.slice(0, 3).map((feature: string, index: number) => (
-                              <Badge key={index} variant="secondary" className="bg-white/10">
-                                {feature}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
+                        <div className="flex items-center gap-1">
+                          <Bath className="h-4 w-4" />
+                          <span>{property.bathrooms} Baths</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Building2 className="h-4 w-4" />
+                          <span>{property.build_year}</span>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
