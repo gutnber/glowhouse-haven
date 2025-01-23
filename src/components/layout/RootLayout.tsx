@@ -77,24 +77,24 @@ const RootLayout = () => {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   {isAdmin && (
-                    <>
-                      <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                          <Link to="/users">
-                            <Users className="h-4 w-4" />
-                            <span>Users</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                      <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                          <Link to="/settings">
-                            <Settings className="h-4 w-4" />
-                            <span>Settings</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    </>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <Link to="/users">
+                          <Users className="h-4 w-4" />
+                          <span>Users</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )}
+                  {session && (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <Link to="/settings">
+                          <Settings className="h-4 w-4" />
+                          <span>Settings</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
                   )}
                 </SidebarMenu>
               </SidebarGroupContent>
