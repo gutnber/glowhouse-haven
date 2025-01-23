@@ -2,13 +2,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import * as z from "zod"
-import { Building2, Loader2 } from "lucide-react"
+import { Building2 } from "lucide-react"
 import { useMutation } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { PropertyForm } from "@/components/property/PropertyForm"
 
@@ -22,6 +18,7 @@ const propertyFormSchema = z.object({
   price: z.coerce.number().positive("Price must be greater than 0"),
   arv: z.coerce.number().positive("ARV must be greater than 0").optional(),
   features: z.string().transform(str => str ? str.split(',').map(s => s.trim()).filter(Boolean) : []),
+  images: z.array(z.string()).optional(),
 })
 
 type PropertyFormValues = z.infer<typeof propertyFormSchema>
@@ -42,6 +39,7 @@ const AddProperty = () => {
       price: 0,
       arv: undefined,
       features: [],
+      images: [],
     },
   })
 

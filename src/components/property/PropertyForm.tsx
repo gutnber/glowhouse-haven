@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { PropertyImageUpload } from "./PropertyImageUpload"
 
 interface PropertyFormProps {
   form: UseFormReturn<any>
@@ -139,6 +140,25 @@ export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps
               <FormLabel>Description (Optional)</FormLabel>
               <FormControl>
                 <Textarea placeholder="Enter property description" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="images"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Property Images</FormLabel>
+              <FormControl>
+                <PropertyImageUpload
+                  onImageUploaded={(url) => {
+                    const currentImages = field.value || []
+                    field.onChange([...currentImages, url])
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
