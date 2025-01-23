@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { PropertyHeader } from "@/components/property/PropertyHeader"
 import { PropertyImageGallery } from "@/components/property/PropertyImageGallery"
 import { PropertyDetails } from "@/components/property/PropertyDetails"
+import { House } from "lucide-react"
 
 const PropertyProfile = () => {
   const { id } = useParams()
@@ -50,6 +51,20 @@ const PropertyProfile = () => {
         name={property.name}
         address={property.address}
       />
+
+      {property.feature_image_url ? (
+        <div className="w-full h-[300px] relative rounded-lg overflow-hidden">
+          <img
+            src={property.feature_image_url}
+            alt={`${property.name} banner`}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <div className="w-full h-[300px] bg-muted rounded-lg flex items-center justify-center">
+          <House className="h-24 w-24 text-muted-foreground" />
+        </div>
+      )}
 
       <PropertyImageGallery
         images={property.images || []}
