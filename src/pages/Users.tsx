@@ -55,36 +55,34 @@ const Users = () => {
     console.log('Updating role for user:', userId, 'to:', newRole)
     setUpdatingUserId(userId)
     try {
-      // First, check if a role entry exists for this user
-      const { data: existingRole, error: fetchError } = await supabase
+      // First, get all roles for this user
+      const { data: existingRoles, error: fetchError } = await supabase
         .from("user_roles")
         .select("*")
         .eq("user_id", userId)
-        .single()
 
-      if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "no rows returned"
-        throw fetchError
+      if (fetchError) throw fetchError
+
+      console.log('Existing roles found:', existingRoles)
+
+      // Delete any existing roles for this user
+      if (existingRoles && existingRoles.length > 0) {
+        console.log('Deleting existing roles')
+        const { error: deleteError } = await supabase
+          .from("user_roles")
+          .delete()
+          .eq("user_id", userId)
+        
+        if (deleteError) throw deleteError
       }
 
-      let error
-      if (existingRole) {
-        console.log('Existing role found, updating:', existingRole)
-        // Update existing role
-        const { error: updateError } = await supabase
-          .from("user_roles")
-          .update({ role: newRole })
-          .eq("id", existingRole.id)
-        error = updateError
-      } else {
-        console.log('No existing role found, inserting new role')
-        // Insert new role
-        const { error: insertError } = await supabase
-          .from("user_roles")
-          .insert({ user_id: userId, role: newRole })
-        error = insertError
-      }
+      // Insert the new role
+      console.log('Inserting new role')
+      const { error: insertError } = await supabase
+        .from("user_roles")
+        .insert({ user_id: userId, role: newRole })
 
-      if (error) throw error
+      if (insertError) throw insertError
 
       toast({
         title: "Success",
