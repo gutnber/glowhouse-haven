@@ -32,18 +32,21 @@ const RootLayout = () => {
   }, [])
 
   const handleSignOut = async () => {
+    console.log("Starting sign out process...")
     try {
-      // Clear local session state first
-      setSession(null)
+      // First try to sign out from Supabase
+      const { error } = await supabase.auth.signOut()
       
-      try {
-        // Attempt to sign out from Supabase, but don't wait for it
-        await supabase.auth.signOut()
-      } catch (error) {
-        console.log("Supabase signout attempt failed, but local state is cleared:", error)
+      if (error) {
+        console.error("Supabase signout error:", error)
+        // Even if Supabase signout fails, we'll continue to clear local state
+      } else {
+        console.log("Supabase signout successful")
       }
 
-      // Always show success message and redirect
+      // Clear local session state after Supabase attempt
+      setSession(null)
+      
       toast({
         title: "Success",
         description: "You have been signed out",
@@ -51,7 +54,8 @@ const RootLayout = () => {
       navigate("/")
     } catch (error) {
       console.error("Error in signout flow:", error)
-      // Even if there's an error, we've already cleared the local state
+      // Ensure we clear local state even if there's an error
+      setSession(null)
       toast({
         title: "Notice",
         description: "You have been signed out",
