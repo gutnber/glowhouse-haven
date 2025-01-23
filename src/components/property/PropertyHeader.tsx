@@ -1,6 +1,7 @@
 import { ChevronLeft, MapPin, Pencil } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import { useIsAdmin } from "@/hooks/useIsAdmin"
 
 interface PropertyHeaderProps {
   id: string
@@ -9,6 +10,8 @@ interface PropertyHeaderProps {
 }
 
 export const PropertyHeader = ({ id, name, address }: PropertyHeaderProps) => {
+  const { isAdmin } = useIsAdmin()
+
   return (
     <div className="flex justify-between items-center">
       <div className="space-y-1">
@@ -24,12 +27,14 @@ export const PropertyHeader = ({ id, name, address }: PropertyHeaderProps) => {
           {address}
         </div>
       </div>
-      <Button asChild>
-        <Link to={`/properties/${id}/edit`}>
-          <Pencil className="mr-2 h-4 w-4" />
-          Edit Property
-        </Link>
-      </Button>
+      {isAdmin && (
+        <Button asChild>
+          <Link to={`/properties/${id}/edit`}>
+            <Pencil className="mr-2 h-4 w-4" />
+            Edit Property
+          </Link>
+        </Button>
+      )}
     </div>
   )
 }

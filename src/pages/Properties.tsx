@@ -6,8 +6,11 @@ import { Tables } from "@/integrations/supabase/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { useIsAdmin } from "@/hooks/useIsAdmin"
 
 const Properties = () => {
+  const { isAdmin } = useIsAdmin()
+  
   const { data: properties, isLoading } = useQuery({
     queryKey: ['properties'],
     queryFn: async () => {
@@ -32,12 +35,14 @@ const Properties = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-bold">Properties</h1>
-        <Button asChild>
-          <Link to="/add-property">
-            <ListPlus className="mr-2 h-4 w-4" />
-            Add Property
-          </Link>
-        </Button>
+        {isAdmin && (
+          <Button asChild>
+            <Link to="/add-property">
+              <ListPlus className="mr-2 h-4 w-4" />
+              Add Property
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -59,16 +64,18 @@ const Properties = () => {
                   )}
                 </AspectRatio>
               </Link>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                asChild
-              >
-                <Link to={`/properties/${property.id}/edit`}>
-                  <Pencil className="h-4 w-4" />
-                </Link>
-              </Button>
+              {isAdmin && (
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  asChild
+                >
+                  <Link to={`/properties/${property.id}/edit`}>
+                    <Pencil className="h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
             </div>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

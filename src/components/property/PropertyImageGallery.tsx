@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { House } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
+import { useIsAdmin } from "@/hooks/useIsAdmin"
 
 interface PropertyImageGalleryProps {
   images: string[]
@@ -17,6 +18,7 @@ interface PropertyImageGalleryProps {
 export const PropertyImageGallery = ({ images, propertyId, propertyName, featureImageUrl }: PropertyImageGalleryProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const { toast } = useToast()
+  const { isAdmin } = useIsAdmin()
 
   if (!images || images.length === 0) {
     return (
@@ -69,17 +71,19 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
             </div>
           )}
         </AspectRatio>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-          onClick={(e) => {
-            e.stopPropagation()
-            handleSetFeatureImage(src)
-          }}
-        >
-          Set as feature
-        </Button>
+        {isAdmin && (
+          <Button
+            variant="secondary"
+            size="sm"
+            className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={(e) => {
+              e.stopPropagation()
+              handleSetFeatureImage(src)
+            }}
+          >
+            Set as feature
+          </Button>
+        )}
       </div>
     )
   }
