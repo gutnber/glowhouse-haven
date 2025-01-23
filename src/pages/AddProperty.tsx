@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 
 const propertyFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -46,14 +46,19 @@ const AddProperty = () => {
 
   const mutation = useMutation({
     mutationFn: async (values: PropertyFormValues) => {
-      const propertyData = {
-        ...values,
-        features: values.features, // This is now correctly typed as string[]
-      }
-      
       const { error } = await supabase
         .from('properties')
-        .insert([propertyData])
+        .insert({
+          name: values.name,
+          address: values.address,
+          bedrooms: values.bedrooms,
+          bathrooms: values.bathrooms,
+          build_year: values.build_year,
+          description: values.description,
+          price: values.price,
+          arv: values.arv,
+          features: values.features,
+        })
       
       if (error) throw error
     },
