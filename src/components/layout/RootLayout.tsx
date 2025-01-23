@@ -1,5 +1,5 @@
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarTrigger, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar"
-import { Home, Settings, Users } from "lucide-react"
+import { Home, Settings, Users, Building2 } from "lucide-react"
 import { Link } from "react-router-dom"
 
 interface RootLayoutProps {
@@ -23,6 +23,14 @@ const RootLayout = ({ children }: RootLayoutProps) => {
                       <Link to="/">
                         <Home className="h-4 w-4" />
                         <span>Home</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link to="/properties">
+                        <Building2 className="h-4 w-4" />
+                        <span>Properties</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

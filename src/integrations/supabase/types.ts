@@ -33,6 +33,51 @@ export type Database = {
         }
         Relationships: []
       }
+      properties: {
+        Row: {
+          address: string
+          arv: number | null
+          bathrooms: number
+          bedrooms: number
+          build_year: number
+          created_at: string
+          description: string | null
+          features: string[] | null
+          id: string
+          name: string
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          arv?: number | null
+          bathrooms: number
+          bedrooms: number
+          build_year: number
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          name: string
+          price: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          arv?: number | null
+          bathrooms?: number
+          bedrooms?: number
+          build_year?: number
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          name?: string
+          price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
