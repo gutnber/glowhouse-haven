@@ -21,7 +21,11 @@ const Properties = () => {
   })
 
   if (isLoading) {
-    return <div>Loading properties...</div>
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <p>Loading properties...</p>
+      </div>
+    )
   }
 
   return (
@@ -38,28 +42,32 @@ const Properties = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {properties?.map((property) => (
-          <Card key={property.id} className="overflow-hidden">
-            {property.images && property.images.length > 0 && (
-              <div className="relative">
-                <AspectRatio ratio={16 / 9}>
+          <Card key={property.id} className="overflow-hidden group">
+            <div className="relative">
+              <AspectRatio ratio={16 / 9}>
+                {property.images && property.images.length > 0 ? (
                   <img
                     src={property.images[0]}
                     alt={property.name}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full rounded-t-lg"
                   />
-                </AspectRatio>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="absolute top-2 right-2"
-                  asChild
-                >
-                  <Link to={`/properties/${property.id}/edit`}>
-                    <Pencil className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            )}
+                ) : (
+                  <div className="w-full h-full bg-muted flex items-center justify-center">
+                    <House className="h-12 w-12 text-muted-foreground" />
+                  </div>
+                )}
+              </AspectRatio>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                asChild
+              >
+                <Link to={`/properties/${property.id}/edit`}>
+                  <Pencil className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <House className="h-5 w-5" />
