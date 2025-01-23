@@ -1,4 +1,7 @@
 import { Routes, Route } from "react-router-dom"
+import { Toaster } from "@/components/ui/toaster"
+import { Toaster as SonnerToaster } from "@/components/ui/sonner"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import RootLayout from "@/components/layout/RootLayout"
 import Index from "@/pages/Index"
 import Properties from "@/pages/Properties"
@@ -10,17 +13,21 @@ import Settings from "@/pages/Settings"
 
 function App() {
   return (
-    <Routes>
-      <Route element={<RootLayout />}>
-        <Route path="/" element={<Index />} />
-        <Route path="/properties" element={<Properties />} />
-        <Route path="/properties/:id" element={<PropertyProfile />} />
-        <Route path="/properties/add" element={<AddProperty />} />
-        <Route path="/properties/:id/edit" element={<EditProperty />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/settings" element={<Settings />} />
-      </Route>
-    </Routes>
+    <TooltipProvider>
+      <Toaster />
+      <SonnerToaster />
+      <Routes>
+        <Route element={<RootLayout />}>
+          <Route path="/" element={<Index />} />
+          <Route path="/properties" element={<Properties />} />
+          <Route path="/properties/add" element={<AddProperty />} />
+          <Route path="/properties/:id/edit" element={<EditProperty />} />
+          <Route path="/properties/:id" element={<PropertyProfile />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
+      </Routes>
+    </TooltipProvider>
   )
 }
 
