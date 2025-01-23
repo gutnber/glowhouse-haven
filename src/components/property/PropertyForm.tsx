@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { PropertyImageUpload } from "./PropertyImageUpload"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { useLocation } from "react-router-dom"
 
 interface PropertyFormProps {
   form: UseFormReturn<any>
@@ -14,6 +15,9 @@ interface PropertyFormProps {
 }
 
 export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps) => {
+  const location = useLocation()
+  const isAddProperty = location.pathname === "/properties/add"
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -200,7 +204,7 @@ export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps
 
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Add Property
+          {isAddProperty ? "Add Property" : "Update Property"}
         </Button>
       </form>
     </Form>
