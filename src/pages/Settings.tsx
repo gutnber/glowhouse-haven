@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
@@ -26,6 +27,13 @@ export default function Settings() {
   const { toast } = useToast()
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
+    defaultValues: {
+      full_name: "",
+      email: "",
+      phone: "",
+      company: "",
+      avatar_url: "",
+    },
   })
 
   // Load initial profile data
@@ -42,7 +50,9 @@ export default function Settings() {
           .single()
 
         if (error) throw error
+        
         if (profile) {
+          console.log('Loading profile data:', profile)
           form.reset({
             full_name: profile.full_name || '',
             email: profile.email || '',
@@ -118,6 +128,8 @@ export default function Settings() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Not authenticated')
 
+      console.log('Updating profile with values:', values)
+
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -149,106 +161,114 @@ export default function Settings() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Settings</h1>
-      
-      <div className="mb-8">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-20 w-20">
-            <AvatarImage src={form.watch('avatar_url')} />
-            <AvatarFallback>
-              {form.watch('full_name')?.charAt(0) || '?'}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <input
-              type="file"
-              id="avatar"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageUpload}
-              disabled={isUploading}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isUploading}
-              onClick={() => document.getElementById('avatar')?.click()}
-            >
-              <Upload className="mr-2 h-4 w-4" />
-              {isUploading ? "Uploading..." : "Change Picture"}
-            </Button>
-            <p className="text-sm text-muted-foreground mt-1">
-              Maximum file size: 5MB
-            </p>
+    <div className="container max-w-2xl py-10">
+      <Card>
+        <CardHeader>
+          <CardTitle>Settings</CardTitle>
+          <CardDescription>
+            Manage your profile information and preferences
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-8">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-20 w-20">
+                <AvatarImage src={form.watch('avatar_url')} />
+                <AvatarFallback>
+                  {form.watch('full_name')?.charAt(0) || '?'}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <input
+                  type="file"
+                  id="avatar"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={isUploading}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isUploading}
+                  onClick={() => document.getElementById('avatar')?.click()}
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  {isUploading ? "Uploading..." : "Change Picture"}
+                </Button>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Maximum file size: 5MB
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="full_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="full_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input type="email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="Enter your email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <Input type="tel" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input type="tel" placeholder="Enter your phone number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="company"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Company (Optional)</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name="company"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your company name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Changes
-          </Button>
-        </form>
-      </Form>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   )
 }
