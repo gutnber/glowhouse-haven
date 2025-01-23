@@ -36,12 +36,30 @@ export default function Tools() {
         .getPublicUrl(filePath)
 
       console.log('Logo uploaded successfully, public URL:', publicUrl)
+      
+      // Update the app_settings table with the new logo URL
+      const { error: updateError } = await supabase
+        .from('app_settings')
+        .update({ 
+          logo_url: publicUrl,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', (await supabase.from('app_settings').select('id').single()).data?.id)
+
+      if (updateError) {
+        console.error('Error updating app settings:', updateError)
+        throw updateError
+      }
+
       setUploadedLogoPath(publicUrl)
       
       toast({
         title: "Success",
-        description: "Logo uploaded successfully. Click Apply to update the display.",
+        description: "Logo uploaded and saved successfully",
       })
+
+      // Force reload the page to update the logo
+      window.location.reload()
     } catch (error) {
       console.error('Error uploading logo:', error)
       toast({
@@ -51,63 +69,6 @@ export default function Tools() {
       })
     } finally {
       setIsUploading(false)
-    }
-  }
-
-  const handleApplyLogo = () => {
-    if (!uploadedLogoPath) return
-
-    // Updated selectors to match the sidebar structure
-    const sidebarHeader = document.querySelector('[data-sidebar="header"]')
-    const logoImg = sidebarHeader?.querySelector('img')
-    const headerDiv = sidebarHeader?.querySelector('div')
-
-    console.log('Found elements:', { sidebarHeader, logoImg, headerDiv })
-
-    if (logoImg && sidebarHeader && headerDiv) {
-      // Update logo source
-      logoImg.setAttribute('src', uploadedLogoPath)
-
-      // Force the correct styles
-      sidebarHeader.setAttribute('style', `
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        padding: 1rem !important;
-        width: 100%;
-      `)
-
-      headerDiv.setAttribute('style', `
-        width: 100%;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 0.5rem;
-      `)
-
-      logoImg.setAttribute('style', `
-        max-height: 80px;
-        width: auto;
-        object-fit: contain;
-      `)
-
-      console.log('Logo and styles updated in sidebar:', uploadedLogoPath)
-      
-      toast({
-        title: "Success",
-        description: "Logo has been updated and positioned correctly",
-      })
-    } else {
-      console.error('Could not find required elements:', {
-        sidebarHeader: !!sidebarHeader,
-        logoImg: !!logoImg,
-        headerDiv: !!headerDiv
-      })
-      toast({
-        title: "Error",
-        description: "Could not update logo position",
-        variant: "destructive",
-      })
     }
   }
 
@@ -125,24 +86,17 @@ export default function Tools() {
               type="file"
               onChange={handleLogoUpload}
               disabled={isUploading}
+              accept="image/*"
             />
           </div>
           
           {uploadedLogoPath && (
-            <div className="space-y-4">
-              <div className="border rounded p-4">
-                <img 
-                  src={uploadedLogoPath} 
-                  alt="Uploaded logo preview" 
-                  className="max-h-[100px] w-auto"
-                />
-              </div>
-              <Button 
-                onClick={handleApplyLogo}
-                disabled={isUploading}
-              >
-                Apply Logo
-              </Button>
+            <div className="border rounded p-4">
+              <img 
+                src={uploadedLogoPath} 
+                alt="Uploaded logo preview" 
+                className="max-h-[100px] w-auto"
+              />
             </div>
           )}
         </div>

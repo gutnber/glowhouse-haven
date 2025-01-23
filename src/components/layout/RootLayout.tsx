@@ -11,9 +11,35 @@ import { useIsAdmin } from "@/hooks/useIsAdmin"
 const RootLayout = () => {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
   const [session, setSession] = useState<any>(null)
+  const [logoUrl, setLogoUrl] = useState<string>("/placeholder.svg")
   const { toast } = useToast()
   const navigate = useNavigate()
   const { isAdmin } = useIsAdmin()
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('app_settings')
+          .select('logo_url')
+          .single()
+
+        if (error) {
+          console.error('Error fetching logo:', error)
+          return
+        }
+
+        if (data?.logo_url) {
+          console.log('Setting logo from database:', data.logo_url)
+          setLogoUrl(data.logo_url)
+        }
+      } catch (error) {
+        console.error('Error in fetchLogo:', error)
+      }
+    }
+
+    fetchLogo()
+  }, [])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -67,7 +93,7 @@ const RootLayout = () => {
           <SidebarHeader className="border-b border-border p-4">
             <div className="flex flex-col items-center gap-2">
               <img 
-                src="/placeholder.svg" 
+                src={logoUrl} 
                 alt="Logo" 
                 className="max-h-[100px] w-auto"
               />
