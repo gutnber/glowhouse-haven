@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -29,7 +29,7 @@ export default function Settings() {
   })
 
   // Load initial profile data
-  useState(() => {
+  useEffect(() => {
     const loadProfile = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession()
