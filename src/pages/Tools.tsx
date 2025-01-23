@@ -57,23 +57,17 @@ export default function Tools() {
   const handleApplyLogo = () => {
     if (!uploadedLogoPath) return
     
-    // Update the CSS to apply the new styles
-    const style = document.createElement('style')
-    style.textContent = `
-      #root .sidebar-header img {
-        max-height: 100px !important;
-        width: auto !important;
-        object-fit: contain !important;
-        align-self: flex-start !important;
-        margin: 0 !important;
-      }
-    `
-    document.head.appendChild(style)
-    
-    toast({
-      title: "Success",
-      description: "Logo has been updated and applied",
-    })
+    // Find the sidebar logo image and update its src
+    const sidebarLogo = document.querySelector('.sidebar-header img') as HTMLImageElement
+    if (sidebarLogo) {
+      sidebarLogo.src = uploadedLogoPath
+      console.log('Logo updated in sidebar:', uploadedLogoPath)
+      
+      toast({
+        title: "Success",
+        description: "Logo has been updated",
+      })
+    }
   }
 
   return (
