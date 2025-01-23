@@ -94,6 +94,12 @@ export default function Settings() {
     )
   }
 
+  // Get the current user ID
+  const getUserId = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.user?.id
+  }
+
   // Initialize form with profile data or empty values
   const initialValues: ProfileFormValues = profile ? {
     full_name: profile.full_name || '',
@@ -120,8 +126,8 @@ export default function Settings() {
         </CardHeader>
         <CardContent>
           <ProfileAvatar
+            userId={profile?.id || ''}
             avatarUrl={initialValues.avatar_url}
-            fullName={initialValues.full_name}
             onAvatarChange={handleAvatarChange}
           />
           <ProfileForm
