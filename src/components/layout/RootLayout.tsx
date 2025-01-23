@@ -17,12 +17,14 @@ const RootLayout = () => {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session state:", session)
       setSession(session)
     })
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", _event, session)
       setSession(session)
     })
 
@@ -31,9 +33,25 @@ const RootLayout = () => {
 
   const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
+      // First check if we have a session
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
       
+      if (!currentSession) {
+        console.log("No active session found, clearing local state")
+        setSession(null)
+        navigate("/")
+        return
+      }
+
+      console.log("Signing out with active session")
+      const { error } = await supabase.auth.signOut()
+      
+      if (error) {
+        console.error("Error during sign out:", error)
+        throw error
+      }
+      
+      console.log("Successfully signed out")
       toast({
         title: "Success",
         description: "Successfully signed out",
@@ -41,11 +59,13 @@ const RootLayout = () => {
       navigate("/")
     } catch (error) {
       console.error("Error signing out:", error)
+      // Even if there's an error, we should clear the local session state
+      setSession(null)
       toast({
-        title: "Error",
-        description: "Failed to sign out",
-        variant: "destructive",
+        title: "Notice",
+        description: "You have been signed out",
       })
+      navigate("/")
     }
   }
 
