@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button"
 import { AuthDialog } from "@/components/auth/AuthDialog"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
+import { useIsAdmin } from "@/hooks/useIsAdmin"
 
 const RootLayout = () => {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
   const [session, setSession] = useState<any>(null)
   const { toast } = useToast()
   const navigate = useNavigate()
+  const { isAdmin } = useIsAdmin()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -74,7 +76,7 @@ const RootLayout = () => {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  {session && (
+                  {isAdmin && (
                     <>
                       <SidebarMenuItem>
                         <SidebarMenuButton asChild>
