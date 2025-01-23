@@ -57,9 +57,12 @@ export default function Tools() {
   const handleApplyLogo = () => {
     if (!uploadedLogoPath) return
 
-    const sidebarHeader = document.querySelector('.sidebar-header')
-    const logoImg = document.querySelector('.sidebar-header img')
-    const headerDiv = document.querySelector('.sidebar-header > div')
+    // Updated selectors to match the sidebar structure
+    const sidebarHeader = document.querySelector('[data-sidebar="header"]')
+    const logoImg = sidebarHeader?.querySelector('img')
+    const headerDiv = sidebarHeader?.querySelector('div')
+
+    console.log('Found elements:', { sidebarHeader, logoImg, headerDiv })
 
     if (logoImg && sidebarHeader && headerDiv) {
       // Update logo source
@@ -95,7 +98,11 @@ export default function Tools() {
         description: "Logo has been updated and positioned correctly",
       })
     } else {
-      console.error('Could not find required elements')
+      console.error('Could not find required elements:', {
+        sidebarHeader: !!sidebarHeader,
+        logoImg: !!logoImg,
+        headerDiv: !!headerDiv
+      })
       toast({
         title: "Error",
         description: "Could not update logo position",
