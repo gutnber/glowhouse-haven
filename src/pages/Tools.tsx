@@ -56,34 +56,50 @@ export default function Tools() {
 
   const handleApplyLogo = () => {
     if (!uploadedLogoPath) return
-    
-    // Find the sidebar logo image and update its src
-    const sidebarHeader = document.querySelector('.sidebar-header') as HTMLElement
-    const sidebarLogo = document.querySelector('.sidebar-header img') as HTMLImageElement
-    const headerDiv = document.querySelector('.sidebar-header > div') as HTMLElement
-    
-    if (sidebarLogo && sidebarHeader && headerDiv) {
+
+    const sidebarHeader = document.querySelector('.sidebar-header')
+    const logoImg = document.querySelector('.sidebar-header img')
+    const headerDiv = document.querySelector('.sidebar-header > div')
+
+    if (logoImg && sidebarHeader && headerDiv) {
       // Update logo source
-      sidebarLogo.src = uploadedLogoPath
-      
-      // Apply styles to ensure correct positioning
-      sidebarHeader.style.justifyContent = 'flex-start'
-      sidebarHeader.style.alignItems = 'flex-start'
-      headerDiv.style.alignItems = 'flex-start'
-      headerDiv.style.padding = '0'
-      
-      // Update logo styles
-      sidebarLogo.style.maxHeight = '100px'
-      sidebarLogo.style.width = 'auto'
-      sidebarLogo.style.objectFit = 'contain'
-      sidebarLogo.style.margin = '0'
-      sidebarLogo.style.padding = '0'
-      
-      console.log('Logo updated in sidebar:', uploadedLogoPath)
+      logoImg.setAttribute('src', uploadedLogoPath)
+
+      // Force the correct styles
+      sidebarHeader.setAttribute('style', `
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 1rem !important;
+        width: 100%;
+      `)
+
+      headerDiv.setAttribute('style', `
+        width: 100%;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem;
+      `)
+
+      logoImg.setAttribute('style', `
+        max-height: 80px;
+        width: auto;
+        object-fit: contain;
+      `)
+
+      console.log('Logo and styles updated in sidebar:', uploadedLogoPath)
       
       toast({
         title: "Success",
-        description: "Logo has been updated and positioned in the top-left corner",
+        description: "Logo has been updated and positioned correctly",
+      })
+    } else {
+      console.error('Could not find required elements')
+      toast({
+        title: "Error",
+        description: "Could not update logo position",
+        variant: "destructive",
       })
     }
   }
