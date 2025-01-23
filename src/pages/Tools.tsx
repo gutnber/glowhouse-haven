@@ -58,15 +58,26 @@ export default function Tools() {
     if (!uploadedLogoPath) return
     
     // Find the sidebar logo image and update its src
+    const sidebarHeader = document.querySelector('.sidebar-header') as HTMLElement
     const sidebarLogo = document.querySelector('.sidebar-header img') as HTMLImageElement
-    if (sidebarLogo) {
+    const headerDiv = document.querySelector('.sidebar-header > div') as HTMLElement
+    
+    if (sidebarLogo && sidebarHeader && headerDiv) {
+      // Update logo source
       sidebarLogo.src = uploadedLogoPath
       
-      // Ensure the container has the correct styles
-      const headerDiv = sidebarLogo.closest('.sidebar-header > div')
-      if (headerDiv) {
-        headerDiv.classList.add('items-start')
-      }
+      // Apply styles to ensure correct positioning
+      sidebarHeader.style.justifyContent = 'flex-start'
+      sidebarHeader.style.alignItems = 'flex-start'
+      headerDiv.style.alignItems = 'flex-start'
+      headerDiv.style.padding = '0'
+      
+      // Update logo styles
+      sidebarLogo.style.maxHeight = '100px'
+      sidebarLogo.style.width = 'auto'
+      sidebarLogo.style.objectFit = 'contain'
+      sidebarLogo.style.margin = '0'
+      sidebarLogo.style.padding = '0'
       
       console.log('Logo updated in sidebar:', uploadedLogoPath)
       

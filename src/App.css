@@ -15,7 +15,7 @@
   filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 );
+  filter: drop-shadow(0);
 }
 
 @keyframes logo-spin {
@@ -42,18 +42,25 @@
 }
 
 /* Add styles for the sidebar header logo */
+.sidebar-header {
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  width: 100%;
+}
+
 .sidebar-header img {
   max-height: 100px;
   width: auto;
   object-fit: contain;
-  align-self: flex-start;
   margin: 0;
+  padding: 0;
 }
 
-/* Ensure logo container is properly aligned */
 .sidebar-header > div {
   display: flex;
   flex-direction: column;
   align-items: flex-start !important;
   width: 100%;
+  padding: 0;
 }
