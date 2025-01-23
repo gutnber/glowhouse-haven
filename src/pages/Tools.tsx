@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client"
 
 export default function Tools() {
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadedLogoPath, setUploadedLogoPath] = useState<string | null>(null)
   const { toast } = useToast()
 
   const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,6 +16,7 @@ export default function Tools() {
 
     setIsUploading(true)
     try {
+      console.log('Starting logo upload process...')
       const fileExt = file.name.split('.').pop()
       const filePath = `logo.${fileExt}`
 
@@ -25,12 +27,20 @@ export default function Tools() {
         })
 
       if (uploadError) {
+        console.error('Upload error:', uploadError)
         throw uploadError
       }
 
+      const { data: { publicUrl } } = supabase.storage
+        .from('app-assets')
+        .getPublicUrl(filePath)
+
+      console.log('Logo uploaded successfully, public URL:', publicUrl)
+      setUploadedLogoPath(publicUrl)
+      
       toast({
         title: "Success",
-        description: "Logo uploaded successfully",
+        description: "Logo uploaded successfully. Click Apply to update the display.",
       })
     } catch (error) {
       console.error('Error uploading logo:', error)
@@ -44,23 +54,62 @@ export default function Tools() {
     }
   }
 
+  const handleApplyLogo = () => {
+    if (!uploadedLogoPath) return
+    
+    // Update the CSS to apply the new styles
+    const style = document.createElement('style')
+    style.textContent = `
+      #root .sidebar-header img {
+        max-height: 100px !important;
+        width: auto !important;
+        object-fit: contain !important;
+        align-self: flex-start !important;
+        margin: 0 !important;
+      }
+    `
+    document.head.appendChild(style)
+    
+    toast({
+      title: "Success",
+      description: "Logo has been updated and applied",
+    })
+  }
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold">Tools</h1>
       
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Logo Settings</h2>
-        <div className="space-y-2">
-          <Label htmlFor="logo">Upload Logo</Label>
-          <Input
-            id="logo"
-            type="file"
-            onChange={handleLogoUpload}
-            disabled={isUploading}
-          />
-          <p className="text-sm text-muted-foreground">
-            The logo will be displayed with a maximum height of 100px while maintaining its aspect ratio
-          </p>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="logo">Upload Logo</Label>
+            <Input
+              id="logo"
+              type="file"
+              onChange={handleLogoUpload}
+              disabled={isUploading}
+            />
+          </div>
+          
+          {uploadedLogoPath && (
+            <div className="space-y-4">
+              <div className="border rounded p-4">
+                <img 
+                  src={uploadedLogoPath} 
+                  alt="Uploaded logo preview" 
+                  className="max-h-[100px] w-auto"
+                />
+              </div>
+              <Button 
+                onClick={handleApplyLogo}
+                disabled={isUploading}
+              >
+                Apply Logo
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -40,3 +40,12 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Add styles for the sidebar header logo */
+.sidebar-header img {
+  max-height: 100px;
+  width: auto;
+  object-fit: contain;
+  align-self: flex-start;
+  margin: 0;
+}
