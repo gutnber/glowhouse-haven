@@ -52,14 +52,37 @@ const Users = () => {
   })
 
   const updateUserRole = async (userId: string, newRole: AppRole) => {
+    console.log('Updating role for user:', userId, 'to:', newRole)
     setUpdatingUserId(userId)
     try {
-      const { error } = await supabase
+      // First, check if a role entry exists for this user
+      const { data: existingRole, error: fetchError } = await supabase
         .from("user_roles")
-        .upsert({ 
-          user_id: userId, 
-          role: newRole 
-        })
+        .select("*")
+        .eq("user_id", userId)
+        .single()
+
+      if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+        throw fetchError
+      }
+
+      let error
+      if (existingRole) {
+        console.log('Existing role found, updating:', existingRole)
+        // Update existing role
+        const { error: updateError } = await supabase
+          .from("user_roles")
+          .update({ role: newRole })
+          .eq("id", existingRole.id)
+        error = updateError
+      } else {
+        console.log('No existing role found, inserting new role')
+        // Insert new role
+        const { error: insertError } = await supabase
+          .from("user_roles")
+          .insert({ user_id: userId, role: newRole })
+        error = insertError
+      }
 
       if (error) throw error
 
