@@ -17,21 +17,10 @@ const App = () => (
         <Toaster />
         <SonnerToaster />
         <Routes>
-          <Route
-            element={<RootLayout />}
-          >
-            <Route
-              path="/"
-              element={<Index />}
-            />
-            <Route
-              path="/properties"
-              element={<Properties />}
-            />
-            <Route
-              path="/properties/add"
-              element={<AddProperty />}
-            />
+          <Route element={<RootLayout />}>
+            <Route path="/" element={<Index />} />
+            <Route path="/properties" element={<Properties />} />
+            <Route path="/add-property" element={<AddProperty />} />
           </Route>
         </Routes>
       </TooltipProvider>
