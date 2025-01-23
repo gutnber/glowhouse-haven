@@ -80,6 +80,10 @@ const AddProperty = () => {
     },
   })
 
+  const onSubmit = (values: PropertyFormValues) => {
+    mutation.mutate(values)
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
