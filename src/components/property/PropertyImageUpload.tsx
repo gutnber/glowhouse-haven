@@ -18,21 +18,40 @@ export const PropertyImageUpload = ({ onImageUploaded }: PropertyImageUploadProp
 
     try {
       setIsUploading(true)
+      console.log('Starting file upload...')
+      
+      // Get the current session to check authentication
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        throw new Error('You must be logged in to upload images')
+      }
       
       // Upload file to Supabase storage
       const fileExt = file.name.split('.').pop()
       const filePath = `${crypto.randomUUID()}.${fileExt}`
       
+      console.log('Uploading file to path:', filePath)
+      
       const { error: uploadError, data } = await supabase.storage
         .from('property-images')
-        .upload(filePath, file)
+        .upload(filePath, file, {
+          upsert: false
+        })
 
-      if (uploadError) throw uploadError
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        throw uploadError
+      }
+
+      console.log('File uploaded successfully')
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('property-images')
         .getPublicUrl(filePath)
+
+      console.log('Public URL generated:', publicUrl)
 
       onImageUploaded(publicUrl)
       
@@ -44,7 +63,7 @@ export const PropertyImageUpload = ({ onImageUploaded }: PropertyImageUploadProp
       console.error('Error uploading image:', error)
       toast({
         title: "Error",
-        description: "Failed to upload image. Please try again.",
+        description: error.message || "Failed to upload image. Please try again.",
         variant: "destructive",
       })
     } finally {
