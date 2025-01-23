@@ -21,6 +21,8 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Loader2, UserCog } from "lucide-react"
 
+type AppRole = "admin" | "user"
+
 const Users = () => {
   const { isAdmin, isLoading: isAdminLoading } = useIsAdmin()
   const { toast } = useToast()
@@ -47,12 +49,15 @@ const Users = () => {
     },
   })
 
-  const updateUserRole = async (userId: string, newRole: string) => {
+  const updateUserRole = async (userId: string, newRole: AppRole) => {
     setUpdatingUserId(userId)
     try {
       const { error } = await supabase
         .from("user_roles")
-        .upsert({ user_id: userId, role: newRole })
+        .upsert({ 
+          user_id: userId, 
+          role: newRole 
+        })
 
       if (error) throw error
 
@@ -129,7 +134,7 @@ const Users = () => {
                       <Select
                         disabled={updatingUserId === user.id}
                         value={userRole?.role || "user"}
-                        onValueChange={(value) => updateUserRole(user.id, value)}
+                        onValueChange={(value: AppRole) => updateUserRole(user.id, value)}
                       >
                         <SelectTrigger className="w-32">
                           <SelectValue />
