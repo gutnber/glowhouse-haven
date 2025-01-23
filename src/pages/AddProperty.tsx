@@ -46,7 +46,7 @@ const AddProperty = () => {
   const mutation = useMutation({
     mutationFn: async (values: PropertyFormValues) => {
       console.log('Submitting property:', values)
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('properties')
         .insert({
           name: values.name,
@@ -60,8 +60,11 @@ const AddProperty = () => {
           features: values.features,
           images: values.images,
         })
+        .select()
+        .single()
       
       if (error) throw error
+      return data
     },
     onSuccess: () => {
       toast({
