@@ -53,7 +53,9 @@ const PropertyProfile = () => {
 
       <PropertyImageGallery
         images={property.images || []}
+        propertyId={property.id}
         propertyName={property.name}
+        featureImageUrl={property.feature_image_url}
       />
 
       <PropertyDetails

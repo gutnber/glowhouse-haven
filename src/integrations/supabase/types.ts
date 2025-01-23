@@ -42,6 +42,7 @@ export type Database = {
           build_year: number
           created_at: string
           description: string | null
+          feature_image_url: string | null
           features: string[] | null
           id: string
           images: string[] | null
@@ -57,6 +58,7 @@ export type Database = {
           build_year: number
           created_at?: string
           description?: string | null
+          feature_image_url?: string | null
           features?: string[] | null
           id?: string
           images?: string[] | null
@@ -72,6 +74,7 @@ export type Database = {
           build_year?: number
           created_at?: string
           description?: string | null
+          feature_image_url?: string | null
           features?: string[] | null
           id?: string
           images?: string[] | null
