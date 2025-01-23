@@ -33,37 +33,25 @@ const RootLayout = () => {
 
   const handleSignOut = async () => {
     try {
-      // First check if we have a valid session with an access token
-      const { data: { session: currentSession } } = await supabase.auth.getSession()
-      console.log("Current session check:", currentSession)
-
-      if (!currentSession?.access_token) {
-        console.log("No valid session found, clearing local state")
-        setSession(null)
-        navigate("/")
-        return
+      // Clear local session state first
+      setSession(null)
+      
+      try {
+        // Attempt to sign out from Supabase, but don't wait for it
+        await supabase.auth.signOut()
+      } catch (error) {
+        console.log("Supabase signout attempt failed, but local state is cleared:", error)
       }
 
-      console.log("Signing out with valid session")
-      const { error } = await supabase.auth.signOut({
-        scope: 'local'  // Changed to local scope to avoid JWT validation
-      })
-      
-      if (error) {
-        console.error("Error during sign out:", error)
-        throw error
-      }
-      
-      console.log("Successfully signed out")
+      // Always show success message and redirect
       toast({
         title: "Success",
-        description: "Successfully signed out",
+        description: "You have been signed out",
       })
       navigate("/")
     } catch (error) {
-      console.error("Error signing out:", error)
-      // Even if there's an error, we should clear the local session state
-      setSession(null)
+      console.error("Error in signout flow:", error)
+      // Even if there's an error, we've already cleared the local state
       toast({
         title: "Notice",
         description: "You have been signed out",
