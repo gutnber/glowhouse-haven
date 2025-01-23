@@ -1,12 +1,8 @@
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarTrigger, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar"
 import { Home, Settings, Users, Building2 } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, Outlet } from "react-router-dom"
 
-interface RootLayoutProps {
-  children: React.ReactNode
-}
-
-const RootLayout = ({ children }: RootLayoutProps) => {
+const RootLayout = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -57,7 +53,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
         </Sidebar>
         <main className="flex-1 p-6">
           <SidebarTrigger className="mb-4" />
-          {children}
+          <Outlet />
         </main>
       </div>
     </SidebarProvider>
