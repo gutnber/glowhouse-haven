@@ -33,18 +33,21 @@ const RootLayout = () => {
 
   const handleSignOut = async () => {
     try {
-      // First check if we have a session
+      // First check if we have a valid session with an access token
       const { data: { session: currentSession } } = await supabase.auth.getSession()
-      
-      if (!currentSession) {
-        console.log("No active session found, clearing local state")
+      console.log("Current session check:", currentSession)
+
+      if (!currentSession?.access_token) {
+        console.log("No valid session found, clearing local state")
         setSession(null)
         navigate("/")
         return
       }
 
-      console.log("Signing out with active session")
-      const { error } = await supabase.auth.signOut()
+      console.log("Signing out with valid session")
+      const { error } = await supabase.auth.signOut({
+        scope: 'local'  // Changed to local scope to avoid JWT validation
+      })
       
       if (error) {
         console.error("Error during sign out:", error)
