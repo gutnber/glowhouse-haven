@@ -30,10 +30,10 @@ const Index = () => {
     <div className="space-y-8">
       <div className="text-center space-y-4 py-12 bg-gradient-to-r from-primary/10 via-primary/5 to-background rounded-lg">
         <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
-          Welcome to Your Real Estate Platform
+          Welcome to our investors nest in florida
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Discover amazing properties and find your next investment opportunity
+          Please subscribe to get the latest news and hottest deals
         </p>
       </div>
       
