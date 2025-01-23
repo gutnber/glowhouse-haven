@@ -21,7 +21,7 @@ function App() {
         <Route element={<RootLayout />}>
           <Route path="/" element={<Index />} />
           <Route path="/properties" element={<Properties />} />
-          <Route path="/properties/add" element={<AddProperty />} />
+          <Route path="/add-property" element={<AddProperty />} />
           <Route path="/properties/:id/edit" element={<EditProperty />} />
           <Route path="/properties/:id" element={<PropertyProfile />} />
           <Route path="/users" element={<Users />} />
