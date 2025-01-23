@@ -39,6 +39,8 @@ export function ProfileAvatar({ avatarUrl, fullName, onAvatarChange }: ProfileAv
       const fileExt = file.name.split('.').pop()
       const filePath = `${session.user.id}.${fileExt}`
 
+      console.log('Uploading avatar:', filePath)
+
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, { upsert: true })
@@ -49,6 +51,8 @@ export function ProfileAvatar({ avatarUrl, fullName, onAvatarChange }: ProfileAv
         .from('avatars')
         .getPublicUrl(filePath)
 
+      console.log('Avatar uploaded, public URL:', publicUrl)
+
       // Update the profile with the new avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
@@ -57,6 +61,9 @@ export function ProfileAvatar({ avatarUrl, fullName, onAvatarChange }: ProfileAv
 
       if (updateError) throw updateError
 
+      console.log('Profile updated with new avatar URL')
+
+      // Update the UI
       onAvatarChange(publicUrl)
       
       // Show success notification using Sonner toast
