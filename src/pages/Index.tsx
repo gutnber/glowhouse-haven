@@ -75,6 +75,12 @@ const Index = () => {
                       <div className="absolute top-4 -right-8 rotate-45 bg-destructive text-destructive-foreground px-10 py-1 text-sm font-semibold shadow-lg transform group-hover:scale-110 transition-transform">
                         ${property.price.toLocaleString()}
                       </div>
+                      {/* ARV Badge */}
+                      {property.arv && (
+                        <div className="absolute bottom-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                          ARV: ${property.arv.toLocaleString()}
+                        </div>
+                      )}
                       {/* New tag */}
                       {isNewProperty(property.created_at) && (
                         <Badge className="absolute top-4 left-4 bg-yellow-500 hover:bg-yellow-600 text-black">
