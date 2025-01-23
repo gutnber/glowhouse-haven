@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -7,62 +8,34 @@ import { ProfileForm, ProfileFormValues } from "@/components/settings/ProfileFor
 
 export default function Settings() {
   const [isLoading, setIsLoading] = useState(false)
-  const [profile, setProfile] = useState<ProfileFormValues>({
-    full_name: "",
-    email: "",
-    phone: "",
-    company: "",
-    avatar_url: "",
-  })
   const { toast } = useToast()
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session?.user) return
+  // Fetch profile data
+  const { data: profile, isLoading: isLoadingProfile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.user) throw new Error('Not authenticated')
 
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single()
 
-        if (error) throw error
-        
-        if (profile) {
-          console.log('Loading profile data:', profile)
-          setProfile({
-            full_name: profile.full_name || '',
-            email: profile.email || '',
-            phone: profile.phone || '',
-            company: profile.company || '',
-            avatar_url: profile.avatar_url || '',
-          })
-        }
-      } catch (error) {
-        console.error('Error loading profile:', error)
-        toast({
-          title: "Error",
-          description: "Failed to load profile",
-          variant: "destructive",
-        })
-      }
+      if (error) throw error
+      console.log('Profile data loaded:', data)
+      return data
     }
-    loadProfile()
-  }, [])
+  })
 
-  const handleAvatarChange = (url: string) => {
-    setProfile(prev => ({ ...prev, avatar_url: url }))
-  }
-
-  const handleSubmit = async (values: ProfileFormValues) => {
-    try {
-      setIsLoading(true)
+  // Update profile mutation
+  const updateProfile = useMutation({
+    mutationFn: async (values: ProfileFormValues) => {
+      console.log('Updating profile with values:', values)
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Not authenticated')
-
-      console.log('Updating profile with values:', values)
 
       const { error } = await supabase
         .from('profiles')
@@ -77,21 +50,63 @@ export default function Settings() {
         .eq('id', session.user.id)
 
       if (error) throw error
-
+    },
+    onSuccess: () => {
       toast({
         title: "Success",
         description: "Profile updated successfully",
       })
-    } catch (error) {
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
+    },
+    onError: (error) => {
       console.error('Error updating profile:', error)
       toast({
         title: "Error",
         description: "Failed to update profile",
         variant: "destructive",
       })
-    } finally {
-      setIsLoading(false)
     }
+  })
+
+  const handleSubmit = async (values: ProfileFormValues) => {
+    setIsLoading(true)
+    await updateProfile.mutateAsync(values)
+    setIsLoading(false)
+  }
+
+  const handleAvatarChange = (url: string) => {
+    if (profile) {
+      handleSubmit({ ...profile, avatar_url: url })
+    }
+  }
+
+  // Show loading state while fetching profile
+  if (isLoadingProfile) {
+    return (
+      <div className="container max-w-2xl py-10">
+        <Card>
+          <CardHeader>
+            <CardTitle>Settings</CardTitle>
+            <CardDescription>Loading profile information...</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    )
+  }
+
+  // Initialize form with profile data or empty values
+  const initialValues: ProfileFormValues = profile ? {
+    full_name: profile.full_name || '',
+    email: profile.email || '',
+    phone: profile.phone || '',
+    company: profile.company || '',
+    avatar_url: profile.avatar_url || '',
+  } : {
+    full_name: '',
+    email: '',
+    phone: '',
+    company: '',
+    avatar_url: '',
   }
 
   return (
@@ -105,12 +120,12 @@ export default function Settings() {
         </CardHeader>
         <CardContent>
           <ProfileAvatar
-            avatarUrl={profile.avatar_url}
-            fullName={profile.full_name}
+            avatarUrl={initialValues.avatar_url}
+            fullName={initialValues.full_name}
             onAvatarChange={handleAvatarChange}
           />
           <ProfileForm
-            initialValues={profile}
+            initialValues={initialValues}
             onSubmit={handleSubmit}
             isLoading={isLoading}
           />
