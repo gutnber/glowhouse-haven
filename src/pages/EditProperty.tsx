@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useNavigate } from "react-router-dom"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
 
 const propertyFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -52,18 +53,7 @@ const EditProperty = () => {
 
   const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertyFormSchema),
-    defaultValues: property || {
-      name: '',
-      address: '',
-      bedrooms: 0,
-      bathrooms: 0,
-      build_year: new Date().getFullYear(),
-      price: 0,
-      arv: null,
-      description: '',
-      features: [],
-      images: []
-    }
+    values: property || undefined // This ensures form is updated when property loads
   })
 
   const mutation = useMutation({
@@ -99,7 +89,19 @@ const EditProperty = () => {
   }
 
   if (isLoading) {
-    return <div>Loading property...</div>
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
+
+  if (!property) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-lg text-muted-foreground">Property not found</p>
+      </div>
+    )
   }
 
   return (
