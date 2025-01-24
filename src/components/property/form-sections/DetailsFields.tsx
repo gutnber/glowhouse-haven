@@ -16,7 +16,11 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           <FormItem>
             <FormLabel>Bedrooms</FormLabel>
             <FormControl>
-              <Input type="number" {...field} />
+              <Input 
+                type="number" 
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -30,7 +34,11 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           <FormItem>
             <FormLabel>Bathrooms</FormLabel>
             <FormControl>
-              <Input type="number" {...field} />
+              <Input 
+                type="number" 
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -44,7 +52,11 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           <FormItem>
             <FormLabel>Build Year</FormLabel>
             <FormControl>
-              <Input type="number" {...field} />
+              <Input 
+                type="number" 
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -58,7 +70,11 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           <FormItem>
             <FormLabel>Price</FormLabel>
             <FormControl>
-              <Input type="number" {...field} />
+              <Input 
+                type="number" 
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -72,7 +88,14 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           <FormItem>
             <FormLabel>ARV (Optional)</FormLabel>
             <FormControl>
-              <Input type="number" {...field} />
+              <Input 
+                type="number" 
+                {...field}
+                onChange={(e) => {
+                  const value = e.target.value ? Number(e.target.value) : null;
+                  field.onChange(value);
+                }}
+              />
             </FormControl>
             <FormDescription>After Repair Value</FormDescription>
             <FormMessage />
