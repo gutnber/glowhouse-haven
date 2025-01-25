@@ -88,7 +88,7 @@ const RootLayout = () => {
   }
 
   return (
-    <SidebarProvider defaultCollapsed={false} onCollapsedChange={setIsSidebarOpen}>
+    <SidebarProvider open={!isSidebarOpen} onOpenChange={(open) => setIsSidebarOpen(!open)}>
       <div className="min-h-screen flex w-full">
         <Sidebar>
           <SidebarHeader className="border-b border-border p-4">
