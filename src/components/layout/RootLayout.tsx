@@ -12,14 +12,9 @@ const RootLayout = () => {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
   const [session, setSession] = useState<any>(null)
   const [logoUrl, setLogoUrl] = useState<string>("/placeholder.svg")
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const { toast } = useToast()
   const navigate = useNavigate()
   const { isAdmin } = useIsAdmin()
-
-  // Create audio elements for pop sounds
-  const popInSound = new Audio("/pop-in.mp3")
-  const popOutSound = new Audio("/pop-out.mp3")
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -91,18 +86,8 @@ const RootLayout = () => {
     }
   }
 
-  const handleSidebarToggle = (open: boolean) => {
-    setIsSidebarOpen(open)
-    // Play the appropriate sound effect
-    if (open) {
-      popInSound.play().catch(console.error)
-    } else {
-      popOutSound.play().catch(console.error)
-    }
-  }
-
   return (
-    <SidebarProvider onOpenChange={handleSidebarToggle}>
+    <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <Sidebar>
           <SidebarHeader className="border-b border-border p-4">
@@ -192,16 +177,7 @@ const RootLayout = () => {
           </div>
         </Sidebar>
         <main className="flex-1 p-6">
-          <div className="flex items-center gap-4 mb-4">
-            <SidebarTrigger className="bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none h-9 w-9 rounded-lg" />
-            {!isSidebarOpen && (
-              <img 
-                src={logoUrl} 
-                alt="Logo" 
-                className="h-12 w-auto animate-scale-in"
-              />
-            )}
-          </div>
+          <SidebarTrigger className="mb-4 bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none h-9 w-9 rounded-lg" />
           <Outlet />
         </main>
       </div>
