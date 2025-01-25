@@ -180,7 +180,7 @@ const RootLayout = () => {
         <main className="flex-1 p-6">
           <div className="flex items-center gap-4">
             <SidebarTrigger className="bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none h-9 w-9 rounded-lg" />
-            {!isSidebarOpen && (
+            {isSidebarOpen && (
               <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg shadow-lg transition-all duration-300 ease-in-out animate-scale-in">
                 <img 
                   src={logoUrl} 
