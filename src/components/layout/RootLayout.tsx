@@ -93,11 +93,13 @@ const RootLayout = () => {
         <Sidebar>
           <SidebarHeader className="border-b border-border p-4">
             <div className="flex flex-col items-center gap-2">
-              <img 
-                src={logoUrl} 
-                alt="Logo" 
-                className="max-h-[100px] w-auto"
-              />
+              <Link to="/">
+                <img 
+                  src={logoUrl} 
+                  alt="Logo" 
+                  className="max-h-[100px] w-auto hover:opacity-80 transition-opacity"
+                />
+              </Link>
               <h2 className="text-lg font-semibold">My App</h2>
             </div>
           </SidebarHeader>
@@ -180,13 +182,15 @@ const RootLayout = () => {
         <main className="flex-1 p-6">
           <div className="flex items-center gap-4">
             <SidebarTrigger className="bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none h-9 w-9 rounded-lg" />
-            {isSidebarOpen && (
+            {!isSidebarOpen && (
               <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg shadow-lg transition-all duration-300 ease-in-out animate-scale-in">
-                <img 
-                  src={logoUrl} 
-                  alt="Logo" 
-                  className="h-8 w-auto object-contain"
-                />
+                <Link to="/">
+                  <img 
+                    src={logoUrl} 
+                    alt="Logo" 
+                    className="h-8 w-auto object-contain hover:opacity-80 transition-opacity"
+                  />
+                </Link>
               </div>
             )}
           </div>
