@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarTrigger, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar"
-import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench } from "lucide-react"
+import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench, ArrowRight } from "lucide-react"
 import { Link, Outlet, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { AuthDialog } from "@/components/auth/AuthDialog"
@@ -181,7 +181,9 @@ const RootLayout = () => {
         </Sidebar>
         <main className="flex-1 p-6">
           <div className="relative">
-            <SidebarTrigger className="absolute -left-3 top-5 h-[300px] w-6 bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none rounded-r-lg flex items-center justify-center" />
+            <SidebarTrigger className="absolute -left-6 top-5 h-[300px] w-6 bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none rounded-r-lg flex items-center justify-center">
+              <ArrowRight className="h-4 w-4" />
+            </SidebarTrigger>
             {!isSidebarOpen && (
               <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg shadow-lg transition-all duration-300 ease-in-out animate-scale-in ml-8">
                 <Link to="/">
