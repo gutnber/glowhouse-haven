@@ -12,6 +12,7 @@ const RootLayout = () => {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
   const [session, setSession] = useState<any>(null)
   const [logoUrl, setLogoUrl] = useState<string>("/placeholder.svg")
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const { toast } = useToast()
   const navigate = useNavigate()
   const { isAdmin } = useIsAdmin()
@@ -87,7 +88,7 @@ const RootLayout = () => {
   }
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultCollapsed={false} onCollapsedChange={setIsSidebarOpen}>
       <div className="min-h-screen flex w-full">
         <Sidebar>
           <SidebarHeader className="border-b border-border p-4">
@@ -177,7 +178,18 @@ const RootLayout = () => {
           </div>
         </Sidebar>
         <main className="flex-1 p-6">
-          <SidebarTrigger className="mb-4 bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none h-9 w-9 rounded-lg" />
+          <div className="flex items-center gap-4">
+            <SidebarTrigger className="bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none h-9 w-9 rounded-lg" />
+            {!isSidebarOpen && (
+              <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg shadow-lg transition-all duration-300 ease-in-out animate-scale-in">
+                <img 
+                  src={logoUrl} 
+                  alt="Logo" 
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
+            )}
+          </div>
           <Outlet />
         </main>
       </div>
