@@ -23,6 +23,38 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
   const { toast } = useToast()
   const { isAdmin } = useIsAdmin()
 
+  // Fetch the current property to get the feature_image_position
+  const fetchPropertyPosition = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('properties')
+        .select('feature_image_position')
+        .eq('id', propertyId)
+        .single()
+
+      if (error) throw error
+
+      if (data.feature_image_position) {
+        const [x, y] = data.feature_image_position.split(' ').map(val => 
+          parseFloat(val.replace('%', ''))
+        )
+        setPosition({ x, y })
+      }
+    } catch (error) {
+      console.error('Error fetching image position:', error)
+    }
+  }
+
+  // When an image is selected for viewing, fetch its position if it's the feature image
+  const handleImageSelect = (src: string) => {
+    setSelectedImage(src)
+    if (src === featureImageUrl) {
+      fetchPropertyPosition()
+    } else {
+      setPosition({ x: 50, y: 50 }) // Reset position for non-feature images
+    }
+  }
+
   if (!images || images.length === 0) {
     return (
       <div className="col-span-4 bg-muted rounded-lg flex items-center justify-center py-12">
@@ -75,7 +107,7 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
   }
 
   const handleMouseUp = async () => {
-    if (!isDragging || !selectedImage) return
+    if (!isDragging || !selectedImage || selectedImage !== featureImageUrl) return
     setIsDragging(false)
 
     // Convert position to CSS object-position format and update in database
@@ -106,7 +138,7 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
     const isFeatureImage = src === featureImageUrl
 
     return (
-      <div className="cursor-pointer group relative" onClick={() => setSelectedImage(src)}>
+      <div className="cursor-pointer group relative" onClick={() => handleImageSelect(src)}>
         <AspectRatio ratio={4/3}>
           <img
             src={src}
@@ -167,15 +199,13 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
             <img
               src={selectedImage || ''}
               alt="Expanded view"
-              className={`w-full h-full object-contain transition-all duration-200 ${isAdmin ? 'cursor-move' : ''}`}
+              className={`w-full h-full object-contain transition-all duration-200 ${isAdmin && selectedImage === featureImageUrl ? 'cursor-move' : ''}`}
               style={{ 
-                objectPosition: isDragging 
-                  ? `${position.x}% ${position.y}%` 
-                  : 'center center'
+                objectPosition: `${position.x}% ${position.y}%`
               }}
               onMouseDown={handleMouseDown}
             />
-            {isAdmin && (
+            {isAdmin && selectedImage === featureImageUrl && (
               <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
                 {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
               </div>
