@@ -1,5 +1,5 @@
 import { Star, X } from "lucide-react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,9 @@ interface PropertyImageGalleryProps {
 
 export const PropertyImageGallery = ({ images, propertyId, propertyName, featureImageUrl }: PropertyImageGalleryProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [position, setPosition] = useState({ x: 50, y: 50 }) // Percentage values
+  const containerRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
   const { isAdmin } = useIsAdmin()
 
@@ -46,6 +49,54 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
       toast({
         title: "Error",
         description: "Failed to update feature image",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!isAdmin || !selectedImage) return
+    setIsDragging(true)
+    e.preventDefault() // Prevent image dragging
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !containerRef.current || !isAdmin || !selectedImage) return
+
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+
+    // Clamp values between 0 and 100
+    const clampedX = Math.max(0, Math.min(100, x))
+    const clampedY = Math.max(0, Math.min(100, y))
+
+    setPosition({ x: clampedX, y: clampedY })
+  }
+
+  const handleMouseUp = async () => {
+    if (!isDragging || !selectedImage) return
+    setIsDragging(false)
+
+    // Convert position to CSS object-position format and update in database
+    const positionString = `${position.x}% ${position.y}%`
+    try {
+      const { error } = await supabase
+        .from('properties')
+        .update({ feature_image_position: positionString })
+        .eq('id', propertyId)
+
+      if (error) throw error
+
+      toast({
+        title: "Success",
+        description: "Image position updated successfully",
+      })
+    } catch (error) {
+      console.error('Error updating image position:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update image position",
         variant: "destructive",
       })
     }
@@ -106,12 +157,29 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
           >
             <X className="h-4 w-4" />
           </Button>
-          <div className="relative w-full h-full">
+          <div 
+            ref={containerRef}
+            className="relative w-full h-full"
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
             <img
               src={selectedImage || ''}
               alt="Expanded view"
-              className="w-full h-full object-contain"
+              className={`w-full h-full object-contain transition-all duration-200 ${isAdmin ? 'cursor-move' : ''}`}
+              style={{ 
+                objectPosition: isDragging 
+                  ? `${position.x}% ${position.y}%` 
+                  : 'center center'
+              }}
+              onMouseDown={handleMouseDown}
             />
+            {isAdmin && (
+              <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
