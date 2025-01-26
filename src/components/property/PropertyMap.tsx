@@ -19,17 +19,20 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
   useEffect(() => {
     const extractCoordinates = async (url: string) => {
       try {
+        console.log('Attempting to extract coordinates from URL:', url)
         // Handle different Google Maps URL formats
         const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/
         const match = url.match(regex)
         
         if (match) {
           const [, lat, lng] = match
+          console.log('Extracted coordinates:', { lat, lng })
           return {
             lat: parseFloat(lat),
             lng: parseFloat(lng)
           }
         }
+        console.log('No coordinates found in URL')
         return null
       } catch (error) {
         console.error("Error extracting coordinates:", error)
@@ -38,13 +41,19 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
     }
 
     const initializeCoordinates = async () => {
+      console.log('Initializing coordinates with:', { googleMapsUrl, latitude, longitude })
+      
       if (googleMapsUrl) {
         const extractedCoords = await extractCoordinates(googleMapsUrl)
         if (extractedCoords) {
+          console.log('Setting coordinates from URL:', extractedCoords)
           setCoordinates(extractedCoords)
         }
       } else if (latitude && longitude) {
+        console.log('Setting coordinates from props:', { lat: latitude, lng: longitude })
         setCoordinates({ lat: latitude, lng: longitude })
+      } else {
+        console.log('No valid coordinates source found')
       }
     }
 
@@ -53,9 +62,16 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
 
   useEffect(() => {
     const initMap = async () => {
-      if (!mapRef.current || !coordinates) return
+      if (!mapRef.current || !coordinates) {
+        console.log('Map initialization skipped:', { 
+          hasMapRef: !!mapRef.current, 
+          hasCoordinates: !!coordinates 
+        })
+        return
+      }
 
       try {
+        console.log('Initializing map with coordinates:', coordinates)
         setIsLoading(true)
         const loader = new GoogleMapsLoader({
           apiKey: "AIzaSyDHxHGVtZsxHBPj_GY7YRDuXvxqXVLXr9Q",
@@ -81,6 +97,7 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
         })
 
         mapInstanceRef.current = mapInstance
+        console.log('Map initialized successfully')
       } catch (error) {
         console.error("Error loading map:", error)
         setError("Failed to load map")
@@ -99,6 +116,7 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
   }, [coordinates])
 
   if (!coordinates) {
+    console.log('Rendering no coordinates message')
     return (
       <Card className="p-6">
         <h2 className="text-2xl font-semibold mb-4">Location</h2>
