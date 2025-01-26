@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Loader } from "@/components/ui/loader"
 import { Loader as GoogleMapsLoader } from "@googlemaps/js-api-loader"
@@ -10,12 +10,15 @@ interface PropertyMapProps {
 export const PropertyMap = ({ address }: PropertyMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const initMap = async () => {
       if (!mapRef.current) return
 
       try {
+        setIsLoading(true)
         // Load the Google Maps JavaScript API
         const loader = new GoogleMapsLoader({
           apiKey: "GOOGLE_MAPS_API_KEY",
@@ -29,7 +32,7 @@ export const PropertyMap = ({ address }: PropertyMapProps) => {
         const results = await geocoder.geocode({ address })
 
         if (!results.results?.[0]) {
-          console.error("Address not found")
+          setError("Address not found")
           return
         }
 
@@ -54,6 +57,9 @@ export const PropertyMap = ({ address }: PropertyMapProps) => {
         mapInstanceRef.current = mapInstance
       } catch (error) {
         console.error("Error loading map:", error)
+        setError("Failed to load map")
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -69,9 +75,19 @@ export const PropertyMap = ({ address }: PropertyMapProps) => {
   return (
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Location</h2>
+      {isLoading && (
+        <div className="w-full h-[400px] flex items-center justify-center bg-muted rounded-lg">
+          <Loader />
+        </div>
+      )}
+      {error && (
+        <div className="w-full h-[400px] flex items-center justify-center bg-muted rounded-lg">
+          <p className="text-destructive">{error}</p>
+        </div>
+      )}
       <div 
         ref={mapRef} 
-        className="w-full h-[400px] rounded-lg overflow-hidden"
+        className={`w-full h-[400px] rounded-lg overflow-hidden ${isLoading ? 'hidden' : ''}`}
       />
     </Card>
   )
