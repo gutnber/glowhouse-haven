@@ -4,10 +4,11 @@ import { Loader } from "@/components/ui/loader"
 import { Loader as GoogleMapsLoader } from "@googlemaps/js-api-loader"
 
 interface PropertyMapProps {
-  address: string
+  latitude?: number | null
+  longitude?: number | null
 }
 
-export const PropertyMap = ({ address }: PropertyMapProps) => {
+export const PropertyMap = ({ latitude, longitude }: PropertyMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -15,11 +16,10 @@ export const PropertyMap = ({ address }: PropertyMapProps) => {
 
   useEffect(() => {
     const initMap = async () => {
-      if (!mapRef.current) return
+      if (!mapRef.current || !latitude || !longitude) return
 
       try {
         setIsLoading(true)
-        // Load the Google Maps JavaScript API
         const loader = new GoogleMapsLoader({
           apiKey: "GOOGLE_MAPS_API_KEY",
           version: "weekly",
@@ -27,16 +27,7 @@ export const PropertyMap = ({ address }: PropertyMapProps) => {
 
         await loader.load()
 
-        // Geocode the address to get coordinates
-        const geocoder = new google.maps.Geocoder()
-        const results = await geocoder.geocode({ address })
-
-        if (!results.results?.[0]) {
-          setError("Address not found")
-          return
-        }
-
-        const { location } = results.results[0].geometry
+        const location = { lat: latitude, lng: longitude }
 
         // Create the map instance
         const mapInstance = new google.maps.Map(mapRef.current, {
@@ -70,7 +61,18 @@ export const PropertyMap = ({ address }: PropertyMapProps) => {
         // Cleanup map instance if needed
       }
     }
-  }, [address])
+  }, [latitude, longitude])
+
+  if (!latitude || !longitude) {
+    return (
+      <Card className="p-6">
+        <h2 className="text-2xl font-semibold mb-4">Location</h2>
+        <div className="w-full h-[400px] flex items-center justify-center bg-muted rounded-lg">
+          <p className="text-muted-foreground">No location coordinates available</p>
+        </div>
+      </Card>
+    )
+  }
 
   return (
     <Card className="p-6">

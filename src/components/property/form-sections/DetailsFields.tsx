@@ -117,6 +117,52 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="latitude"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Latitude</FormLabel>
+            <FormControl>
+              <Input 
+                type="number" 
+                step="any"
+                placeholder="e.g. 40.7128"
+                {...field}
+                onChange={(e) => {
+                  const value = e.target.value ? Number(e.target.value) : null;
+                  field.onChange(value);
+                }}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="longitude"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Longitude</FormLabel>
+            <FormControl>
+              <Input 
+                type="number" 
+                step="any"
+                placeholder="e.g. -74.0060"
+                {...field}
+                onChange={(e) => {
+                  const value = e.target.value ? Number(e.target.value) : null;
+                  field.onChange(value);
+                }}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   )
 }

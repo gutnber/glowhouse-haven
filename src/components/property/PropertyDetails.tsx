@@ -1,6 +1,7 @@
-import { Bed, Bath, CalendarClock, DollarSign, Info } from "lucide-react"
+import { Bed, Bath, CalendarClock, DollarSign } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { PropertyMap } from "./PropertyMap"
 
 interface PropertyDetailsProps {
   bedrooms: number
@@ -10,6 +11,8 @@ interface PropertyDetailsProps {
   arv?: number | null
   description?: string | null
   features?: string[] | null
+  latitude?: number | null
+  longitude?: number | null
 }
 
 export const PropertyDetails = ({
@@ -19,7 +22,9 @@ export const PropertyDetails = ({
   price,
   arv,
   description,
-  features
+  features,
+  latitude,
+  longitude
 }: PropertyDetailsProps) => {
   return (
     <div className="grid md:grid-cols-3 gap-8">
@@ -64,6 +69,8 @@ export const PropertyDetails = ({
             <p className="text-muted-foreground whitespace-pre-wrap">{description}</p>
           </Card>
         )}
+
+        <PropertyMap latitude={latitude} longitude={longitude} />
       </div>
 
       <div className="space-y-6">

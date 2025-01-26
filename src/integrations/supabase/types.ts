@@ -77,6 +77,8 @@ export type Database = {
           features: string[] | null
           id: string
           images: string[] | null
+          latitude: number | null
+          longitude: number | null
           name: string
           price: number
           updated_at: string
@@ -94,6 +96,8 @@ export type Database = {
           features?: string[] | null
           id?: string
           images?: string[] | null
+          latitude?: number | null
+          longitude?: number | null
           name: string
           price: number
           updated_at?: string
@@ -111,6 +115,8 @@ export type Database = {
           features?: string[] | null
           id?: string
           images?: string[] | null
+          latitude?: number | null
+          longitude?: number | null
           name?: string
           price?: number
           updated_at?: string
