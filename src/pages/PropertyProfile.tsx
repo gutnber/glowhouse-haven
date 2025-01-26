@@ -6,14 +6,19 @@ import { Button } from "@/components/ui/button"
 import { PropertyHeader } from "@/components/property/PropertyHeader"
 import { PropertyImageGallery } from "@/components/property/PropertyImageGallery"
 import { PropertyDetails } from "@/components/property/PropertyDetails"
-import { House, ArrowDown, ArrowUp } from "lucide-react"
+import { House } from "lucide-react"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useToast } from "@/hooks/use-toast"
+import { useRef, useState } from "react"
 
 const PropertyProfile = () => {
   const { id } = useParams()
   const { isAdmin } = useIsAdmin()
   const { toast } = useToast()
+  const imageRef = useRef<HTMLImageElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [position, setPosition] = useState({ x: 50, y: 50 }) // Percentage values
   
   const { data: property, isLoading } = useQuery({
     queryKey: ['property', id],
@@ -53,6 +58,35 @@ const PropertyProfile = () => {
     }
   })
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!isAdmin) return
+    setIsDragging(true)
+    e.preventDefault() // Prevent image dragging
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !containerRef.current || !isAdmin) return
+
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+
+    // Clamp values between 0 and 100
+    const clampedX = Math.max(0, Math.min(100, x))
+    const clampedY = Math.max(0, Math.min(100, y))
+
+    setPosition({ x: clampedX, y: clampedY })
+  }
+
+  const handleMouseUp = () => {
+    if (!isDragging) return
+    setIsDragging(false)
+
+    // Convert position to CSS object-position format
+    const positionString = `${position.x}% ${position.y}%`
+    updateImagePositionMutation.mutate(positionString)
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
@@ -81,38 +115,30 @@ const PropertyProfile = () => {
       />
 
       {property.feature_image_url ? (
-        <div className="relative">
+        <div 
+          ref={containerRef}
+          className="relative"
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
           <div className="w-full h-[300px] relative rounded-lg overflow-hidden">
             <img
+              ref={imageRef}
               src={property.feature_image_url}
               alt={`${property.name} banner`}
-              className="w-full h-full object-cover"
-              style={{ objectPosition: property.feature_image_position || 'center center' }}
+              className={`w-full h-full object-cover transition-all duration-200 ${isAdmin ? 'cursor-move' : ''}`}
+              style={{ 
+                objectPosition: isDragging 
+                  ? `${position.x}% ${position.y}%` 
+                  : property.feature_image_position || '50% 50%'
+              }}
+              onMouseDown={handleMouseDown}
             />
           </div>
           {isAdmin && (
-            <div className="absolute top-4 right-4 flex gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => updateImagePositionMutation.mutate('center top')}
-              >
-                <ArrowUp className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => updateImagePositionMutation.mutate('center center')}
-              >
-                Center
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => updateImagePositionMutation.mutate('center bottom')}
-              >
-                <ArrowDown className="h-4 w-4" />
-              </Button>
+            <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+              {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
             </div>
           )}
         </div>
