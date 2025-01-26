@@ -164,9 +164,9 @@ const PropertyProfile = () => {
         arv={property.arv}
         description={property.description}
         features={property.features}
+        latitude={property.latitude}
+        longitude={property.longitude}
       />
-
-      <PropertyMap address={property.address} />
     </div>
   )
 }
