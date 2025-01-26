@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 
 interface PropertyImageUploadProps {
-  onImageUploaded: (url: string) => void
+  onImageUploaded: (urls: string[] | string) => void
 }
 
 export const PropertyImageUpload = ({ onImageUploaded }: PropertyImageUploadProps) => {
@@ -57,7 +57,7 @@ export const PropertyImageUpload = ({ onImageUploaded }: PropertyImageUploadProp
       })
 
       const urls = await Promise.all(uploadPromises)
-      urls.forEach(url => onImageUploaded(url))
+      onImageUploaded(urls)
       
       toast({
         title: "Success",

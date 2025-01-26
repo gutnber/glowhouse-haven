@@ -20,18 +20,20 @@ export const ImagesField = ({ form }: ImagesFieldProps) => {
           <FormControl>
             <div className="space-y-4">
               <PropertyImageUpload
-                onImageUploaded={(url) => {
-                  console.log('Image uploaded, current images:', field.value)
+                onImageUploaded={(urls) => {
+                  console.log('Images uploaded, current images:', field.value)
                   const currentImages = field.value || []
-                  field.onChange([...currentImages, url])
+                  // Handle both single URL and array of URLs
+                  const newUrls = Array.isArray(urls) ? urls : [urls]
+                  field.onChange([...currentImages, ...newUrls])
                 }}
               />
               
               {field.value && field.value.length > 0 && (
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {field.value.map((imageUrl: string, index: number) => (
                     <div key={imageUrl} className="relative group">
-                      <AspectRatio ratio={16 / 9}>
+                      <AspectRatio ratio={4/3}>
                         <img
                           src={imageUrl}
                           alt={`Property image ${index + 1}`}
