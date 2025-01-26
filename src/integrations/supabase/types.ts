@@ -75,6 +75,7 @@ export type Database = {
           feature_image_position: string | null
           feature_image_url: string | null
           features: string[] | null
+          google_maps_url: string | null
           id: string
           images: string[] | null
           latitude: number | null
@@ -94,6 +95,7 @@ export type Database = {
           feature_image_position?: string | null
           feature_image_url?: string | null
           features?: string[] | null
+          google_maps_url?: string | null
           id?: string
           images?: string[] | null
           latitude?: number | null
@@ -113,6 +115,7 @@ export type Database = {
           feature_image_position?: string | null
           feature_image_url?: string | null
           features?: string[] | null
+          google_maps_url?: string | null
           id?: string
           images?: string[] | null
           latitude?: number | null

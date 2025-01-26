@@ -20,6 +20,7 @@ const propertyFormSchema = z.object({
   description: z.string().optional().nullable(),
   features: z.array(z.string()).optional().nullable(),
   images: z.array(z.string()).optional().nullable(),
+  google_maps_url: z.string().optional().nullable(),
 })
 
 type PropertyFormValues = z.infer<typeof propertyFormSchema>
@@ -53,7 +54,7 @@ const EditProperty = () => {
 
   const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertyFormSchema),
-    values: property || undefined // This ensures form is updated when property loads
+    values: property || undefined
   })
 
   const mutation = useMutation({
@@ -61,7 +62,10 @@ const EditProperty = () => {
       console.log('Updating property with values:', values)
       const { error } = await supabase
         .from('properties')
-        .update(values)
+        .update({
+          ...values,
+          google_maps_url: values.google_maps_url || null
+        })
         .eq('id', id)
 
       if (error) throw error
