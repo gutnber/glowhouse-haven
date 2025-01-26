@@ -7,9 +7,12 @@ import { Link } from "react-router-dom"
 import StarryBackground from "@/components/background/StarryBackground"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/contexts/LanguageContext"
+import { LanguageToggle } from "@/components/LanguageToggle"
 
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([])
+  const { t } = useLanguage()
 
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
@@ -28,7 +31,6 @@ const Index = () => {
     fetchFeaturedProperties()
   }, [])
 
-  // Function to check if a property is new (less than 7 days old)
   const isNewProperty = (createdAt: string) => {
     const propertyDate = new Date(createdAt)
     const now = new Date()
@@ -41,18 +43,21 @@ const Index = () => {
     <>
       <StarryBackground />
       <div className="space-y-8 relative z-10">
+        <div className="flex justify-end mb-4">
+          <LanguageToggle />
+        </div>
         <div className="text-center space-y-4 py-12 rounded-lg bg-gradient-to-r from-white/10 to-transparent backdrop-blur-sm border border-white/10">
           <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/70">
-            Welcome to our investors nest in florida
+            {t('welcome')}
           </h1>
           <p className="text-xl text-white/80 max-w-2xl mx-auto">
-            Please subscribe to get the latest news and hottest deals
+            {t('subscribe')}
           </p>
         </div>
         
         {featuredProperties.length > 0 && (
           <div className="space-y-6">
-            <h2 className="text-3xl font-semibold text-center text-white">Featured Properties</h2>
+            <h2 className="text-3xl font-semibold text-center text-white">{t('featuredProperties')}</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {featuredProperties.map((property) => (
                 <Link key={property.id} to={`/properties/${property.id}`}>
@@ -71,17 +76,14 @@ const Index = () => {
                           </div>
                         )}
                       </AspectRatio>
-                      {/* Price ribbon */}
                       <div className="absolute top-4 -right-8 rotate-45 bg-destructive text-destructive-foreground px-10 py-1 text-sm font-semibold shadow-lg transform group-hover:scale-110 transition-transform">
                         ${property.price.toLocaleString()}
                       </div>
-                      {/* ARV Badge */}
                       {property.arv && (
                         <div className="absolute bottom-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-semibold">
                           ARV: ${property.arv.toLocaleString()}
                         </div>
                       )}
-                      {/* New tag */}
                       {isNewProperty(property.created_at) && (
                         <Badge className="absolute top-4 left-4 bg-yellow-500 hover:bg-yellow-600 text-black">
                           New
@@ -101,11 +103,11 @@ const Index = () => {
                       <div className="grid grid-cols-3 gap-4 text-sm text-white/60">
                         <div className="flex items-center gap-1">
                           <Bed className="h-4 w-4" />
-                          <span>{property.bedrooms} Beds</span>
+                          <span>{property.bedrooms} {t('beds')}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Bath className="h-4 w-4" />
-                          <span>{property.bathrooms} Baths</span>
+                          <span>{property.bathrooms} {t('baths')}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Building2 className="h-4 w-4" />
@@ -119,7 +121,7 @@ const Index = () => {
             </div>
             <div className="text-center">
               <Button asChild size="lg" className="bg-white/10 hover:bg-white/20 text-white border border-white/20">
-                <Link to="/properties">View All Properties</Link>
+                <Link to="/properties">{t('viewAllProperties')}</Link>
               </Button>
             </div>
           </div>
