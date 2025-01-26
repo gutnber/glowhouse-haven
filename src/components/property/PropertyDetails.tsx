@@ -11,6 +11,7 @@ interface PropertyDetailsProps {
   arv?: number | null
   description?: string | null
   features?: string[] | null
+  googleMapsUrl?: string | null
   latitude?: number | null
   longitude?: number | null
 }
@@ -23,6 +24,7 @@ export const PropertyDetails = ({
   arv,
   description,
   features,
+  googleMapsUrl,
   latitude,
   longitude
 }: PropertyDetailsProps) => {
@@ -70,7 +72,7 @@ export const PropertyDetails = ({
           </Card>
         )}
 
-        <PropertyMap latitude={latitude} longitude={longitude} />
+        <PropertyMap googleMapsUrl={googleMapsUrl} latitude={latitude} longitude={longitude} />
       </div>
 
       <div className="space-y-6">

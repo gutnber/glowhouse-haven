@@ -4,19 +4,56 @@ import { Loader } from "@/components/ui/loader"
 import { Loader as GoogleMapsLoader } from "@googlemaps/js-api-loader"
 
 interface PropertyMapProps {
+  googleMapsUrl?: string | null
   latitude?: number | null
   longitude?: number | null
 }
 
-export const PropertyMap = ({ latitude, longitude }: PropertyMapProps) => {
+export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null)
+
+  useEffect(() => {
+    const extractCoordinates = async (url: string) => {
+      try {
+        // Handle different Google Maps URL formats
+        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/
+        const match = url.match(regex)
+        
+        if (match) {
+          const [, lat, lng] = match
+          return {
+            lat: parseFloat(lat),
+            lng: parseFloat(lng)
+          }
+        }
+        return null
+      } catch (error) {
+        console.error("Error extracting coordinates:", error)
+        return null
+      }
+    }
+
+    const initializeCoordinates = async () => {
+      if (googleMapsUrl) {
+        const extractedCoords = await extractCoordinates(googleMapsUrl)
+        if (extractedCoords) {
+          setCoordinates(extractedCoords)
+        }
+      } else if (latitude && longitude) {
+        setCoordinates({ lat: latitude, lng: longitude })
+      }
+    }
+
+    initializeCoordinates()
+  }, [googleMapsUrl, latitude, longitude])
 
   useEffect(() => {
     const initMap = async () => {
-      if (!mapRef.current || !latitude || !longitude) return
+      if (!mapRef.current || !coordinates) return
 
       try {
         setIsLoading(true)
@@ -27,11 +64,9 @@ export const PropertyMap = ({ latitude, longitude }: PropertyMapProps) => {
 
         await loader.load()
 
-        const location = { lat: latitude, lng: longitude }
-
         // Create the map instance
         const mapInstance = new google.maps.Map(mapRef.current, {
-          center: location,
+          center: coordinates,
           zoom: 15,
           mapTypeControl: false,
           streetViewControl: false,
@@ -40,7 +75,7 @@ export const PropertyMap = ({ latitude, longitude }: PropertyMapProps) => {
 
         // Add a marker for the property
         new google.maps.Marker({
-          position: location,
+          position: coordinates,
           map: mapInstance,
           animation: google.maps.Animation.DROP,
         })
@@ -61,9 +96,9 @@ export const PropertyMap = ({ latitude, longitude }: PropertyMapProps) => {
         // Cleanup map instance if needed
       }
     }
-  }, [latitude, longitude])
+  }, [coordinates])
 
-  if (!latitude || !longitude) {
+  if (!coordinates) {
     return (
       <Card className="p-6">
         <h2 className="text-2xl font-semibold mb-4">Location</h2>

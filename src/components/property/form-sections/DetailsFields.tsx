@@ -120,45 +120,18 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
 
       <FormField
         control={form.control}
-        name="latitude"
+        name="google_maps_url"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Latitude</FormLabel>
+          <FormItem className="col-span-2">
+            <FormLabel>Google Maps URL</FormLabel>
             <FormControl>
               <Input 
-                type="number" 
-                step="any"
-                placeholder="e.g. 40.7128"
+                type="url"
+                placeholder="Paste Google Maps URL (e.g., https://maps.app.goo.gl/...)"
                 {...field}
-                onChange={(e) => {
-                  const value = e.target.value ? Number(e.target.value) : null;
-                  field.onChange(value);
-                }}
               />
             </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="longitude"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Longitude</FormLabel>
-            <FormControl>
-              <Input 
-                type="number" 
-                step="any"
-                placeholder="e.g. -74.0060"
-                {...field}
-                onChange={(e) => {
-                  const value = e.target.value ? Number(e.target.value) : null;
-                  field.onChange(value);
-                }}
-              />
-            </FormControl>
+            <FormDescription>Paste a Google Maps URL to set the property location</FormDescription>
             <FormMessage />
           </FormItem>
         )}
