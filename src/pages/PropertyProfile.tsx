@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { PropertyHeader } from "@/components/property/PropertyHeader"
 import { PropertyImageGallery } from "@/components/property/PropertyImageGallery"
 import { PropertyDetails } from "@/components/property/PropertyDetails"
+import { PropertyMap } from "@/components/property/PropertyMap"
 import { House } from "lucide-react"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useToast } from "@/hooks/use-toast"
@@ -164,6 +165,8 @@ const PropertyProfile = () => {
         description={property.description}
         features={property.features}
       />
+
+      <PropertyMap address={property.address} />
     </div>
   )
 }
