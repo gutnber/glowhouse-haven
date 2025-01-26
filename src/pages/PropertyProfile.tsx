@@ -87,7 +87,7 @@ const PropertyProfile = () => {
               src={property.feature_image_url}
               alt={`${property.name} banner`}
               className="w-full h-full object-cover"
-              style={{ objectPosition: property.feature_image_position || 'center' }}
+              style={{ objectPosition: property.feature_image_position || 'center center' }}
             />
           </div>
           {isAdmin && (
