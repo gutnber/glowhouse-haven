@@ -11,10 +11,10 @@ export const LanguageToggle = () => {
         variant={language === 'en' ? 'default' : 'outline'}
         size="icon"
         onClick={() => setLanguage('en')}
-        className="w-8 h-8 relative group"
+        className="w-8 h-8 relative group overflow-hidden rounded-full"
         title="English"
       >
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden rounded-full">
           {/* USA Flag */}
           <div className="absolute inset-0 bg-red-600" />
           <div className="absolute inset-y-0 left-0 right-0 flex flex-col justify-between py-[2px]">
@@ -37,10 +37,10 @@ export const LanguageToggle = () => {
         variant={language === 'es' ? 'default' : 'outline'}
         size="icon"
         onClick={() => setLanguage('es')}
-        className="w-8 h-8 relative group"
+        className="w-8 h-8 relative group overflow-hidden rounded-full"
         title="Español"
       >
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden rounded-full">
           {/* Mexican Flag */}
           <div className="absolute inset-0 flex">
             <div className="w-1/3 bg-green-600" />
