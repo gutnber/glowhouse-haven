@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react"
 import { Card } from "@/components/ui/card"
 import { Loader } from "@/components/ui/loader"
+import { Loader as GoogleMapsLoader } from "@googlemaps/js-api-loader"
 
 interface PropertyMapProps {
   address: string
@@ -16,7 +17,7 @@ export const PropertyMap = ({ address }: PropertyMapProps) => {
 
       try {
         // Load the Google Maps JavaScript API
-        const loader = new google.maps.plugins.loader.Loader({
+        const loader = new GoogleMapsLoader({
           apiKey: "GOOGLE_MAPS_API_KEY",
           version: "weekly",
         })
