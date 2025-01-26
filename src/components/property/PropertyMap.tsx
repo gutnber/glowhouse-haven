@@ -58,7 +58,7 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
       try {
         setIsLoading(true)
         const loader = new GoogleMapsLoader({
-          apiKey: "GOOGLE_MAPS_API_KEY",
+          apiKey: "AIzaSyDHxHGVtZsxHBPj_GY7YRDuXvxqXVLXr9Q",
           version: "weekly",
         })
 
