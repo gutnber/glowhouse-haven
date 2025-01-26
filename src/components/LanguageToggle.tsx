@@ -14,13 +14,24 @@ export const LanguageToggle = () => {
         className="w-8 h-8 relative group"
         title="English"
       >
-        {/* USA Flag styling */}
-        <Flag className="h-4 w-4">
-          <div className="absolute inset-0 bg-blue-600" />
-          <div className="absolute inset-[15%] bg-white flex items-center justify-center">
-            <div className="text-[8px] text-blue-600 font-bold">USA</div>
+        <div className="absolute inset-0 overflow-hidden">
+          {/* USA Flag */}
+          <div className="absolute inset-0 bg-red-600" />
+          <div className="absolute inset-y-0 left-0 right-0 flex flex-col justify-between py-[2px]">
+            <div className="h-[2px] bg-white" />
+            <div className="h-[2px] bg-white" />
+            <div className="h-[2px] bg-white" />
+            <div className="h-[2px] bg-white" />
+            <div className="h-[2px] bg-white" />
+            <div className="h-[2px] bg-white" />
+            <div className="h-[2px] bg-white" />
           </div>
-        </Flag>
+          <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-blue-700">
+            <div className="absolute inset-1 flex items-center justify-center">
+              <div className="text-[6px] text-white font-bold">★</div>
+            </div>
+          </div>
+        </div>
       </Button>
       <Button
         variant={language === 'es' ? 'default' : 'outline'}
@@ -29,13 +40,18 @@ export const LanguageToggle = () => {
         className="w-8 h-8 relative group"
         title="Español"
       >
-        {/* Mexican Flag styling */}
-        <Flag className="h-4 w-4">
-          <div className="absolute inset-0 bg-gradient-to-r from-green-600 via-white to-red-600" />
-          <div className="absolute inset-[30%] flex items-center justify-center">
-            <div className="text-[6px] text-brown-800 font-bold">MX</div>
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Mexican Flag */}
+          <div className="absolute inset-0 flex">
+            <div className="w-1/3 bg-green-600" />
+            <div className="w-1/3 bg-white flex items-center justify-center">
+              <div className="w-4 h-4 flex items-center justify-center">
+                <div className="text-[8px] text-brown-800">🦅</div>
+              </div>
+            </div>
+            <div className="w-1/3 bg-red-600" />
           </div>
-        </Flag>
+        </div>
       </Button>
     </div>
   );
