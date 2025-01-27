@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { PropertyMap } from "./PropertyMap"
 import { PropertyYouTubePlayer } from "./PropertyYouTubePlayer"
+import { BorderBeam } from "@/components/ui/border-beam"
 
 interface PropertyDetailsProps {
   bedrooms: number
@@ -40,7 +41,8 @@ export const PropertyDetails = ({
   return (
     <div className="grid md:grid-cols-3 gap-8">
       <div className="md:col-span-2 space-y-6">
-        <Card className="p-6">
+        <Card className="p-6 relative">
+          <BorderBeam />
           <h2 className="text-2xl font-semibold mb-4">Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-2">
@@ -75,14 +77,16 @@ export const PropertyDetails = ({
         </Card>
 
         {description && (
-          <Card className="p-6">
+          <Card className="p-6 relative">
+            <BorderBeam delay={2} />
             <h2 className="text-2xl font-semibold mb-4">Description</h2>
             <p className="text-muted-foreground whitespace-pre-wrap">{description}</p>
           </Card>
         )}
 
         {youtubeUrl && (
-          <Card className="p-6">
+          <Card className="p-6 relative">
+            <BorderBeam delay={4} />
             <h2 className="text-2xl font-semibold mb-4">Property Video</h2>
             <div className="rounded-lg border overflow-hidden">
               <PropertyYouTubePlayer
@@ -98,7 +102,8 @@ export const PropertyDetails = ({
 
       <div className="space-y-6">
         {arv && (
-          <Card className="p-6">
+          <Card className="p-6 relative">
+            <BorderBeam delay={6} />
             <h2 className="text-2xl font-semibold mb-4">Investment Details</h2>
             <div className="space-y-2">
               <div className="text-muted-foreground">After Repair Value (ARV)</div>
@@ -111,7 +116,8 @@ export const PropertyDetails = ({
         )}
 
         {features && features.length > 0 && (
-          <Card className="p-6">
+          <Card className="p-6 relative">
+            <BorderBeam delay={8} />
             <h2 className="text-2xl font-semibold mb-4">Features</h2>
             <div className="flex flex-wrap gap-2">
               {features.map((feature, index) => (
