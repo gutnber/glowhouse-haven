@@ -48,13 +48,19 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
         if (extractedCoords) {
           console.log('Setting coordinates from URL:', extractedCoords)
           setCoordinates(extractedCoords)
+          return
         }
-      } else if (latitude && longitude) {
+      }
+      
+      if (latitude && longitude) {
         console.log('Setting coordinates from props:', { lat: latitude, lng: longitude })
         setCoordinates({ lat: latitude, lng: longitude })
-      } else {
-        console.log('No valid coordinates source found')
+        return
       }
+      
+      console.log('No valid coordinates source found')
+      setError("No valid location coordinates available")
+      setIsLoading(false)
     }
 
     initializeCoordinates()
@@ -73,15 +79,17 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
       try {
         console.log('Initializing map with coordinates:', coordinates)
         setIsLoading(true)
+        setError(null)
+
         const loader = new GoogleMapsLoader({
           apiKey: "AIzaSyBEUM9Ra3L3pHapDvDXrsnf9p3uZ8girGQ",
           version: "weekly",
         })
 
-        await loader.load()
+        const { Map, Marker } = await loader.load()
 
         // Create the map instance
-        const mapInstance = new google.maps.Map(mapRef.current, {
+        const mapInstance = new Map(mapRef.current, {
           center: coordinates,
           zoom: 15,
           mapTypeControl: false,
@@ -90,17 +98,18 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
         })
 
         // Add a marker for the property
-        new google.maps.marker.AdvancedMarkerElement({
+        new Marker({
           position: coordinates,
           map: mapInstance,
+          animation: google.maps.Animation.DROP,
         })
 
         mapInstanceRef.current = mapInstance
         console.log('Map initialized successfully')
+        setIsLoading(false)
       } catch (error) {
         console.error("Error loading map:", error)
         setError("Failed to load map")
-      } finally {
         setIsLoading(false)
       }
     }
@@ -115,7 +124,6 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
   }, [coordinates])
 
   if (!coordinates) {
-    console.log('Rendering no coordinates message')
     return (
       <Card className="p-6">
         <h2 className="text-2xl font-semibold mb-4">Location</h2>
@@ -129,20 +137,22 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
   return (
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Location</h2>
-      {isLoading && (
-        <div className="w-full h-[400px] flex items-center justify-center bg-muted rounded-lg">
-          <Loader />
-        </div>
-      )}
-      {error && (
-        <div className="w-full h-[400px] flex items-center justify-center bg-muted rounded-lg">
-          <p className="text-destructive">{error}</p>
-        </div>
-      )}
-      <div 
-        ref={mapRef} 
-        className={`w-full h-[400px] rounded-lg overflow-hidden ${isLoading ? 'hidden' : ''}`}
-      />
+      <div className="relative w-full h-[400px] rounded-lg overflow-hidden">
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-muted">
+            <Loader />
+          </div>
+        )}
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-muted">
+            <p className="text-destructive">{error}</p>
+          </div>
+        )}
+        <div 
+          ref={mapRef} 
+          className="w-full h-full"
+        />
+      </div>
     </Card>
   )
 }
