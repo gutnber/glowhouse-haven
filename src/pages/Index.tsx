@@ -12,23 +12,36 @@ import { LanguageToggle } from "@/components/LanguageToggle"
 
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([])
+  const [newsPosts, setNewsPosts] = useState<any[]>([])
   const { t } = useLanguage()
 
   useEffect(() => {
-    const fetchFeaturedProperties = async () => {
-      const { data, error } = await supabase
+    const fetchData = async () => {
+      // Fetch news posts
+      const { data: newsData } = await supabase
+        .from('news_posts')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(3)
+
+      if (newsData) {
+        setNewsPosts(newsData)
+      }
+
+      // Fetch featured properties
+      const { data: propertiesData } = await supabase
         .from('properties')
         .select('*')
         .not('feature_image_url', 'is', null)
         .order('created_at', { ascending: false })
         .limit(3)
 
-      if (!error && data) {
-        setFeaturedProperties(data)
+      if (propertiesData) {
+        setFeaturedProperties(propertiesData)
       }
     }
 
-    fetchFeaturedProperties()
+    fetchData()
   }, [])
 
   const isNewProperty = (createdAt: string) => {
@@ -54,6 +67,36 @@ const Index = () => {
             {t('subscribe')}
           </p>
         </div>
+        
+        {newsPosts.length > 0 && (
+          <div className="space-y-6">
+            <h2 className="text-3xl font-semibold text-center text-white">Latest News</h2>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {newsPosts.map((post) => (
+                <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10 border-white/20">
+                  {post.feature_image_url && (
+                    <AspectRatio ratio={16/9}>
+                      <img
+                        src={post.feature_image_url}
+                        alt={post.title}
+                        className="object-cover w-full h-full"
+                      />
+                    </AspectRatio>
+                  )}
+                  <CardHeader>
+                    <CardTitle className="text-white">{post.title}</CardTitle>
+                    <CardDescription className="text-white/70">
+                      {new Date(post.created_at).toLocaleDateString()}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-white/80 line-clamp-3">{post.content}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
         
         {featuredProperties.length > 0 && (
           <div className="space-y-6">

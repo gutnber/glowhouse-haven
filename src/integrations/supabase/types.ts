@@ -30,6 +30,39 @@ export type Database = {
         }
         Relationships: []
       }
+      news_posts: {
+        Row: {
+          content: string
+          created_at: string
+          feature_image_url: string | null
+          id: string
+          images: string[] | null
+          published: boolean | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          feature_image_url?: string | null
+          id?: string
+          images?: string[] | null
+          published?: boolean | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          feature_image_url?: string | null
+          id?: string
+          images?: string[] | null
+          published?: boolean | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
