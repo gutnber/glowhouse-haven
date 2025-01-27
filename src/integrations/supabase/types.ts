@@ -72,6 +72,7 @@ export type Database = {
           build_year: number
           created_at: string
           description: string | null
+          enable_border_beam: boolean | null
           feature_image_position: string | null
           feature_image_url: string | null
           features: string[] | null
@@ -96,6 +97,7 @@ export type Database = {
           build_year: number
           created_at?: string
           description?: string | null
+          enable_border_beam?: boolean | null
           feature_image_position?: string | null
           feature_image_url?: string | null
           features?: string[] | null
@@ -120,6 +122,7 @@ export type Database = {
           build_year?: number
           created_at?: string
           description?: string | null
+          enable_border_beam?: boolean | null
           feature_image_position?: string | null
           feature_image_url?: string | null
           features?: string[] | null

@@ -19,6 +19,8 @@ export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps
   const location = useLocation()
   const isAddProperty = location.pathname === "/properties/add"
 
+  console.log('Form values:', form.getValues())
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

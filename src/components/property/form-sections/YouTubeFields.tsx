@@ -26,6 +26,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
                   type="url" 
                   placeholder="Paste YouTube video URL (e.g., https://youtu.be/...)"
                   {...field}
+                  value={field.value || ''}
                 />
               </FormControl>
               <FormDescription>Add a YouTube video to showcase the property</FormDescription>
@@ -48,7 +49,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
                 </div>
                 <FormControl>
                   <Switch
-                    checked={field.value}
+                    checked={field.value || false}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
@@ -69,7 +70,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
                 </div>
                 <FormControl>
                   <Switch
-                    checked={field.value}
+                    checked={field.value || false}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
@@ -90,7 +91,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
                 </div>
                 <FormControl>
                   <Switch
-                    checked={field.value}
+                    checked={field.value || false}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
@@ -116,7 +117,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
                 </div>
                 <FormControl>
                   <Switch
-                    checked={field.value}
+                    checked={field.value || false}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>

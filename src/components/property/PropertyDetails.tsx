@@ -41,6 +41,7 @@ export const PropertyDetails = ({
   enableBorderBeam = true
 }: PropertyDetailsProps) => {
   console.log('YouTube player props:', { youtubeAutoplay, youtubeMuted, youtubeControls })
+  console.log('Border beam enabled:', enableBorderBeam)
   
   return (
     <div className="grid md:grid-cols-3 gap-8">
