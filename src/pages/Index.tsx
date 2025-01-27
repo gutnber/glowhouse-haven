@@ -9,20 +9,41 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { LanguageToggle } from "@/components/LanguageToggle"
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationLink, 
+  PaginationNext, 
+  PaginationPrevious 
+} from "@/components/ui/pagination"
+
+const POSTS_PER_PAGE = 5;
 
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([])
   const [newsPosts, setNewsPosts] = useState<any[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPosts, setTotalPosts] = useState(0)
   const { t } = useLanguage()
 
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch news posts
+      // Fetch total count of news posts
+      const { count } = await supabase
+        .from('news_posts')
+        .select('*', { count: 'exact', head: true })
+      
+      if (count !== null) {
+        setTotalPosts(count)
+      }
+
+      // Fetch paginated news posts
       const { data: newsData } = await supabase
         .from('news_posts')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(3)
+        .range((currentPage - 1) * POSTS_PER_PAGE, (currentPage * POSTS_PER_PAGE) - 1)
 
       if (newsData) {
         setNewsPosts(newsData)
@@ -42,7 +63,9 @@ const Index = () => {
     }
 
     fetchData()
-  }, [])
+  }, [currentPage])
+
+  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE)
 
   const isNewProperty = (createdAt: string) => {
     const propertyDate = new Date(createdAt)
@@ -101,6 +124,39 @@ const Index = () => {
                 </Card>
               ))}
             </div>
+            {totalPages > 1 && (
+              <Pagination className="mt-8">
+                <PaginationContent>
+                  {currentPage > 1 && (
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        className="cursor-pointer"
+                      />
+                    </PaginationItem>
+                  )}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(page)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  {currentPage < totalPages && (
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        className="cursor-pointer"
+                      />
+                    </PaginationItem>
+                  )}
+                </PaginationContent>
+              </Pagination>
+            )}
           </div>
         )}
         
