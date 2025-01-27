@@ -94,12 +94,6 @@ export const PropertyDetails = ({
             </div>
           </Card>
         )}
-
-        <PropertyMap 
-          googleMapsUrl={googleMapsUrl} 
-          latitude={latitude} 
-          longitude={longitude} 
-        />
       </div>
 
       <div className="space-y-6">
@@ -134,6 +128,12 @@ export const PropertyDetails = ({
             </div>
           </Card>
         )}
+
+        <PropertyMap 
+          googleMapsUrl={googleMapsUrl} 
+          latitude={latitude} 
+          longitude={longitude} 
+        />
       </div>
     </div>
   )

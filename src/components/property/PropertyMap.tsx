@@ -127,7 +127,7 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
     return (
       <Card className="p-6">
         <h2 className="text-2xl font-semibold mb-4">Location</h2>
-        <div className="w-full h-[400px] flex items-center justify-center bg-muted rounded-lg">
+        <div className="w-full h-[250px] flex items-center justify-center bg-muted rounded-lg">
           <p className="text-muted-foreground">No location coordinates available</p>
         </div>
       </Card>
@@ -137,7 +137,7 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
   return (
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Location</h2>
-      <div className="relative w-full h-[400px] rounded-lg overflow-hidden">
+      <div className="relative w-full h-[250px] rounded-lg overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-muted">
             <Loader />
