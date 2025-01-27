@@ -86,10 +86,10 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
           version: "weekly",
         })
 
-        const { Map, Marker } = await loader.load()
+        await loader.load()
 
         // Create the map instance
-        const mapInstance = new Map(mapRef.current, {
+        const mapInstance = new google.maps.Map(mapRef.current, {
           center: coordinates,
           zoom: 15,
           mapTypeControl: false,
@@ -98,7 +98,7 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
         })
 
         // Add a marker for the property
-        new Marker({
+        new google.maps.Marker({
           position: coordinates,
           map: mapInstance,
           animation: google.maps.Animation.DROP,
