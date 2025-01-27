@@ -28,6 +28,8 @@ export const PropertyDetails = ({
   latitude,
   longitude
 }: PropertyDetailsProps) => {
+  console.log('PropertyDetails received googleMapsUrl:', googleMapsUrl)
+  
   return (
     <div className="grid md:grid-cols-3 gap-8">
       <div className="md:col-span-2 space-y-6">
@@ -72,7 +74,11 @@ export const PropertyDetails = ({
           </Card>
         )}
 
-        <PropertyMap googleMapsUrl={googleMapsUrl} latitude={latitude} longitude={longitude} />
+        <PropertyMap 
+          googleMapsUrl={googleMapsUrl} 
+          latitude={latitude} 
+          longitude={longitude} 
+        />
       </div>
 
       <div className="space-y-6">

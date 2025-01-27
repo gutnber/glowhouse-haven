@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { PropertyHeader } from "@/components/property/PropertyHeader"
 import { PropertyImageGallery } from "@/components/property/PropertyImageGallery"
 import { PropertyDetails } from "@/components/property/PropertyDetails"
-import { PropertyMap } from "@/components/property/PropertyMap"
 import { House } from "lucide-react"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useToast } from "@/hooks/use-toast"
@@ -19,11 +18,12 @@ const PropertyProfile = () => {
   const imageRef = useRef<HTMLImageElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
-  const [position, setPosition] = useState({ x: 50, y: 50 }) // Percentage values
+  const [position, setPosition] = useState({ x: 50, y: 50 })
   
   const { data: property, isLoading } = useQuery({
     queryKey: ['property', id],
     queryFn: async () => {
+      console.log('Fetching property with id:', id)
       const { data, error } = await supabase
         .from('properties')
         .select('*')
@@ -31,6 +31,7 @@ const PropertyProfile = () => {
         .single()
       
       if (error) throw error
+      console.log('Fetched property:', data)
       return data as Tables<'properties'>
     }
   })
@@ -164,6 +165,7 @@ const PropertyProfile = () => {
         arv={property.arv}
         description={property.description}
         features={property.features}
+        googleMapsUrl={property.google_maps_url}
         latitude={property.latitude}
         longitude={property.longitude}
       />
