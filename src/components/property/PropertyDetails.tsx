@@ -40,18 +40,6 @@ export const PropertyDetails = ({
   return (
     <div className="grid md:grid-cols-3 gap-8">
       <div className="md:col-span-2 space-y-6">
-        {youtubeUrl && (
-          <Card className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Property Video</h2>
-            <PropertyYouTubePlayer
-              youtubeUrl={youtubeUrl}
-              autoplay={youtubeAutoplay || false}
-              muted={youtubeMuted || true}
-              controls={youtubeControls || true}
-            />
-          </Card>
-        )}
-
         <Card className="p-6">
           <h2 className="text-2xl font-semibold mb-4">Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -90,6 +78,20 @@ export const PropertyDetails = ({
           <Card className="p-6">
             <h2 className="text-2xl font-semibold mb-4">Description</h2>
             <p className="text-muted-foreground whitespace-pre-wrap">{description}</p>
+          </Card>
+        )}
+
+        {youtubeUrl && (
+          <Card className="p-6">
+            <h2 className="text-2xl font-semibold mb-4">Property Video</h2>
+            <div className="rounded-lg border overflow-hidden">
+              <PropertyYouTubePlayer
+                youtubeUrl={youtubeUrl}
+                autoplay={youtubeAutoplay || false}
+                muted={youtubeMuted || true}
+                controls={youtubeControls || true}
+              />
+            </div>
           </Card>
         )}
 
