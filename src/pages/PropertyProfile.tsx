@@ -168,6 +168,10 @@ const PropertyProfile = () => {
         googleMapsUrl={property.google_maps_url}
         latitude={property.latitude}
         longitude={property.longitude}
+        youtubeUrl={property.youtube_url}
+        youtubeAutoplay={property.youtube_autoplay}
+        youtubeMuted={property.youtube_muted}
+        youtubeControls={property.youtube_controls}
       />
     </div>
   )
