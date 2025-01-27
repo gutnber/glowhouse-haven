@@ -1,5 +1,5 @@
-import { Star, X } from "lucide-react"
-import { useState, useRef } from "react"
+import { Star, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useRef, useEffect } from "react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -7,6 +7,13 @@ import { House } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 interface PropertyImageGalleryProps {
   images: string[]
@@ -17,11 +24,31 @@ interface PropertyImageGalleryProps {
 
 export const PropertyImageGallery = ({ images, propertyId, propertyName, featureImageUrl }: PropertyImageGalleryProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedIndex, setSelectedIndex] = useState<number>(0)
   const [isDragging, setIsDragging] = useState(false)
-  const [position, setPosition] = useState({ x: 50, y: 50 }) // Percentage values
+  const [position, setPosition] = useState({ x: 50, y: 50 })
   const containerRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
   const { isAdmin } = useIsAdmin()
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (!selectedImage) return
+    
+    const currentIndex = images.indexOf(selectedImage)
+    
+    if (e.key === 'ArrowLeft' && currentIndex > 0) {
+      setSelectedImage(images[currentIndex - 1])
+      setSelectedIndex(currentIndex - 1)
+    } else if (e.key === 'ArrowRight' && currentIndex < images.length - 1) {
+      setSelectedImage(images[currentIndex + 1])
+      setSelectedIndex(currentIndex + 1)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedImage, images])
 
   // Fetch the current property to get the feature_image_position
   const fetchPropertyPosition = async () => {
@@ -45,22 +72,28 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
     }
   }
 
-  // When an image is selected for viewing, fetch its position if it's the feature image
-  const handleImageSelect = (src: string) => {
+  const handleImageSelect = (src: string, index: number) => {
     setSelectedImage(src)
+    setSelectedIndex(index)
     if (src === featureImageUrl) {
       fetchPropertyPosition()
     } else {
-      setPosition({ x: 50, y: 50 }) // Reset position for non-feature images
+      setPosition({ x: 50, y: 50 })
     }
   }
 
-  if (!images || images.length === 0) {
-    return (
-      <div className="col-span-4 bg-muted rounded-lg flex items-center justify-center py-12">
-        <House className="h-24 w-24 text-muted-foreground" />
-      </div>
-    )
+  const navigateImage = (direction: 'prev' | 'next') => {
+    const currentIndex = images.indexOf(selectedImage || '')
+    let newIndex = currentIndex
+
+    if (direction === 'prev' && currentIndex > 0) {
+      newIndex = currentIndex - 1
+    } else if (direction === 'next' && currentIndex < images.length - 1) {
+      newIndex = currentIndex + 1
+    }
+
+    setSelectedImage(images[newIndex])
+    setSelectedIndex(newIndex)
   }
 
   const handleSetFeatureImage = async (imageUrl: string) => {
@@ -138,7 +171,7 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
     const isFeatureImage = src === featureImageUrl
 
     return (
-      <div className="cursor-pointer group relative" onClick={() => handleImageSelect(src)}>
+      <div className="cursor-pointer group relative" onClick={() => handleImageSelect(src, index)}>
         <AspectRatio ratio={4/3}>
           <img
             src={src}
@@ -171,24 +204,58 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
     )
   }
 
+  if (!images || images.length === 0) {
+    return (
+      <div className="col-span-4 bg-muted rounded-lg flex items-center justify-center py-12">
+        <House className="h-24 w-24 text-muted-foreground" />
+      </div>
+    )
+  }
+
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {images.map((image, index) => (
-          <ImageThumbnail key={image} src={image} index={index} />
-        ))}
-      </div>
+      <Carousel className="w-full">
+        <CarouselContent className="-ml-2 md:-ml-4">
+          {images.map((image, index) => (
+            <CarouselItem key={image} className="pl-2 md:pl-4 basis-1/2 md:basis-1/4">
+              <ImageThumbnail src={image} index={index} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
 
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
         <DialogContent className="max-w-[90vw] max-h-[90vh] p-0">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-4 top-4 z-10"
-            onClick={() => setSelectedImage(null)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          <div className="absolute right-4 top-4 z-10 flex gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigateImage('prev')}
+              disabled={selectedIndex === 0}
+              className="bg-black/20 hover:bg-black/40 text-white"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigateImage('next')}
+              disabled={selectedIndex === images.length - 1}
+              className="bg-black/20 hover:bg-black/40 text-white"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="bg-black/20 hover:bg-black/40 text-white"
+              onClick={() => setSelectedImage(null)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
           <div 
             ref={containerRef}
             className="relative w-full h-full"
@@ -210,6 +277,9 @@ export const PropertyImageGallery = ({ images, propertyId, propertyName, feature
                 {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
               </div>
             )}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+              Use arrow keys or buttons to navigate
+            </div>
           </div>
         </DialogContent>
       </Dialog>
