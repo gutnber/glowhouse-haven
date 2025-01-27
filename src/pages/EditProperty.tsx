@@ -58,13 +58,13 @@ const EditProperty = () => {
 
   const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertyFormSchema),
-    values: property || undefined,
-    defaultValues: {
-      youtube_autoplay: false,
-      youtube_muted: true,
-      youtube_controls: true,
-      enable_border_beam: true,
-    }
+    values: property ? {
+      ...property,
+      youtube_autoplay: property.youtube_autoplay ?? false,
+      youtube_muted: property.youtube_muted ?? true,
+      youtube_controls: property.youtube_controls ?? true,
+      enable_border_beam: property.enable_border_beam ?? true,
+    } : undefined,
   })
 
   const mutation = useMutation({
@@ -76,10 +76,10 @@ const EditProperty = () => {
           ...values,
           google_maps_url: values.google_maps_url || null,
           youtube_url: values.youtube_url || null,
-          youtube_autoplay: values.youtube_autoplay || false,
-          youtube_muted: values.youtube_muted || true,
-          youtube_controls: values.youtube_controls || true,
-          enable_border_beam: values.enable_border_beam || true,
+          youtube_autoplay: values.youtube_autoplay,
+          youtube_muted: values.youtube_muted,
+          youtube_controls: values.youtube_controls,
+          enable_border_beam: values.enable_border_beam,
         })
         .eq('id', id)
 
