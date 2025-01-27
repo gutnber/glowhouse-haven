@@ -19,12 +19,12 @@ const propertyFormSchema = z.object({
   arv: z.number().min(0).optional().nullable(),
   description: z.string().optional().nullable(),
   features: z.array(z.string()).optional().nullable(),
-  images: z.array(z.string()).optional().nullable(),
   google_maps_url: z.string().optional().nullable(),
   youtube_url: z.string().optional().nullable(),
   youtube_autoplay: z.boolean().optional().nullable(),
   youtube_muted: z.boolean().optional().nullable(),
   youtube_controls: z.boolean().optional().nullable(),
+  enable_border_beam: z.boolean().optional().nullable(),
 })
 
 type PropertyFormValues = z.infer<typeof propertyFormSchema>
@@ -58,7 +58,13 @@ const EditProperty = () => {
 
   const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertyFormSchema),
-    values: property || undefined
+    values: property || undefined,
+    defaultValues: {
+      youtube_autoplay: false,
+      youtube_muted: true,
+      youtube_controls: true,
+      enable_border_beam: true,
+    }
   })
 
   const mutation = useMutation({
@@ -72,7 +78,8 @@ const EditProperty = () => {
           youtube_url: values.youtube_url || null,
           youtube_autoplay: values.youtube_autoplay || false,
           youtube_muted: values.youtube_muted || true,
-          youtube_controls: values.youtube_controls || true
+          youtube_controls: values.youtube_controls || true,
+          enable_border_beam: values.enable_border_beam || true,
         })
         .eq('id', id)
 

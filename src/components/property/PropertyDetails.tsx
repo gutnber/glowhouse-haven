@@ -20,6 +20,7 @@ interface PropertyDetailsProps {
   youtubeAutoplay?: boolean | null
   youtubeMuted?: boolean | null
   youtubeControls?: boolean | null
+  enableBorderBeam?: boolean | null
 }
 
 export const PropertyDetails = ({
@@ -36,13 +37,16 @@ export const PropertyDetails = ({
   youtubeUrl,
   youtubeAutoplay = false,
   youtubeMuted = true,
-  youtubeControls = true
+  youtubeControls = true,
+  enableBorderBeam = true
 }: PropertyDetailsProps) => {
+  console.log('YouTube player props:', { youtubeAutoplay, youtubeMuted, youtubeControls })
+  
   return (
     <div className="grid md:grid-cols-3 gap-8">
       <div className="md:col-span-2 space-y-6">
         <Card className="p-6 relative">
-          <BorderBeam />
+          {enableBorderBeam && <BorderBeam />}
           <h2 className="text-2xl font-semibold mb-4">Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-2">
@@ -78,7 +82,7 @@ export const PropertyDetails = ({
 
         {description && (
           <Card className="p-6 relative">
-            <BorderBeam delay={2} />
+            {enableBorderBeam && <BorderBeam delay={2} />}
             <h2 className="text-2xl font-semibold mb-4">Description</h2>
             <p className="text-muted-foreground whitespace-pre-wrap">{description}</p>
           </Card>
@@ -86,14 +90,14 @@ export const PropertyDetails = ({
 
         {youtubeUrl && (
           <Card className="p-6 relative">
-            <BorderBeam delay={4} />
+            {enableBorderBeam && <BorderBeam delay={4} />}
             <h2 className="text-2xl font-semibold mb-4">Property Video</h2>
             <div className="rounded-lg border overflow-hidden">
               <PropertyYouTubePlayer
                 youtubeUrl={youtubeUrl}
-                autoplay={youtubeAutoplay || false}
-                muted={youtubeMuted || true}
-                controls={youtubeControls || true}
+                autoplay={youtubeAutoplay}
+                muted={youtubeMuted}
+                controls={youtubeControls}
               />
             </div>
           </Card>
@@ -103,7 +107,7 @@ export const PropertyDetails = ({
       <div className="space-y-6">
         {arv && (
           <Card className="p-6 relative">
-            <BorderBeam delay={6} />
+            {enableBorderBeam && <BorderBeam delay={6} />}
             <h2 className="text-2xl font-semibold mb-4">Investment Details</h2>
             <div className="space-y-2">
               <div className="text-muted-foreground">After Repair Value (ARV)</div>
@@ -117,7 +121,7 @@ export const PropertyDetails = ({
 
         {features && features.length > 0 && (
           <Card className="p-6 relative">
-            <BorderBeam delay={8} />
+            {enableBorderBeam && <BorderBeam delay={8} />}
             <h2 className="text-2xl font-semibold mb-4">Features</h2>
             <div className="flex flex-wrap gap-2">
               {features.map((feature, index) => (
