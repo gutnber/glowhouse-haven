@@ -2,6 +2,7 @@ import { Bed, Bath, CalendarClock, DollarSign } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { PropertyMap } from "./PropertyMap"
+import { PropertyYouTubePlayer } from "./PropertyYouTubePlayer"
 
 interface PropertyDetailsProps {
   bedrooms: number
@@ -14,6 +15,10 @@ interface PropertyDetailsProps {
   googleMapsUrl?: string | null
   latitude?: number | null
   longitude?: number | null
+  youtubeUrl?: string | null
+  youtubeAutoplay?: boolean | null
+  youtubeMuted?: boolean | null
+  youtubeControls?: boolean | null
 }
 
 export const PropertyDetails = ({
@@ -26,13 +31,27 @@ export const PropertyDetails = ({
   features,
   googleMapsUrl,
   latitude,
-  longitude
+  longitude,
+  youtubeUrl,
+  youtubeAutoplay = false,
+  youtubeMuted = true,
+  youtubeControls = true
 }: PropertyDetailsProps) => {
-  console.log('PropertyDetails received googleMapsUrl:', googleMapsUrl)
-  
   return (
     <div className="grid md:grid-cols-3 gap-8">
       <div className="md:col-span-2 space-y-6">
+        {youtubeUrl && (
+          <Card className="p-6">
+            <h2 className="text-2xl font-semibold mb-4">Property Video</h2>
+            <PropertyYouTubePlayer
+              youtubeUrl={youtubeUrl}
+              autoplay={youtubeAutoplay || false}
+              muted={youtubeMuted || true}
+              controls={youtubeControls || true}
+            />
+          </Card>
+        )}
+
         <Card className="p-6">
           <h2 className="text-2xl font-semibold mb-4">Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

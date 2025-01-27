@@ -83,6 +83,10 @@ export type Database = {
           name: string
           price: number
           updated_at: string
+          youtube_autoplay: boolean | null
+          youtube_controls: boolean | null
+          youtube_muted: boolean | null
+          youtube_url: string | null
         }
         Insert: {
           address: string
@@ -103,6 +107,10 @@ export type Database = {
           name: string
           price: number
           updated_at?: string
+          youtube_autoplay?: boolean | null
+          youtube_controls?: boolean | null
+          youtube_muted?: boolean | null
+          youtube_url?: string | null
         }
         Update: {
           address?: string
@@ -123,6 +131,10 @@ export type Database = {
           name?: string
           price?: number
           updated_at?: string
+          youtube_autoplay?: boolean | null
+          youtube_controls?: boolean | null
+          youtube_muted?: boolean | null
+          youtube_url?: string | null
         }
         Relationships: []
       }

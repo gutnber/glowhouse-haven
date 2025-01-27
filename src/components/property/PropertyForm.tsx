@@ -7,6 +7,7 @@ import { BasicInfoFields } from "./form-sections/BasicInfoFields"
 import { DetailsFields } from "./form-sections/DetailsFields"
 import { DescriptionField } from "./form-sections/DescriptionField"
 import { ImagesField } from "./form-sections/ImagesField"
+import { YouTubeFields } from "./form-sections/YouTubeFields"
 
 interface PropertyFormProps {
   form: UseFormReturn<any>
@@ -25,6 +26,7 @@ export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps
         <DetailsFields form={form} />
         <DescriptionField form={form} />
         <ImagesField form={form} />
+        <YouTubeFields form={form} />
 
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
