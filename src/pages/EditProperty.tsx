@@ -21,6 +21,10 @@ const propertyFormSchema = z.object({
   features: z.array(z.string()).optional().nullable(),
   images: z.array(z.string()).optional().nullable(),
   google_maps_url: z.string().optional().nullable(),
+  youtube_url: z.string().optional().nullable(),
+  youtube_autoplay: z.boolean().optional().nullable(),
+  youtube_muted: z.boolean().optional().nullable(),
+  youtube_controls: z.boolean().optional().nullable(),
 })
 
 type PropertyFormValues = z.infer<typeof propertyFormSchema>
@@ -64,7 +68,11 @@ const EditProperty = () => {
         .from('properties')
         .update({
           ...values,
-          google_maps_url: values.google_maps_url || null
+          google_maps_url: values.google_maps_url || null,
+          youtube_url: values.youtube_url || null,
+          youtube_autoplay: values.youtube_autoplay || false,
+          youtube_muted: values.youtube_muted || true,
+          youtube_controls: values.youtube_controls || true
         })
         .eq('id', id)
 
