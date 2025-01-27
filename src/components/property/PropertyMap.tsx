@@ -74,7 +74,7 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
         console.log('Initializing map with coordinates:', coordinates)
         setIsLoading(true)
         const loader = new GoogleMapsLoader({
-          apiKey: "AIzaSyDHxHGVtZsxHBPj_GY7YRDuXvxqXVLXr9Q",
+          apiKey: "AIzaSyBEUM9Ra3L3pHapDvDXrsnf9p3uZ8girGQ",
           version: "weekly",
         })
 
@@ -90,10 +90,9 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
         })
 
         // Add a marker for the property
-        new google.maps.Marker({
+        new google.maps.marker.AdvancedMarkerElement({
           position: coordinates,
           map: mapInstance,
-          animation: google.maps.Animation.DROP,
         })
 
         mapInstanceRef.current = mapInstance
