@@ -7,6 +7,7 @@ import { PropertyImageUpload } from "@/components/property/PropertyImageUpload"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface NewsEditorProps {
   onSave?: () => void
@@ -74,50 +75,52 @@ export const NewsEditor = ({ onSave, initialData }: NewsEditorProps) => {
   }
 
   return (
-    <Card>
+    <Card className="border-none shadow-none">
       <CardHeader>
         <CardTitle>{initialData?.id ? "Edit" : "Create"} News Post</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="title">Title</Label>
-          <Input
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter post title"
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="content">Content</Label>
-          <Textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Write your post content here..."
-            className="min-h-[200px]"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Feature Image</Label>
-          <PropertyImageUpload
-            onImageUploaded={(urls) => {
-              const url = Array.isArray(urls) ? urls[0] : urls
-              setFeatureImage(url)
-            }}
-          />
-          {featureImage && (
-            <img
-              src={featureImage}
-              alt="Feature"
-              className="mt-2 max-h-[200px] object-cover rounded-lg"
+      <ScrollArea className="h-[calc(100vh-12rem)] pr-4">
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter post title"
             />
-          )}
-        </div>
-      </CardContent>
-      <CardFooter>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="content">Content</Label>
+            <Textarea
+              id="content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Write your post content here..."
+              className="min-h-[200px]"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Feature Image</Label>
+            <PropertyImageUpload
+              onImageUploaded={(urls) => {
+                const url = Array.isArray(urls) ? urls[0] : urls
+                setFeatureImage(url)
+              }}
+            />
+            {featureImage && (
+              <img
+                src={featureImage}
+                alt="Feature"
+                className="mt-2 max-h-[200px] object-cover rounded-lg"
+              />
+            )}
+          </div>
+        </CardContent>
+      </ScrollArea>
+      <CardFooter className="border-t pt-4 mt-4">
         <Button 
           onClick={handleSave} 
           disabled={isSaving}
