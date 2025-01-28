@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 
-const RootLayout = () => {
+export const RootLayout = () => {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
   const [session, setSession] = useState<any>(null)
   const [logoUrl, setLogoUrl] = useState<string>("/placeholder.svg")
@@ -188,5 +188,3 @@ const RootLayout = () => {
     </SidebarProvider>
   )
 }
-
-export default RootLayout
