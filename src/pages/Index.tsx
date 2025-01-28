@@ -78,6 +78,14 @@ const Index = () => {
     }
   }
 
+  const isNewProperty = (createdAt: string) => {
+    const propertyDate = new Date(createdAt)
+    const now = new Date()
+    const diffTime = Math.abs(now.getTime() - propertyDate.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays <= 7
+  }
+
   const renderNewsPost = (post: any) => (
     <Link key={post.id} to={`/news/${post.id}`} className="block transition-all duration-300 hover:translate-y-[-2px]">
       <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 backdrop-blur-sm bg-white/10 border-white/20 group">
