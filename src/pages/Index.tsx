@@ -191,16 +191,12 @@ const Index = () => {
                           </Button>
                         )}
                         <div className="flex justify-center pt-4">
-                          <Button
-                            asChild
-                            variant="outline"
-                            className="text-white hover:text-white/80 border-white/20"
-                          >
+                          <RainbowButton asChild>
                             <Link to="/news" className="flex items-center gap-2">
                               View All News
                               <ArrowRight className="h-4 w-4" />
                             </Link>
-                          </Button>
+                          </RainbowButton>
                         </div>
                       </div>
                     </AccordionContent>
