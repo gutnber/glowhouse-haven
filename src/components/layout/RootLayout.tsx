@@ -1,5 +1,16 @@
 import { useState, useEffect } from "react"
-import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarTrigger, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar"
+import { 
+  SidebarProvider, 
+  Sidebar, 
+  SidebarContent, 
+  SidebarHeader, 
+  SidebarTrigger, 
+  SidebarMenu, 
+  SidebarMenuItem, 
+  SidebarMenuButton, 
+  SidebarGroup, 
+  SidebarGroupContent 
+} from "@/components/ui/sidebar"
 import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench } from "lucide-react"
 import { Link, Outlet, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"

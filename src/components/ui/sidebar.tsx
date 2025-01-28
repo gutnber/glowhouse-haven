@@ -1,5 +1,12 @@
+import * as React from "react"
 import { SidebarProvider, useSidebar } from "./sidebar/sidebar-context"
-import { Sidebar } from "./sidebar/sidebar-components"
+import { 
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarGroup,
+  SidebarGroupContent 
+} from "./sidebar/sidebar-components"
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "./sidebar/sidebar-menu"
 import { Button } from "./button"
 import { PanelLeft } from "lucide-react"
@@ -37,8 +44,12 @@ export {
   Sidebar,
   SidebarProvider,
   SidebarTrigger,
+  SidebarContent,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarGroup,
+  SidebarGroupContent,
   useSidebar,
 }
