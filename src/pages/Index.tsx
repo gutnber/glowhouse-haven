@@ -6,7 +6,7 @@ import { Building2, Bed, Bath, MapPin, ArrowRight, ChevronDown, ChevronRight } f
 import { Link } from "react-router-dom"
 import StarryBackground from "@/components/background/StarryBackground"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { RainbowButton } from "@/components/ui/rainbow-button"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { LanguageToggle } from "@/components/LanguageToggle"
 import { 
@@ -151,12 +151,12 @@ const Index = () => {
           <div className="space-y-8 max-w-6xl mx-auto">
             <div className="flex items-center justify-between">
               <h2 className="text-3xl font-semibold text-white">Latest News</h2>
-              <Button asChild variant="outline" className="text-white hover:text-white/80">
+              <RainbowButton asChild>
                 <Link to="/news" className="flex items-center gap-2">
                   View All News
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-              </Button>
+              </RainbowButton>
             </div>
             <div className="space-y-4">
               {/* First post is always visible */}
