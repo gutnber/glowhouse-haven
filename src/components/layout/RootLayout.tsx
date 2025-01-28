@@ -41,7 +41,7 @@ export default function RootLayout() {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <Sidebar>
-          <SidebarHeader className="border-b border-sidebar-border/50 pb-4">
+          <SidebarHeader className="border-b border-sidebar-border/50 pb-4 backdrop-blur-md bg-white/10">
             <div className="flex flex-col gap-2 px-4">
               <Button
                 variant="ghost"
@@ -70,13 +70,15 @@ export default function RootLayout() {
                     className={cn(
                       "w-full group relative overflow-hidden",
                       "transition-all duration-300 ease-out",
-                      "hover:bg-sidebar-accent/50 dark:hover:bg-sidebar-accent/30",
+                      "backdrop-blur-sm bg-white/5 dark:bg-black/5",
+                      "hover:bg-white/10 dark:hover:bg-white/10",
                       "before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-sidebar-primary/20 before:to-transparent",
                       "before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-500",
                       "after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left",
                       "after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300",
                       "after:bg-gradient-to-r after:from-sidebar-primary/50 after:via-sidebar-primary after:to-sidebar-primary/50",
-                      location.pathname === item.path && "bg-sidebar-accent/50"
+                      "rounded-lg shadow-sm",
+                      location.pathname === item.path && "bg-sidebar-accent/50 shadow-md"
                     )}
                   >
                     <Link to={item.path} className="flex items-center gap-3 px-3 py-2">
@@ -98,7 +100,7 @@ export default function RootLayout() {
               ))}
             </SidebarMenu>
           </SidebarContent>
-          <SidebarFooter className="p-4 border-t border-sidebar-border/50">
+          <SidebarFooter className="p-4 border-t border-sidebar-border/50 backdrop-blur-md bg-white/10">
             <p className="text-xs text-sidebar-foreground/50 text-center">
               © 2024 Glowhouse Haven
             </p>
