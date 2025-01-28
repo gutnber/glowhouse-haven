@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { supabase } from "@/integrations/supabase/client"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Building2, Bed, Bath, MapPin, ArrowRight } from "lucide-react"
+import { Building2, Bed, Bath, MapPin, ArrowRight, ChevronDown } from "lucide-react"
 import { Link } from "react-router-dom"
 import StarryBackground from "@/components/background/StarryBackground"
 import { Badge } from "@/components/ui/badge"
@@ -72,8 +72,8 @@ const Index = () => {
   }
 
   const renderNewsPost = (post: any) => (
-    <Link key={post.id} to={`/news/${post.id}`}>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10 border-white/20 group">
+    <Link key={post.id} to={`/news/${post.id}`} className="block transition-all duration-300 hover:translate-y-[-2px]">
+      <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 backdrop-blur-sm bg-white/10 border-white/20 group">
         <div className="grid lg:grid-cols-3 gap-6">
           {post.feature_image_url && (
             <div className="lg:col-span-1">
@@ -81,7 +81,7 @@ const Index = () => {
                 <img
                   src={post.feature_image_url}
                   alt={post.title}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full rounded-lg transform transition-transform duration-300 group-hover:scale-105"
                 />
               </AspectRatio>
             </div>
@@ -89,13 +89,17 @@ const Index = () => {
           <div className="lg:col-span-2 p-6">
             <CardHeader className="p-0 mb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-white text-2xl group-hover:text-blue-400 transition-colors">
+                <CardTitle className="text-white text-2xl group-hover:text-blue-400 transition-colors duration-300">
                   {post.title}
                 </CardTitle>
-                <ArrowRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="h-5 w-5 text-white/70 transform transition-all duration-300 group-hover:translate-x-1 group-hover:text-blue-400" />
               </div>
-              <CardDescription className="text-white/70">
-                {new Date(post.created_at).toLocaleDateString()}
+              <CardDescription className="text-white/70 mt-2">
+                {new Date(post.created_at).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
@@ -110,35 +114,40 @@ const Index = () => {
   return (
     <>
       <StarryBackground />
-      <div className="space-y-8 relative z-10">
+      <div className="space-y-12 relative z-10 px-4 pb-12">
         <div className="flex justify-end mb-4">
           <LanguageToggle />
         </div>
-        <div className="text-center space-y-4 py-12 px-6 rounded-lg bg-gradient-to-r from-white/10 to-transparent backdrop-blur-sm border border-white/10 max-w-6xl mx-auto">
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/70">
+        <div className="text-center space-y-6 py-16 px-8 rounded-2xl bg-gradient-to-r from-white/10 to-transparent backdrop-blur-sm border border-white/10 max-w-6xl mx-auto">
+          <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/70">
             {t('welcome')}
           </h1>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto">
+          <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
             {t('subscribe')}
           </p>
         </div>
         
         {newsPosts.length > 0 && (
-          <div className="space-y-6 max-w-6xl mx-auto">
-            <h2 className="text-3xl font-semibold text-center text-white">Latest News</h2>
+          <div className="space-y-8 max-w-6xl mx-auto">
+            <h2 className="text-3xl font-semibold text-center text-white mb-8">Latest News</h2>
             <div className="space-y-4">
               {/* First two posts are always visible */}
-              {newsPosts.slice(0, INITIAL_VISIBLE_POSTS).map(renderNewsPost)}
+              <div className="space-y-4">
+                {newsPosts.slice(0, INITIAL_VISIBLE_POSTS).map(renderNewsPost)}
+              </div>
               
               {/* Remaining posts in accordion */}
               {newsPosts.length > INITIAL_VISIBLE_POSTS && (
                 <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="more-news">
-                    <AccordionTrigger className="text-white hover:text-white/80">
-                      Show More News
+                  <AccordionItem value="more-news" className="border-none">
+                    <AccordionTrigger className="text-white hover:text-white/80 py-4 px-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:bg-white/10 data-[state=open]:bg-white/10">
+                      <div className="flex items-center gap-2">
+                        <ChevronDown className="h-5 w-5 transform transition-transform duration-300" />
+                        <span>Show More News</span>
+                      </div>
                     </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-4 pt-4">
+                    <AccordionContent className="pt-4">
+                      <div className="space-y-4">
                         {newsPosts.slice(INITIAL_VISIBLE_POSTS).map(renderNewsPost)}
                       </div>
                     </AccordionContent>
