@@ -1,116 +1,190 @@
-import { useState } from "react"
-import { Link, Outlet, useLocation } from "react-router-dom"
-import { cn } from "@/lib/utils"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
+import { useState, useEffect } from "react"
+import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarTrigger, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar"
+import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench } from "lucide-react"
+import { Link, Outlet, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { useTheme } from "next-themes"
-import { Moon, Sun, Home, Newspaper, Building2, Users2, Wrench } from "lucide-react"
+import { AuthDialog } from "@/components/auth/AuthDialog"
+import { supabase } from "@/integrations/supabase/client"
+import { useToast } from "@/hooks/use-toast"
+import { useIsAdmin } from "@/hooks/useIsAdmin"
 
-const menuItems = [
-  { icon: Home, label: "Home", path: "/" },
-  { icon: Newspaper, label: "News", path: "/news" },
-  { icon: Building2, label: "Properties", path: "/properties" },
-  { icon: Users2, label: "Users", path: "/users" },
-  { icon: Wrench, label: "Tools", path: "/tools" },
-]
+export const RootLayout = () => {
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
+  const [session, setSession] = useState<any>(null)
+  const [logoUrl, setLogoUrl] = useState<string>("/placeholder.svg")
+  const { toast } = useToast()
+  const navigate = useNavigate()
+  const { isAdmin } = useIsAdmin()
 
-export default function RootLayout() {
-  const [mounted, setMounted] = useState(false)
-  const { theme, setTheme } = useTheme()
-  const location = useLocation()
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('app_settings')
+          .select('logo_url')
+          .single()
 
-  useState(() => {
-    setMounted(true)
-  })
+        if (error) {
+          console.error('Error fetching logo:', error)
+          return
+        }
 
-  if (!mounted) {
-    return null
+        if (data?.logo_url) {
+          console.log('Setting logo from database:', data.logo_url)
+          setLogoUrl(data.logo_url)
+        }
+      } catch (error) {
+        console.error('Error in fetchLogo:', error)
+      }
+    }
+
+    fetchLogo()
+  }, [])
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session state:", session)
+      setSession(session)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", _event, session)
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleSignOut = async () => {
+    console.log("Starting sign out process...")
+    try {
+      const { error } = await supabase.auth.signOut()
+      
+      if (error) {
+        console.error("Supabase signout error:", error)
+      } else {
+        console.log("Supabase signout successful")
+      }
+
+      setSession(null)
+      
+      toast({
+        title: "Success",
+        description: "You have been signed out",
+      })
+      navigate("/")
+    } catch (error) {
+      console.error("Error in signout flow:", error)
+      setSession(null)
+      toast({
+        title: "Notice",
+        description: "You have been signed out",
+      })
+      navigate("/")
+    }
   }
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <Sidebar>
-          <SidebarHeader className="border-b border-sidebar-border/50 pb-4 backdrop-blur-md bg-white/10">
-            <div className="flex flex-col gap-2 px-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-4 left-4 h-8 w-8 group transition-all duration-300"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-4 w-4 transition-all duration-300 rotate-0 scale-100 group-hover:rotate-90 group-hover:scale-110" />
-                ) : (
-                  <Moon className="h-4 w-4 transition-all duration-300 rotate-0 scale-100 group-hover:-rotate-90 group-hover:scale-110" />
-                )}
-              </Button>
-              <div className="h-4" />
-              <h2 className="text-lg font-semibold bg-gradient-to-r from-sidebar-foreground to-sidebar-foreground/70 bg-clip-text text-transparent">
-                Glowhouse Haven
-              </h2>
+          <SidebarHeader className="border-b border-border p-4">
+            <div className="flex flex-col items-center gap-2">
+              <img 
+                src={logoUrl} 
+                alt="Logo" 
+                className="max-h-[100px] w-auto"
+              />
+              <h2 className="text-lg font-semibold">My App</h2>
             </div>
           </SidebarHeader>
-          <SidebarContent className="p-4">
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.path}>
-                  <SidebarMenuButton
-                    asChild
-                    className={cn(
-                      "w-full group relative overflow-hidden",
-                      "transition-all duration-300 ease-out",
-                      "backdrop-blur-sm bg-white/5 dark:bg-black/5",
-                      "hover:bg-white/10 dark:hover:bg-white/10",
-                      "before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-sidebar-primary/20 before:to-transparent",
-                      "before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-500",
-                      "after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left",
-                      "after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300",
-                      "after:bg-gradient-to-r after:from-sidebar-primary/50 after:via-sidebar-primary after:to-sidebar-primary/50",
-                      "rounded-lg shadow-sm",
-                      location.pathname === item.path && "bg-sidebar-accent/50 shadow-md"
-                    )}
-                  >
-                    <Link to={item.path} className="flex items-center gap-3 px-3 py-2">
-                      <item.icon className={cn(
-                        "h-4 w-4 transition-all duration-300",
-                        "group-hover:text-sidebar-primary group-hover:scale-110",
-                        location.pathname === item.path ? "text-sidebar-primary" : "text-sidebar-foreground/70"
-                      )} />
-                      <span className={cn(
-                        "text-sm transition-all duration-300",
-                        "group-hover:text-sidebar-primary group-hover:translate-x-1",
-                        location.pathname === item.path ? "text-sidebar-primary font-medium" : "text-sidebar-foreground/70"
-                      )}>
-                        {item.label}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link to="/">
+                        <Home className="h-4 w-4" />
+                        <span>Home</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link to="/properties">
+                        <Building2 className="h-4 w-4" />
+                        <span>Properties</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  {isAdmin && (
+                    <>
+                      <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                          <Link to="/users">
+                            <Users className="h-4 w-4" />
+                            <span>Users</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                      <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                          <Link to="/tools">
+                            <Wrench className="h-4 w-4" />
+                            <span>Tools</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    </>
+                  )}
+                  {session && (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <Link to="/settings">
+                          <Settings className="h-4 w-4" />
+                          <span>Settings</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
           </SidebarContent>
-          <SidebarFooter className="p-4 border-t border-sidebar-border/50 backdrop-blur-md bg-white/10">
-            <p className="text-xs text-sidebar-foreground/50 text-center">
-              © 2024 Glowhouse Haven
-            </p>
-          </SidebarFooter>
+          <div className="mt-auto p-4 border-t border-border">
+            {session ? (
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={handleSignOut}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => setIsAuthDialogOpen(true)}
+              >
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign In
+              </Button>
+            )}
+          </div>
         </Sidebar>
-        <main className="flex-1 overflow-x-hidden">
-          <SidebarTrigger />
+        <main className="flex-1 p-6">
+          <SidebarTrigger className="mb-4 bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none h-9 w-9 rounded-lg" />
           <Outlet />
         </main>
       </div>
+      <AuthDialog
+        isOpen={isAuthDialogOpen}
+        onClose={() => setIsAuthDialogOpen(false)}
+      />
     </SidebarProvider>
   )
 }

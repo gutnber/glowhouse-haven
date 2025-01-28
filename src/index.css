@@ -87,16 +87,6 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-
-  /* Dark theme sidebar colors */
-  --sidebar-background-dark: 240 10% 3.9%;
-  --sidebar-foreground-dark: 0 0% 98%;
-  --sidebar-primary-dark: 217.2 91.2% 59.8%;
-  --sidebar-primary-foreground-dark: 0 0% 100%;
-  --sidebar-accent-dark: 240 3.7% 15.9%;
-  --sidebar-accent-foreground-dark: 240 4.8% 95.9%;
-  --sidebar-border-dark: 240 3.7% 15.9%;
-  --sidebar-ring-dark: 217.2 91.2% 59.8%;
 }
 
 @layer base {

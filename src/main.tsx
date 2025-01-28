@@ -1,16 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { ThemeProvider } from 'next-themes'
-import App from './App'
-import { LanguageProvider } from './contexts/LanguageContext'
+import { createRoot } from 'react-dom/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import App from './App.tsx'
 import './index.css'
+import { LanguageProvider } from './contexts/LanguageContext.tsx'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <LanguageProvider>
-        <App />
-      </LanguageProvider>
-    </ThemeProvider>
-  </React.StrictMode>,
-)
+const queryClient = new QueryClient()
+
+createRoot(document.getElementById("root")!).render(
+  <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
+      <App />
+    </LanguageProvider>
+  </QueryClientProvider>
+);

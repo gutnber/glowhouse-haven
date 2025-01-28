@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
-import RootLayout from "./components/layout/RootLayout"
+import { RootLayout } from "./components/layout/RootLayout"
 import Index from "./pages/Index"
 import Properties from "./pages/Properties"
 import PropertyProfile from "./pages/PropertyProfile"
