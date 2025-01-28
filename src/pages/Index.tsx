@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { supabase } from "@/integrations/supabase/client"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Building2, Bed, Bath, MapPin, ArrowRight, ChevronDown } from "lucide-react"
+import { Building2, Bed, Bath, MapPin, ArrowRight, ChevronDown, ChevronRight } from "lucide-react"
 import { Link } from "react-router-dom"
 import StarryBackground from "@/components/background/StarryBackground"
 import { Badge } from "@/components/ui/badge"
@@ -17,11 +17,12 @@ import {
 } from "@/components/ui/accordion"
 
 const POSTS_PER_PAGE = 5;
-const INITIAL_VISIBLE_POSTS = 2;
+const INITIAL_VISIBLE_POSTS = 1;
 
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([])
   const [newsPosts, setNewsPosts] = useState<any[]>([])
+  const [currentPage, setCurrentPage] = useState(0)
   const [totalPosts, setTotalPosts] = useState(0)
   const { t } = useLanguage()
 
@@ -41,7 +42,7 @@ const Index = () => {
         .from('news_posts')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(POSTS_PER_PAGE)
+        .limit(POSTS_PER_PAGE * 2) // Fetch two pages worth of data initially
 
       if (newsData) {
         setNewsPosts(newsData)
@@ -63,12 +64,18 @@ const Index = () => {
     fetchData()
   }, [])
 
-  const isNewProperty = (createdAt: string) => {
-    const propertyDate = new Date(createdAt)
-    const now = new Date()
-    const diffTime = Math.abs(now.getTime() - propertyDate.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return diffDays <= 7
+  const loadMorePosts = async () => {
+    const nextPage = currentPage + 1
+    const { data: newsData } = await supabase
+      .from('news_posts')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .range(nextPage * POSTS_PER_PAGE, (nextPage + 1) * POSTS_PER_PAGE - 1)
+
+    if (newsData && newsData.length > 0) {
+      setNewsPosts(prev => [...prev, ...newsData])
+      setCurrentPage(nextPage)
+    }
   }
 
   const renderNewsPost = (post: any) => (
@@ -111,6 +118,8 @@ const Index = () => {
     </Link>
   )
 
+  const hasMorePosts = newsPosts.length < totalPosts
+
   return (
     <>
       <StarryBackground />
@@ -131,7 +140,7 @@ const Index = () => {
           <div className="space-y-8 max-w-6xl mx-auto">
             <h2 className="text-3xl font-semibold text-center text-white mb-8">Latest News</h2>
             <div className="space-y-4">
-              {/* First two posts are always visible */}
+              {/* First post is always visible */}
               <div className="space-y-4">
                 {newsPosts.slice(0, INITIAL_VISIBLE_POSTS).map(renderNewsPost)}
               </div>
@@ -146,10 +155,22 @@ const Index = () => {
                         <span>Show More News</span>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="pt-4">
+                    <AccordionContent className="pt-4 space-y-4">
                       <div className="space-y-4">
-                        {newsPosts.slice(INITIAL_VISIBLE_POSTS).map(renderNewsPost)}
+                        {newsPosts.slice(INITIAL_VISIBLE_POSTS, INITIAL_VISIBLE_POSTS + POSTS_PER_PAGE).map(renderNewsPost)}
                       </div>
+                      {hasMorePosts && (
+                        <div className="flex justify-end pt-4">
+                          <Button
+                            variant="ghost"
+                            onClick={loadMorePosts}
+                            className="text-white hover:text-white/80 hover:bg-white/10 transition-all duration-300"
+                          >
+                            <ChevronRight className="h-5 w-5 mr-2" />
+                            Load More
+                          </Button>
+                        </div>
+                      )}
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
