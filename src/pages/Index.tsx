@@ -42,7 +42,7 @@ const Index = () => {
         .from('news_posts')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(POSTS_PER_PAGE * 2) // Fetch two pages worth of data initially
+        .limit(POSTS_PER_PAGE * 2)
 
       if (newsData) {
         setNewsPosts(newsData)
