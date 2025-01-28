@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { supabase } from "@/integrations/supabase/client"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Building2, Bed, Bath, MapPin } from "lucide-react"
+import { Building2, Bed, Bath, MapPin, ArrowRight } from "lucide-react"
 import { Link } from "react-router-dom"
 import StarryBackground from "@/components/background/StarryBackground"
 import { Badge } from "@/components/ui/badge"
@@ -96,32 +96,39 @@ const Index = () => {
             <h2 className="text-3xl font-semibold text-center text-white">Latest News</h2>
             <div className="grid gap-6">
               {newsPosts.map((post) => (
-                <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10 border-white/20">
-                  <div className="grid lg:grid-cols-3 gap-6">
-                    {post.feature_image_url && (
-                      <div className="lg:col-span-1">
-                        <AspectRatio ratio={16/9}>
-                          <img
-                            src={post.feature_image_url}
-                            alt={post.title}
-                            className="object-cover w-full h-full"
-                          />
-                        </AspectRatio>
+                <Link key={post.id} to={`/news/${post.id}`}>
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10 border-white/20 group">
+                    <div className="grid lg:grid-cols-3 gap-6">
+                      {post.feature_image_url && (
+                        <div className="lg:col-span-1">
+                          <AspectRatio ratio={16/9}>
+                            <img
+                              src={post.feature_image_url}
+                              alt={post.title}
+                              className="object-cover w-full h-full"
+                            />
+                          </AspectRatio>
+                        </div>
+                      )}
+                      <div className="lg:col-span-2 p-6">
+                        <CardHeader className="p-0 mb-4">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-white text-2xl group-hover:text-blue-400 transition-colors">
+                              {post.title}
+                            </CardTitle>
+                            <ArrowRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                          <CardDescription className="text-white/70">
+                            {new Date(post.created_at).toLocaleDateString()}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                          <p className="text-white/80 line-clamp-3">{post.content}</p>
+                        </CardContent>
                       </div>
-                    )}
-                    <div className="lg:col-span-2 p-6">
-                      <CardHeader className="p-0 mb-4">
-                        <CardTitle className="text-white text-2xl">{post.title}</CardTitle>
-                        <CardDescription className="text-white/70">
-                          {new Date(post.created_at).toLocaleDateString()}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-0">
-                        <p className="text-white/80 line-clamp-3">{post.content}</p>
-                      </CardContent>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               ))}
             </div>
             {totalPages > 1 && (
