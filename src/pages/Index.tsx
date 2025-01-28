@@ -10,20 +10,18 @@ import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { LanguageToggle } from "@/components/LanguageToggle"
 import { 
-  Pagination, 
-  PaginationContent, 
-  PaginationItem, 
-  PaginationLink, 
-  PaginationNext, 
-  PaginationPrevious 
-} from "@/components/ui/pagination"
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 const POSTS_PER_PAGE = 5;
+const INITIAL_VISIBLE_POSTS = 2;
 
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([])
   const [newsPosts, setNewsPosts] = useState<any[]>([])
-  const [currentPage, setCurrentPage] = useState(1)
   const [totalPosts, setTotalPosts] = useState(0)
   const { t } = useLanguage()
 
@@ -38,12 +36,12 @@ const Index = () => {
         setTotalPosts(count)
       }
 
-      // Fetch paginated news posts
+      // Fetch news posts
       const { data: newsData } = await supabase
         .from('news_posts')
         .select('*')
         .order('created_at', { ascending: false })
-        .range((currentPage - 1) * POSTS_PER_PAGE, (currentPage * POSTS_PER_PAGE) - 1)
+        .limit(POSTS_PER_PAGE)
 
       if (newsData) {
         setNewsPosts(newsData)
@@ -63,9 +61,7 @@ const Index = () => {
     }
 
     fetchData()
-  }, [currentPage])
-
-  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE)
+  }, [])
 
   const isNewProperty = (createdAt: string) => {
     const propertyDate = new Date(createdAt)
@@ -74,6 +70,42 @@ const Index = () => {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
     return diffDays <= 7
   }
+
+  const renderNewsPost = (post: any) => (
+    <Link key={post.id} to={`/news/${post.id}`}>
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10 border-white/20 group">
+        <div className="grid lg:grid-cols-3 gap-6">
+          {post.feature_image_url && (
+            <div className="lg:col-span-1">
+              <AspectRatio ratio={16/9}>
+                <img
+                  src={post.feature_image_url}
+                  alt={post.title}
+                  className="object-cover w-full h-full"
+                />
+              </AspectRatio>
+            </div>
+          )}
+          <div className="lg:col-span-2 p-6">
+            <CardHeader className="p-0 mb-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-white text-2xl group-hover:text-blue-400 transition-colors">
+                  {post.title}
+                </CardTitle>
+                <ArrowRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <CardDescription className="text-white/70">
+                {new Date(post.created_at).toLocaleDateString()}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <p className="text-white/80 line-clamp-3">{post.content}</p>
+            </CardContent>
+          </div>
+        </div>
+      </Card>
+    </Link>
+  )
 
   return (
     <>
@@ -94,76 +126,26 @@ const Index = () => {
         {newsPosts.length > 0 && (
           <div className="space-y-6 max-w-6xl mx-auto">
             <h2 className="text-3xl font-semibold text-center text-white">Latest News</h2>
-            <div className="grid gap-6">
-              {newsPosts.map((post) => (
-                <Link key={post.id} to={`/news/${post.id}`}>
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10 border-white/20 group">
-                    <div className="grid lg:grid-cols-3 gap-6">
-                      {post.feature_image_url && (
-                        <div className="lg:col-span-1">
-                          <AspectRatio ratio={16/9}>
-                            <img
-                              src={post.feature_image_url}
-                              alt={post.title}
-                              className="object-cover w-full h-full"
-                            />
-                          </AspectRatio>
-                        </div>
-                      )}
-                      <div className="lg:col-span-2 p-6">
-                        <CardHeader className="p-0 mb-4">
-                          <div className="flex items-center justify-between">
-                            <CardTitle className="text-white text-2xl group-hover:text-blue-400 transition-colors">
-                              {post.title}
-                            </CardTitle>
-                            <ArrowRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
-                          </div>
-                          <CardDescription className="text-white/70">
-                            {new Date(post.created_at).toLocaleDateString()}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                          <p className="text-white/80 line-clamp-3">{post.content}</p>
-                        </CardContent>
+            <div className="space-y-4">
+              {/* First two posts are always visible */}
+              {newsPosts.slice(0, INITIAL_VISIBLE_POSTS).map(renderNewsPost)}
+              
+              {/* Remaining posts in accordion */}
+              {newsPosts.length > INITIAL_VISIBLE_POSTS && (
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="more-news">
+                    <AccordionTrigger className="text-white hover:text-white/80">
+                      Show More News
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-4 pt-4">
+                        {newsPosts.slice(INITIAL_VISIBLE_POSTS).map(renderNewsPost)}
                       </div>
-                    </div>
-                  </Card>
-                </Link>
-              ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              )}
             </div>
-            {totalPages > 1 && (
-              <Pagination className="mt-8">
-                <PaginationContent>
-                  {currentPage > 1 && (
-                    <PaginationItem>
-                      <PaginationPrevious 
-                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        className="cursor-pointer"
-                      />
-                    </PaginationItem>
-                  )}
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(page)}
-                        isActive={currentPage === page}
-                        className="cursor-pointer"
-                      >
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  {currentPage < totalPages && (
-                    <PaginationItem>
-                      <PaginationNext 
-                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                        className="cursor-pointer"
-                      />
-                    </PaginationItem>
-                  )}
-                </PaginationContent>
-              </Pagination>
-            )}
           </div>
         )}
         
