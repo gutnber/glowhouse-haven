@@ -178,8 +178,8 @@ const Index = () => {
                       <div className="space-y-4">
                         {newsPosts.slice(INITIAL_VISIBLE_POSTS, INITIAL_VISIBLE_POSTS + POSTS_PER_PAGE).map(renderNewsPost)}
                       </div>
-                      {hasMorePosts && (
-                        <div className="flex justify-end pt-4">
+                      <div className="space-y-4">
+                        {hasMorePosts && (
                           <Button
                             variant="ghost"
                             onClick={loadMorePosts}
@@ -188,8 +188,20 @@ const Index = () => {
                             <ChevronRight className="h-5 w-4 mr-2" />
                             Load More
                           </Button>
+                        )}
+                        <div className="flex justify-center pt-4">
+                          <Button
+                            asChild
+                            variant="outline"
+                            className="text-white hover:text-white/80 border-white/20"
+                          >
+                            <Link to="/news" className="flex items-center gap-2">
+                              View All News
+                              <ArrowRight className="h-4 w-4" />
+                            </Link>
+                          </Button>
                         </div>
-                      )}
+                      </div>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
