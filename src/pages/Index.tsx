@@ -135,6 +135,8 @@ const Index = () => {
         <div className="flex justify-end mb-4">
           <LanguageToggle />
         </div>
+        
+        {/* Welcome Section */}
         <div className="text-center space-y-6 py-16 px-8 rounded-2xl bg-gradient-to-r from-white/10 to-transparent backdrop-blur-sm border border-white/10 max-w-6xl mx-auto">
           <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/70">
             {t('welcome')}
@@ -144,9 +146,18 @@ const Index = () => {
           </p>
         </div>
         
+        {/* News Section */}
         {newsPosts.length > 0 && (
           <div className="space-y-8 max-w-6xl mx-auto">
-            <h2 className="text-3xl font-semibold text-center text-white mb-8">Latest News</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-3xl font-semibold text-white">Latest News</h2>
+              <Button asChild variant="outline" className="text-white hover:text-white/80">
+                <Link to="/news" className="flex items-center gap-2">
+                  View All News
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
             <div className="space-y-4">
               {/* First post is always visible */}
               <div className="space-y-4">
@@ -174,7 +185,7 @@ const Index = () => {
                             onClick={loadMorePosts}
                             className="text-white hover:text-white/80 hover:bg-white/10 transition-all duration-300"
                           >
-                            <ChevronRight className="h-5 w-5 mr-2" />
+                            <ChevronRight className="h-5 w-4 mr-2" />
                             Load More
                           </Button>
                         </div>
@@ -187,6 +198,7 @@ const Index = () => {
           </div>
         )}
         
+        {/* Featured Properties Section */}
         {featuredProperties.length > 0 && (
           <div className="space-y-6 max-w-6xl mx-auto">
             <h2 className="text-3xl font-semibold text-center text-white">{t('featuredProperties')}</h2>

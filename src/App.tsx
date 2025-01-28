@@ -9,6 +9,7 @@ import Settings from "./pages/Settings"
 import Tools from "./pages/Tools"
 import Users from "./pages/Users"
 import NewsPost from "./pages/NewsPost"
+import News from "./pages/News"
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: <Users />,
+      },
+      {
+        path: "/news",
+        element: <News />,
       },
       {
         path: "/news/:id",
