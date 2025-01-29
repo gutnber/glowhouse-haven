@@ -163,7 +163,7 @@ export const PropertiesMap = () => {
   return (
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4 text-white">Property Locations</h2>
-      <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
+      <div className="relative w-full h-[300px] rounded-lg overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-muted">
             <UILoader />
@@ -177,6 +177,7 @@ export const PropertiesMap = () => {
         <div 
           ref={mapRef} 
           className="w-full h-full"
+          style={{ border: 'none' }}
         />
       </div>
     </Card>
