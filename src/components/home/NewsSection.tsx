@@ -32,7 +32,7 @@ export const NewsSection = ({
         <h2 className="text-3xl font-semibold text-white">Latest News</h2>
         <Button 
           asChild
-          className="bg-gradient-to-r from-yellow-700 to-yellow-500 hover:from-yellow-800 hover:to-yellow-600 text-white border-none"
+          className="relative border border-white/20 bg-black text-white overflow-hidden [--duration:4s] before:absolute before:inset-0 before:-translate-x-full before:animate-[border-beam_var(--duration)_ease_infinite] before:bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent)] after:absolute after:inset-0 after:translate-x-full after:animate-[border-beam_var(--duration)_ease_infinite] after:bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent)]"
         >
           <Link to="/news" className="flex items-center gap-2">
             View All News
@@ -77,7 +77,7 @@ export const NewsSection = ({
                   <div className="flex justify-center pt-4">
                     <Button 
                       asChild
-                      className="bg-gradient-to-r from-yellow-700 to-yellow-500 hover:from-yellow-800 hover:to-yellow-600 text-white border-none"
+                      className="relative border border-white/20 bg-black text-white overflow-hidden [--duration:4s] before:absolute before:inset-0 before:-translate-x-full before:animate-[border-beam_var(--duration)_ease_infinite] before:bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent)] after:absolute after:inset-0 after:translate-x-full after:animate-[border-beam_var(--duration)_ease_infinite] after:bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent)]"
                     >
                       <Link to="/news" className="flex items-center gap-2">
                         View All News
