@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Card } from "@/components/ui/card"
-import { Loader } from "@/components/ui/loader"
-import { GoogleMapsLoader } from "@googlemaps/js-api-loader"
+import { Loader as UILoader } from "@/components/ui/loader"
+import { Loader } from "@googlemaps/js-api-loader"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useNavigate } from "react-router-dom"
@@ -45,7 +45,7 @@ export const PropertiesMap = () => {
         setIsLoading(true)
         setError(null)
 
-        const loader = new GoogleMapsLoader({
+        const loader = new Loader({
           apiKey: "AIzaSyBEUM9Ra3L3pHapDvDXrsnf9p3uZ8girGQ",
           version: "weekly",
         })
@@ -166,7 +166,7 @@ export const PropertiesMap = () => {
       <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-muted">
-            <Loader />
+            <UILoader />
           </div>
         )}
         {error && (
