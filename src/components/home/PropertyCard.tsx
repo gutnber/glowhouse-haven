@@ -74,18 +74,27 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
         <CardContent>
           <div className="grid grid-cols-3 gap-4 text-sm text-white/60">
             <div className="flex flex-col items-center gap-2">
-              <Bed className="h-5.5 w-5.5 [background:linear-gradient(to_right,#B45309,#F59E0B)] [-webkit-background-clip:text] [color:transparent]" />
+              <Bed className="h-5.5 w-5.5" stroke="url(#yellow-orange-gradient)" />
               <span>{property.bedrooms} {t('beds')}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <Bath className="h-5.5 w-5.5 [background:linear-gradient(to_right,#B45309,#F59E0B)] [-webkit-background-clip:text] [color:transparent]" />
+              <Bath className="h-5.5 w-5.5" stroke="url(#yellow-orange-gradient)" />
               <span>{property.bathrooms} {t('baths')}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <Building2 className="h-5.5 w-5.5 [background:linear-gradient(to_right,#B45309,#F59E0B)] [-webkit-background-clip:text] [color:transparent]" />
+              <Building2 className="h-5.5 w-5.5" stroke="url(#yellow-orange-gradient)" />
               <span>{property.build_year}</span>
             </div>
           </div>
+          {/* Add SVG gradient definition */}
+          <svg width="0" height="0">
+            <defs>
+              <linearGradient id="yellow-orange-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#B45309" />
+                <stop offset="100%" stopColor="#F59E0B" />
+              </linearGradient>
+            </defs>
+          </svg>
         </CardContent>
       </Card>
     </Link>
