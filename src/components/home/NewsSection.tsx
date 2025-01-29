@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom"
 import { ArrowRight, ChevronDown, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { RainbowButton } from "@/components/ui/rainbow-button"
 import { NewsCard } from "./NewsCard"
 import {
   Accordion,
@@ -31,12 +30,15 @@ export const NewsSection = ({
     <div className="space-y-8 max-w-6xl mx-auto">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-semibold text-white">Latest News</h2>
-        <RainbowButton asChild>
+        <Button 
+          asChild
+          className="bg-gradient-to-r from-yellow-700 to-yellow-500 hover:from-yellow-800 hover:to-yellow-600 text-white border-none"
+        >
           <Link to="/news" className="flex items-center gap-2">
             View All News
             <ArrowRight className="h-4 w-4" />
           </Link>
-        </RainbowButton>
+        </Button>
       </div>
       
       <div className="space-y-4">
@@ -73,12 +75,15 @@ export const NewsSection = ({
                     </Button>
                   )}
                   <div className="flex justify-center pt-4">
-                    <RainbowButton asChild>
+                    <Button 
+                      asChild
+                      className="bg-gradient-to-r from-yellow-700 to-yellow-500 hover:from-yellow-800 hover:to-yellow-600 text-white border-none"
+                    >
                       <Link to="/news" className="flex items-center gap-2">
                         View All News
                         <ArrowRight className="h-4 w-4" />
                       </Link>
-                    </RainbowButton>
+                    </Button>
                   </div>
                 </div>
               </AccordionContent>

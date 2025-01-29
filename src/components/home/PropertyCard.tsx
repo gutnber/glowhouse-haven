@@ -74,15 +74,15 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
         <CardContent>
           <div className="grid grid-cols-3 gap-4 text-sm text-white/60">
             <div className="flex flex-col items-center gap-2">
-              <Bed className="h-5.5 w-5.5" stroke="url(#yellow-orange-gradient)" />
+              <Bed className="h-5.5 w-5.5" strokeWidth={1.5} stroke="url(#yellow-orange-gradient)" />
               <span>{property.bedrooms} {t('beds')}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <Bath className="h-5.5 w-5.5" stroke="url(#yellow-orange-gradient)" />
+              <Bath className="h-5.5 w-5.5" strokeWidth={1.5} stroke="url(#yellow-orange-gradient)" />
               <span>{property.bathrooms} {t('baths')}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <Building2 className="h-5.5 w-5.5" stroke="url(#yellow-orange-gradient)" />
+              <Building2 className="h-5.5 w-5.5" strokeWidth={1.5} stroke="url(#yellow-orange-gradient)" />
               <span>{property.build_year}</span>
             </div>
           </div>
