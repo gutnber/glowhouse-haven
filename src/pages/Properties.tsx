@@ -32,25 +32,37 @@ const Properties = () => {
   }
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-bold text-white">Properties</h1>
-        {isAdmin && (
-          <Button asChild>
-            <Link to="/properties/add" className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Add Property
-            </Link>
-          </Button>
-        )}
-      </div>
+    <div className="relative min-h-screen">
+      {/* Gradient background with animation */}
+      <div 
+        className="fixed inset-0 bg-gradient-to-br from-black via-[#1a0f02] to-[#f97316] opacity-90 animate-gradient"
+        style={{
+          backgroundSize: '200% 200%',
+          animation: 'gradient 15s ease infinite',
+        }}
+      />
+      
+      {/* Content */}
+      <div className="relative space-y-8 max-w-6xl mx-auto px-4 py-8">
+        <div className="flex justify-between items-center">
+          <h1 className="text-4xl font-bold text-white">Properties</h1>
+          {isAdmin && (
+            <Button asChild>
+              <Link to="/properties/add" className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Add Property
+              </Link>
+            </Button>
+          )}
+        </div>
 
-      <PropertiesMap />
+        <PropertiesMap />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {properties?.map((property) => (
-          <PropertyCard key={property.id} property={property} />
-        ))}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {properties?.map((property) => (
+            <PropertyCard key={property.id} property={property} />
+          ))}
+        </div>
       </div>
     </div>
   )
