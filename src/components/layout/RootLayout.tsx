@@ -106,7 +106,7 @@ export const RootLayout = () => {
               <img 
                 src={logoUrl} 
                 alt="Logo" 
-                className="max-h-[100px] w-auto"
+                className="max-h-[130px] w-auto" // Increased from 100px to 130px (30% bigger)
               />
               <h2 className="text-lg font-semibold">My App</h2>
             </div>
