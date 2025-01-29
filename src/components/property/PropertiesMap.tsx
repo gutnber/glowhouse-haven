@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react"
-import { Card } from "@/components/ui/card"
 import { Loader as UILoader } from "@/components/ui/loader"
 import { Loader } from "@googlemaps/js-api-loader"
 import { useQuery } from "@tanstack/react-query"
@@ -161,25 +160,22 @@ export const PropertiesMap = () => {
   }, [properties, navigate])
 
   return (
-    <Card className="p-6">
-      <h2 className="text-2xl font-semibold mb-4 text-white">Property Locations</h2>
-      <div className="relative w-full h-[300px] rounded-lg overflow-hidden">
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-muted">
-            <UILoader />
-          </div>
-        )}
-        {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-muted">
-            <p className="text-destructive">{error}</p>
-          </div>
-        )}
-        <div 
-          ref={mapRef} 
-          className="w-full h-full"
-          style={{ border: 'none' }}
-        />
-      </div>
-    </Card>
+    <div className="relative w-full h-[300px] overflow-hidden">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-muted">
+          <UILoader />
+        </div>
+      )}
+      {error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-muted">
+          <p className="text-destructive">{error}</p>
+        </div>
+      )}
+      <div 
+        ref={mapRef} 
+        className="w-full h-full"
+        style={{ border: 'none' }}
+      />
+    </div>
   )
 }
