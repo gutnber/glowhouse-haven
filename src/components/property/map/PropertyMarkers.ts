@@ -62,7 +62,8 @@ export class PropertyMarkers {
 
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
-      pixelOffset: new google.maps.Size(0, -20)
+      disableAutoPan: true, // Prevent map from moving
+      pixelOffset: new google.maps.Size(0, 0)
     })
 
     let closeTimeout: NodeJS.Timeout
@@ -76,21 +77,24 @@ export class PropertyMarkers {
       
       this.infoWindows.forEach(window => window.close())
       
-      const bounds = this.map.getBounds()
+      // Calculate optimal position for info window
       const markerPosition = marker.getPosition()
-      
-      if (bounds && markerPosition) {
-        const center = bounds.getCenter()
+      if (markerPosition) {
+        const mapBounds = this.map.getBounds()
+        const mapCenter = this.map.getCenter()
         
-        const isNorth = markerPosition.lat() > center.lat()
-        const isEast = markerPosition.lng() > center.lng()
-        
-        infoWindow.setOptions({
-          pixelOffset: new google.maps.Size(
-            isEast ? -125 : 125,
-            isNorth ? -200 : 20
-          )
-        })
+        if (mapBounds && mapCenter) {
+          const isNorth = markerPosition.lat() > mapCenter.lat()
+          const isEast = markerPosition.lng() > mapCenter.lng()
+          
+          // Adjust offset based on marker position relative to map center
+          infoWindow.setOptions({
+            pixelOffset: new google.maps.Size(
+              isEast ? -100 : 100, // Move left or right
+              isNorth ? -30 : 30   // Move up or down
+            )
+          })
+        }
       }
       
       infoWindow.open(this.map, marker)
@@ -99,7 +103,7 @@ export class PropertyMarkers {
     marker.addListener("mouseout", () => {
       closeTimeout = setTimeout(() => {
         infoWindow.close()
-      }, 2000)
+      }, 300)
     })
 
     this.markers.push(marker)
