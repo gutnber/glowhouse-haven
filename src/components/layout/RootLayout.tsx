@@ -188,7 +188,9 @@ export const RootLayout = () => {
           </div>
         </Sidebar>
         <main className="flex-1 p-6">
-          <SidebarTrigger className="mb-4 bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none h-9 w-9 rounded-lg" />
+          <div className="relative z-50 mb-4">
+            <SidebarTrigger className="bg-gradient-to-r from-orange-700 to-orange-900 hover:from-orange-800 hover:to-orange-950 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-orange-200/50 active:scale-95 border-none h-9 w-9 rounded-lg" />
+          </div>
           <Outlet />
         </main>
       </div>

@@ -9,6 +9,7 @@ export const PropertiesMap = () => {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const markersRef = useRef<google.maps.Marker[]>([])
+  const infoWindowsRef = useRef<google.maps.InfoWindow[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -19,7 +20,7 @@ export const PropertiesMap = () => {
       console.log('Fetching properties for map')
       const { data, error } = await supabase
         .from('properties')
-        .select('id, name, latitude, longitude, price')
+        .select('id, name, latitude, longitude, price, feature_image_url')
         .not('latitude', 'is', null)
         .not('longitude', 'is', null)
 
@@ -57,7 +58,7 @@ export const PropertiesMap = () => {
           bounds.extend({ lat: Number(property.latitude), lng: Number(property.longitude) })
         })
 
-        // Create the map instance
+        // Create the map instance with lighter styling
         const mapInstance = new google.maps.Map(mapRef.current, {
           center: bounds.getCenter(),
           zoom: 12,
@@ -68,27 +69,32 @@ export const PropertiesMap = () => {
             {
               featureType: "all",
               elementType: "labels.text.fill",
-              stylers: [{ color: "#ffffff" }]
+              stylers: [{ color: "#6b7280" }]
             },
             {
               featureType: "all",
               elementType: "labels.text.stroke",
-              stylers: [{ visibility: "on" }, { color: "#000000" }, { weight: 2 }]
+              stylers: [{ visibility: "on" }, { color: "#1f2937" }, { weight: 2 }]
             },
             {
               featureType: "water",
               elementType: "geometry",
-              stylers: [{ color: "#0f172a" }]
+              stylers: [{ color: "#1e293b" }]
             },
             {
               featureType: "landscape",
               elementType: "geometry",
-              stylers: [{ color: "#1e293b" }]
+              stylers: [{ color: "#374151" }]
             },
             {
               featureType: "road",
               elementType: "geometry",
-              stylers: [{ color: "#475569" }]
+              stylers: [{ color: "#4b5563" }]
+            },
+            {
+              featureType: "poi",
+              elementType: "geometry",
+              stylers: [{ color: "#374151" }]
             }
           ]
         })
@@ -96,9 +102,11 @@ export const PropertiesMap = () => {
         // Fit map to bounds
         mapInstance.fitBounds(bounds)
 
-        // Clear existing markers
+        // Clear existing markers and info windows
         markersRef.current.forEach(marker => marker.setMap(null))
         markersRef.current = []
+        infoWindowsRef.current.forEach(infoWindow => infoWindow.close())
+        infoWindowsRef.current = []
 
         // Add markers for each property
         properties.forEach(property => {
@@ -112,15 +120,22 @@ export const PropertiesMap = () => {
             animation: google.maps.Animation.DROP,
           })
 
-          // Create an InfoWindow for each marker
+          // Create an InfoWindow with property image
           const infoWindow = new google.maps.InfoWindow({
             content: `
-              <div class="p-2">
-                <h3 class="font-semibold">${property.name}</h3>
+              <div class="p-4 max-w-[200px]">
+                ${property.feature_image_url ? 
+                  `<img src="${property.feature_image_url}" alt="${property.name}" class="w-full h-32 object-cover mb-2 rounded">` 
+                  : ''
+                }
+                <h3 class="font-semibold text-base">${property.name}</h3>
                 <p class="text-sm">$${property.price.toLocaleString()}</p>
               </div>
             `,
+            pixelOffset: new google.maps.Size(0, -30)
           })
+
+          let closeTimeout: NodeJS.Timeout
 
           // Add click listeners
           marker.addListener("click", () => {
@@ -128,14 +143,25 @@ export const PropertiesMap = () => {
           })
 
           marker.addListener("mouseover", () => {
+            // Clear any existing timeout
+            if (closeTimeout) clearTimeout(closeTimeout)
+            
+            // Close all other info windows
+            infoWindowsRef.current.forEach(window => window.close())
+            
+            // Open this info window
             infoWindow.open(mapInstance, marker)
           })
 
           marker.addListener("mouseout", () => {
-            infoWindow.close()
+            // Set a timeout to close the info window after 2 seconds
+            closeTimeout = setTimeout(() => {
+              infoWindow.close()
+            }, 2000)
           })
 
           markersRef.current.push(marker)
+          infoWindowsRef.current.push(infoWindow)
         })
 
         mapInstanceRef.current = mapInstance
@@ -152,9 +178,11 @@ export const PropertiesMap = () => {
 
     return () => {
       if (mapInstanceRef.current) {
-        // Cleanup markers
+        // Cleanup markers and info windows
         markersRef.current.forEach(marker => marker.setMap(null))
         markersRef.current = []
+        infoWindowsRef.current.forEach(infoWindow => infoWindow.close())
+        infoWindowsRef.current = []
       }
     }
   }, [properties, navigate])
