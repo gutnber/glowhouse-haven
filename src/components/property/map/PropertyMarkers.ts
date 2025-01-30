@@ -61,7 +61,7 @@ export class PropertyMarkers {
     })
 
     const infoWindow = new google.maps.InfoWindow({
-      content: new PropertyMarkerCard({ property }).toString(),
+      content: PropertyMarkerCard({ property }),
       pixelOffset: new google.maps.Size(0, -20)
     })
 
