@@ -20,9 +20,7 @@ export const PropertiesMap = () => {
       console.log('Fetching properties for map')
       const { data, error } = await supabase
         .from('properties')
-        .select('id, name, latitude, longitude, price, feature_image_url')
-        .not('latitude', 'is', null)
-        .not('longitude', 'is', null)
+        .select('id, name, latitude, longitude, price, feature_image_url, google_maps_url')
 
       if (error) throw error
       console.log('Fetched properties:', data)
@@ -31,6 +29,22 @@ export const PropertiesMap = () => {
   })
 
   useEffect(() => {
+    const extractCoordinates = (url: string) => {
+      try {
+        // Handle different Google Maps URL formats
+        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/
+        const match = url.match(regex)
+        if (match) {
+          const [, lat, lng] = match
+          return { lat: parseFloat(lat), lng: parseFloat(lng) }
+        }
+        return null
+      } catch (error) {
+        console.error("Error extracting coordinates:", error)
+        return null
+      }
+    }
+
     const initMap = async () => {
       if (!mapRef.current || !properties?.length) {
         console.log('Map initialization skipped:', { 
@@ -55,7 +69,24 @@ export const PropertiesMap = () => {
         // Calculate bounds for all properties
         const bounds = new google.maps.LatLngBounds()
         properties.forEach(property => {
-          bounds.extend({ lat: Number(property.latitude), lng: Number(property.longitude) })
+          let coords = null
+          
+          // Try to get coordinates from google_maps_url first
+          if (property.google_maps_url) {
+            coords = extractCoordinates(property.google_maps_url)
+          }
+          
+          // Fallback to latitude/longitude if available
+          if (!coords && property.latitude && property.longitude) {
+            coords = { 
+              lat: Number(property.latitude), 
+              lng: Number(property.longitude) 
+            }
+          }
+
+          if (coords) {
+            bounds.extend(coords)
+          }
         })
 
         // Create the map instance with lighter styling
@@ -110,11 +141,25 @@ export const PropertiesMap = () => {
 
         // Add markers for each property
         properties.forEach(property => {
-          const marker = new google.maps.Marker({
-            position: { 
+          let coords = null
+          
+          // Try to get coordinates from google_maps_url first
+          if (property.google_maps_url) {
+            coords = extractCoordinates(property.google_maps_url)
+          }
+          
+          // Fallback to latitude/longitude if available
+          if (!coords && property.latitude && property.longitude) {
+            coords = { 
               lat: Number(property.latitude), 
               lng: Number(property.longitude) 
-            },
+            }
+          }
+
+          if (!coords) return // Skip if no coordinates available
+
+          const marker = new google.maps.Marker({
+            position: coords,
             map: mapInstance,
             title: property.name,
             animation: google.maps.Animation.DROP,

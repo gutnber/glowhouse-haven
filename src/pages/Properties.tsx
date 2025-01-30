@@ -33,14 +33,8 @@ const Properties = () => {
 
   return (
     <div className="relative min-h-screen">
-      {/* Gradient background with animation */}
-      <div 
-        className="fixed inset-0 bg-gradient-to-br from-black via-[#1a0f02] to-[#c2410c] opacity-90 animate-gradient"
-        style={{
-          backgroundSize: '200% 200%',
-          animation: 'gradient 15s ease infinite',
-        }}
-      />
+      {/* Solid black background */}
+      <div className="fixed inset-0 bg-black" />
       
       {/* Content */}
       <div className="relative space-y-8 max-w-6xl mx-auto px-4 py-8">
