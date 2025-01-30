@@ -4,7 +4,6 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useNavigate } from "react-router-dom"
-import { Building2, Bed, Bath } from "lucide-react"
 
 export const PropertiesMap = () => {
   const mapRef = useRef<HTMLDivElement>(null)
@@ -97,7 +96,7 @@ export const PropertiesMap = () => {
         setIsLoading(true)
         setError(null)
 
-        const loader = new GoogleMapsLoader({
+        const loader = new Loader({
           apiKey: "AIzaSyBEUM9Ra3L3pHapDvDXrsnf9p3uZ8girGQ",
           version: "weekly",
         })
@@ -165,8 +164,13 @@ export const PropertiesMap = () => {
           ]
         })
 
-        // Fit map to bounds without zoom
-        mapInstance.fitBounds(bounds, { padding: 50 })
+        // Fit map to bounds with proper padding type
+        mapInstance.fitBounds(bounds, {
+          top: 50,
+          right: 50,
+          bottom: 50,
+          left: 50
+        })
 
         // Clear existing markers and info windows
         markersRef.current.forEach(marker => marker.setMap(null))
