@@ -50,7 +50,9 @@ const Properties = () => {
           )}
         </div>
 
-        <PropertiesMap />
+        <div className="backdrop-blur-sm bg-white/5 rounded-xl border border-white/20 p-4">
+          <PropertiesMap />
+        </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {properties?.map((property) => (

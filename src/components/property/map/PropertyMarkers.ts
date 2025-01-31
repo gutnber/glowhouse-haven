@@ -62,11 +62,20 @@ export class PropertyMarkers {
       map: this.map,
       title: property.name,
       animation: google.maps.Animation.DROP,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 10,
+        fillColor: "#F59E0B",
+        fillOpacity: 1,
+        strokeColor: "#FFFFFF",
+        strokeWeight: 2,
+      }
     })
 
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
       disableAutoPan: true,
+      pixelOffset: new google.maps.Size(0, -10)
     })
 
     let closeTimeout: NodeJS.Timeout
@@ -88,7 +97,7 @@ export class PropertyMarkers {
           
           infoWindow.setOptions({
             pixelOffset: new google.maps.Size(
-              isEast ? -100 : 100,
+              isEast ? -110 : 110,
               isNorth ? -20 : 20
             )
           })
