@@ -1,4 +1,4 @@
-import { Building2, Home, Warehouse, TreePine, Building, Buildings, Store } from "lucide-react"
+import { Building2, Home, Building } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -12,11 +12,11 @@ const propertyTypes = [
   { value: "all", icon: Building2 },
   { value: "singleFamily", icon: Home },
   { value: "townhouse", icon: Building },
-  { value: "vacantLand", icon: TreePine },
-  { value: "condo", icon: Building2 },
-  { value: "apartment", icon: Buildings },
-  { value: "multifamily", icon: Buildings },
-  { value: "commercial", icon: Store }
+  { value: "vacantLand", icon: Building2 },
+  { value: "condo", icon: Building },
+  { value: "apartment", icon: Building2 },
+  { value: "multifamily", icon: Building },
+  { value: "commercial", icon: Building2 }
 ]
 
 interface PropertyTypeSelectProps {

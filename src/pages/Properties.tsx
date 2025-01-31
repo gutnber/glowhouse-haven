@@ -15,7 +15,7 @@ const Properties = () => {
   const { t } = useLanguage()
   const [propertyType, setPropertyType] = useState("all")
   
-  const { data: properties, isLoading } = useQuery({
+  const { data: properties = [], isLoading } = useQuery({
     queryKey: ['properties', propertyType],
     queryFn: async () => {
       let query = supabase
@@ -30,7 +30,7 @@ const Properties = () => {
       const { data, error } = await query
       
       if (error) throw error
-      return data
+      return data || []
     }
   })
 
@@ -66,7 +66,7 @@ const Properties = () => {
         </div>
 
         <div className="backdrop-blur-sm bg-white/5 rounded-xl border border-white/20 p-4">
-          <PropertiesMap properties={properties || []} />
+          <PropertiesMap properties={properties} />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
