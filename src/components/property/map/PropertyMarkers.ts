@@ -1,5 +1,5 @@
 import { PropertyMarkerCard } from "./PropertyMarkerCard"
-import { extractCoordinates } from "./mapUtils"
+import { extractCoordinates } from "./CoordinatesUtils"
 
 interface Property {
   id: string;
@@ -30,19 +30,7 @@ export class PropertyMarkers {
     const bounds = new google.maps.LatLngBounds()
 
     properties.forEach(property => {
-      let coords = null
-      
-      if (property.google_maps_url) {
-        coords = extractCoordinates(property.google_maps_url)
-      }
-      
-      if (!coords && property.latitude && property.longitude) {
-        coords = { 
-          lat: Number(property.latitude), 
-          lng: Number(property.longitude) 
-        }
-      }
-
+      const coords = this.getPropertyCoordinates(property)
       if (!coords) return
 
       bounds.extend(coords)
@@ -50,6 +38,22 @@ export class PropertyMarkers {
     })
 
     return bounds
+  }
+
+  private getPropertyCoordinates(property: Property) {
+    if (property.google_maps_url) {
+      const coords = extractCoordinates(property.google_maps_url)
+      if (coords) return coords
+    }
+    
+    if (property.latitude && property.longitude) {
+      return { 
+        lat: Number(property.latitude), 
+        lng: Number(property.longitude) 
+      }
+    }
+
+    return null
   }
 
   private addMarker(property: Property, position: google.maps.LatLng | google.maps.LatLngLiteral) {
@@ -62,8 +66,7 @@ export class PropertyMarkers {
 
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
-      disableAutoPan: true, // Prevent map from moving
-      pixelOffset: new google.maps.Size(0, 0)
+      disableAutoPan: true,
     })
 
     let closeTimeout: NodeJS.Timeout
@@ -74,24 +77,19 @@ export class PropertyMarkers {
 
     marker.addListener("mouseover", () => {
       if (closeTimeout) clearTimeout(closeTimeout)
-      
       this.infoWindows.forEach(window => window.close())
       
-      // Calculate optimal position for info window
       const markerPosition = marker.getPosition()
       if (markerPosition) {
-        const mapBounds = this.map.getBounds()
         const mapCenter = this.map.getCenter()
-        
-        if (mapBounds && mapCenter) {
+        if (mapCenter) {
           const isNorth = markerPosition.lat() > mapCenter.lat()
           const isEast = markerPosition.lng() > mapCenter.lng()
           
-          // Adjust offset based on marker position relative to map center
           infoWindow.setOptions({
             pixelOffset: new google.maps.Size(
-              isEast ? -100 : 100, // Move left or right
-              isNorth ? -30 : 30   // Move up or down
+              isEast ? -100 : 100,
+              isNorth ? -20 : 20
             )
           })
         }

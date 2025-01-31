@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { useNavigate } from "react-router-dom"
 import { Loader as UILoader } from "@/components/ui/loader"
 import { PropertyMarkers } from "./map/PropertyMarkers"
-import { createMapStyles } from "./map/mapUtils"
+import { createMapStyles } from "./map/MapStyles"
 
 export const PropertiesMap = () => {
   const mapRef = useRef<HTMLDivElement>(null)
