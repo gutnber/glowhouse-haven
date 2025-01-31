@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 const Properties = () => {
   const { isAdmin } = useIsAdmin()
+  const { t } = useLanguage()
   
   const { data: properties, isLoading } = useQuery({
     queryKey: ['properties'],
@@ -26,25 +28,23 @@ const Properties = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <p>Loading properties...</p>
+        <p>{t('loading')}</p>
       </div>
     )
   }
 
   return (
     <div className="relative min-h-screen">
-      {/* Solid black background */}
       <div className="fixed inset-0 bg-black" />
       
-      {/* Content */}
       <div className="relative space-y-8 max-w-6xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-4xl font-bold text-white">Properties</h1>
+          <h1 className="text-4xl font-bold text-white">{t('properties')}</h1>
           {isAdmin && (
             <Button asChild>
               <Link to="/properties/add" className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
-                Add Property
+                {t('addProperty')}
               </Link>
             </Button>
           )}

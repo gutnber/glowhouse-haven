@@ -26,6 +26,7 @@ export const RootLayout = () => {
   const { toast } = useToast()
   const navigate = useNavigate()
   const { isAdmin } = useIsAdmin()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -106,9 +107,9 @@ export const RootLayout = () => {
               <img 
                 src={logoUrl} 
                 alt="Logo" 
-                className="max-h-[130px] w-auto" // Increased from 100px to 130px (30% bigger)
+                className="max-h-[130px] w-auto"
               />
-              <h2 className="text-lg font-semibold">My App</h2>
+              <h2 className="text-lg font-semibold">{t('propertyManagement')}</h2>
             </div>
           </SidebarHeader>
           <SidebarContent>
@@ -119,7 +120,7 @@ export const RootLayout = () => {
                     <SidebarMenuButton asChild>
                       <Link to="/">
                         <Home className="h-4 w-4" />
-                        <span>Home</span>
+                        <span>{t('home')}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -127,7 +128,7 @@ export const RootLayout = () => {
                     <SidebarMenuButton asChild>
                       <Link to="/properties">
                         <Building2 className="h-4 w-4" />
-                        <span>Properties</span>
+                        <span>{t('properties')}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -137,7 +138,7 @@ export const RootLayout = () => {
                         <SidebarMenuButton asChild>
                           <Link to="/users">
                             <Users className="h-4 w-4" />
-                            <span>Users</span>
+                            <span>{t('users')}</span>
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -145,7 +146,7 @@ export const RootLayout = () => {
                         <SidebarMenuButton asChild>
                           <Link to="/tools">
                             <Wrench className="h-4 w-4" />
-                            <span>Tools</span>
+                            <span>{t('tools')}</span>
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -156,7 +157,7 @@ export const RootLayout = () => {
                       <SidebarMenuButton asChild>
                         <Link to="/settings">
                           <Settings className="h-4 w-4" />
-                          <span>Settings</span>
+                          <span>{t('settings')}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -173,7 +174,7 @@ export const RootLayout = () => {
                 onClick={handleSignOut}
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                Sign Out
+                {t('signOut')}
               </Button>
             ) : (
               <Button
@@ -182,7 +183,7 @@ export const RootLayout = () => {
                 onClick={() => setIsAuthDialogOpen(true)}
               >
                 <LogIn className="mr-2 h-4 w-4" />
-                Sign In
+                {t('signIn')}
               </Button>
             )}
           </div>

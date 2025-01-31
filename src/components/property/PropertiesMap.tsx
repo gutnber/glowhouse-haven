@@ -56,6 +56,7 @@ export const PropertiesMap = () => {
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: true,
+          gestureHandling: 'cooperative', // This makes the map only move when click+hold
           styles: createMapStyles()
         })
 
@@ -90,20 +91,20 @@ export const PropertiesMap = () => {
   }, [properties, navigate])
 
   return (
-    <div className="relative w-full h-[300px] overflow-hidden">
+    <div className="relative w-full h-[300px] overflow-hidden rounded-lg">
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted">
+        <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg">
           <UILoader />
         </div>
       )}
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted">
+        <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg">
           <p className="text-destructive">{error}</p>
         </div>
       )}
       <div 
         ref={mapRef} 
-        className="w-full h-full"
+        className="w-full h-full rounded-lg"
         style={{ border: 'none' }}
       />
     </div>

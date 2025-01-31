@@ -16,6 +16,16 @@ const translations = {
     "viewAllProperties": "View All Properties",
     "beds": "Beds",
     "baths": "Baths",
+    "properties": "Properties",
+    "home": "Home",
+    "settings": "Settings",
+    "users": "Users",
+    "tools": "Tools",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "propertyManagement": "Property Management",
+    "loading": "Loading properties...",
+    "addProperty": "Add Property"
   },
   es: {
     "welcome": "Bienvenido a nuestro nido de inversores en Florida",
@@ -24,6 +34,16 @@ const translations = {
     "viewAllProperties": "Ver Todas las Propiedades",
     "beds": "Habitaciones",
     "baths": "Baños",
+    "properties": "Propiedades",
+    "home": "Inicio",
+    "settings": "Configuración",
+    "users": "Usuarios",
+    "tools": "Herramientas",
+    "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión",
+    "propertyManagement": "Gestión de Propiedades",
+    "loading": "Cargando propiedades...",
+    "addProperty": "Agregar Propiedad"
   }
 };
 
