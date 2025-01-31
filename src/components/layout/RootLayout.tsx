@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useLanguage } from "@/contexts/LanguageContext"
+import { LanguageToggle } from "@/components/LanguageToggle"
 
 export const RootLayout = () => {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
@@ -163,6 +164,11 @@ export const RootLayout = () => {
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   )}
+                  <SidebarMenuItem>
+                    <div className="px-3 py-2">
+                      <LanguageToggle />
+                    </div>
+                  </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -203,4 +209,3 @@ export const RootLayout = () => {
     </SidebarProvider>
   )
 }
-

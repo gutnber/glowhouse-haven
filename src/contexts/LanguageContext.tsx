@@ -27,7 +27,18 @@ const translations = {
     "signOut": "Sign Out",
     "propertyManagement": "Property Management",
     "loading": "Loading properties...",
-    "addProperty": "Add Property"
+    "addProperty": "Add Property",
+    "featuredProperties": "Featured Properties",
+    "viewAllProperties": "View All Properties",
+    "propertyType": "Property Type",
+    "allProperties": "All Properties",
+    "townhouse": "Townhouse",
+    "vacantLand": "Vacant Land",
+    "condo": "Condo",
+    "apartment": "Apartment",
+    "multifamily": "Multi-Family",
+    "singleFamily": "Single Family",
+    "commercial": "Commercial"
   },
   es: {
     "welcome": "Bienvenidos a INMA 2.0",
@@ -47,7 +58,18 @@ const translations = {
     "signOut": "Cerrar Sesión",
     "propertyManagement": "Gestión de Propiedades",
     "loading": "Cargando propiedades...",
-    "addProperty": "Agregar Propiedad"
+    "addProperty": "Agregar Propiedad",
+    "featuredProperties": "Propiedades Destacadas",
+    "viewAllProperties": "Ver Todas las Propiedades",
+    "propertyType": "Tipo de Propiedad",
+    "allProperties": "Todas las Propiedades",
+    "townhouse": "Casa Adosada",
+    "vacantLand": "Terreno",
+    "condo": "Condominio",
+    "apartment": "Departamento",
+    "multifamily": "Multi-Familiar",
+    "singleFamily": "Unifamiliar",
+    "commercial": "Comercial"
   }
 };
 
