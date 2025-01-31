@@ -38,6 +38,8 @@ export const FullScreenViewer = ({
       onNavigate('prev')
     } else if (e.key === 'ArrowRight' && selectedIndex < images.length - 1) {
       onNavigate('next')
+    } else if (e.key === 'Escape') {
+      onClose()
     }
   }
 
@@ -73,7 +75,7 @@ export const FullScreenViewer = ({
 
   return (
     <Dialog open={!!selectedImage} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-[90vw] max-h-[90vh] p-0">
+      <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden">
         <div className="absolute right-4 top-4 z-10 flex gap-2">
           <Button
             variant="ghost"
@@ -104,7 +106,7 @@ export const FullScreenViewer = ({
         </div>
         <div 
           ref={containerRef}
-          className="relative w-full h-full"
+          className="relative w-full h-full flex items-center justify-center bg-black/90"
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
@@ -112,7 +114,7 @@ export const FullScreenViewer = ({
           <img
             src={selectedImage || ''}
             alt="Expanded view"
-            className={`w-full h-full object-contain transition-all duration-200 ${isAdmin && selectedImage === featureImageUrl ? 'cursor-move' : ''}`}
+            className={`max-w-full max-h-[90vh] object-contain transition-all duration-200 ${isAdmin && selectedImage === featureImageUrl ? 'cursor-move' : ''}`}
             style={{ 
               objectPosition: `${position.x}% ${position.y}%`
             }}
@@ -123,9 +125,6 @@ export const FullScreenViewer = ({
               {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
             </div>
           )}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-            Use arrow keys or buttons to navigate
-          </div>
         </div>
       </DialogContent>
     </Dialog>

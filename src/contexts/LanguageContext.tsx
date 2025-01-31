@@ -10,10 +10,12 @@ interface LanguageContextType {
 
 const translations = {
   en: {
-    "welcome": "Welcome to our investors nest in florida",
+    "welcome": "Welcome to INMA 2.0",
     "subscribe": "Please subscribe to get the latest news and hottest deals",
-    "featuredProperties": "Featured Properties",
-    "viewAllProperties": "View All Properties",
+    "latestNews": "Latest News",
+    "viewAllNews": "View All News",
+    "showMoreNews": "Show More News",
+    "loadMore": "Load More",
     "beds": "Beds",
     "baths": "Baths",
     "properties": "Properties",
@@ -28,11 +30,13 @@ const translations = {
     "addProperty": "Add Property"
   },
   es: {
-    "welcome": "Bienvenido a nuestro nido de inversores en Florida",
+    "welcome": "Bienvenidos a INMA 2.0",
     "subscribe": "Suscríbase para recibir las últimas noticias y las mejores ofertas",
-    "featuredProperties": "Propiedades Destacadas",
-    "viewAllProperties": "Ver Todas las Propiedades",
-    "beds": "Habitaciones",
+    "latestNews": "Últimas Noticias",
+    "viewAllNews": "Ver Todas las Noticias",
+    "showMoreNews": "Mostrar Más Noticias",
+    "loadMore": "Cargar Más",
+    "beds": "Camas",
     "baths": "Baños",
     "properties": "Propiedades",
     "home": "Inicio",

@@ -3,7 +3,6 @@ import { Building2, Bed, Bath, MapPin } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
-import { useLanguage } from "@/contexts/LanguageContext"
 
 interface PropertyCardProps {
   property: {
@@ -21,8 +20,6 @@ interface PropertyCardProps {
 }
 
 export const PropertyCard = ({ property }: PropertyCardProps) => {
-  const { t } = useLanguage()
-  
   const isNewProperty = (createdAt: string) => {
     const propertyDate = new Date(createdAt)
     const now = new Date()
@@ -75,11 +72,11 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
           <div className="grid grid-cols-3 gap-4 text-sm text-white/60">
             <div className="flex flex-col items-center gap-2">
               <Bed className="h-5.5 w-5.5" strokeWidth={1.5} stroke="#F59E0B" />
-              <span>{property.bedrooms} {t('beds')}</span>
+              <span>{property.bedrooms}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <Bath className="h-5.5 w-5.5" strokeWidth={1.5} stroke="#F59E0B" />
-              <span>{property.bathrooms} {t('baths')}</span>
+              <span>{property.bathrooms}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <Building2 className="h-5.5 w-5.5" strokeWidth={1.5} stroke="#F59E0B" />
