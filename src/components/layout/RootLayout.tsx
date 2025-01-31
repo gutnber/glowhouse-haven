@@ -18,6 +18,7 @@ import { AuthDialog } from "@/components/auth/AuthDialog"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 export const RootLayout = () => {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
@@ -202,3 +203,4 @@ export const RootLayout = () => {
     </SidebarProvider>
   )
 }
+
