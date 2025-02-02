@@ -84,7 +84,7 @@ const Properties = () => {
           )}
         </div>
 
-        <div className="bg-[#1A1F2C]">
+        <div className="bg-[#1A1F2C] w-screen relative left-1/2 -translate-x-1/2">
           <PropertiesMap properties={properties} />
         </div>
 
