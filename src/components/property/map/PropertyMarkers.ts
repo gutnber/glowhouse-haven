@@ -90,9 +90,37 @@ export class PropertyMarkers {
 
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
-      pixelOffset: new google.maps.Size(0, -10),
-      disableAutoPan: false
+      pixelOffset: new google.maps.Size(0, -8),
+      disableAutoPan: false,
+      maxWidth: 150,
+      minWidth: 150
     })
+
+    // Remove default InfoWindow styles
+    google.maps.event.addListener(infoWindow, 'domready', () => {
+      const iwOuter = document.querySelector('.gm-style-iw');
+      if (iwOuter) {
+        const parent = iwOuter.parentElement;
+        // Remove the default close button
+        const closeButton = parent?.querySelector('.gm-ui-hover-effect');
+        if (closeButton) {
+          closeButton.remove();
+        }
+        // Remove default InfoWindow styles
+        const iwBackground = parent?.querySelector('.gm-style-iw-t');
+        if (iwBackground) {
+          const style = document.createElement('style');
+          style.textContent = `
+            .gm-style-iw { padding: 0 !important; }
+            .gm-style-iw > button { display: none !important; }
+            .gm-style-iw > div { overflow: hidden !important; }
+            .gm-style-iw-d { overflow: hidden !important; }
+            .gm-style .gm-style-iw-t::after { display: none !important; }
+          `;
+          document.head.appendChild(style);
+        }
+      }
+    });
 
     marker.addListener("click", () => {
       this.navigate(`/properties/${property.id}`)
@@ -115,7 +143,7 @@ export class PropertyMarkers {
           infoWindow.setOptions({
             pixelOffset: new google.maps.Size(
               0,
-              isNorth ? -55 : -10
+              isNorth ? -45 : -8
             )
           })
         }
