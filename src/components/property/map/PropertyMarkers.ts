@@ -37,11 +37,9 @@ export class PropertyMarkers {
       this.addMarker(property, coords)
     })
 
-    // Only adjust bounds if we have markers
     if (this.markers.length > 0) {
       this.map.fitBounds(bounds)
       
-      // Add some padding to the bounds
       const padded = new google.maps.LatLngBounds(
         new google.maps.LatLng(
           bounds.getSouthWest().lat() - 0.01,
@@ -90,9 +88,10 @@ export class PropertyMarkers {
       }
     })
 
+    // Create InfoWindow with adjusted offset
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
-      pixelOffset: new google.maps.Size(0, -10)
+      pixelOffset: new google.maps.Size(0, -20), // Adjusted base offset
     })
 
     marker.addListener("click", () => {
@@ -106,20 +105,21 @@ export class PropertyMarkers {
       if (closeTimeout) clearTimeout(closeTimeout)
       this.infoWindows.forEach(window => window.close())
       
-      // Calculate optimal position for info window
+      // Calculate optimal position for info window based on viewport
       const markerPosition = marker.getPosition()
       if (markerPosition) {
         const mapBounds = this.map.getBounds()
         if (mapBounds) {
           const center = mapBounds.getCenter()
-          const isNorth = markerPosition.lat() > center.lat()
-          const isEast = markerPosition.lng() > center.lng()
           
-          // Adjust offset based on marker position relative to center
+          // Calculate relative position to center
+          const isNorth = markerPosition.lat() > center.lat()
+          
+          // Adjust vertical offset based on position
           infoWindow.setOptions({
             pixelOffset: new google.maps.Size(
-              isEast ? -110 : 110,
-              isNorth ? -130 : 10
+              0, // Keep horizontal centering
+              isNorth ? -85 : -20 // Adjust vertical offset based on position
             )
           })
         }
