@@ -18,7 +18,6 @@ const Properties = () => {
   const [propertyType, setPropertyType] = useState("all")
   const navigate = useNavigate()
   
-  // Check authentication status
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession()
@@ -66,8 +65,8 @@ const Properties = () => {
     <div className="relative min-h-screen">
       <div className="fixed inset-0 bg-black" />
       
-      <div className="relative space-y-8 max-w-6xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center">
+      <div className="relative space-y-8">
+        <div className="flex justify-between items-center px-4">
           <div className="flex items-center gap-4">
             <h1 className="text-4xl font-bold text-white">{t('properties')}</h1>
             <PropertyTypeSelect 
@@ -85,11 +84,11 @@ const Properties = () => {
           )}
         </div>
 
-        <div className="backdrop-blur-sm bg-white/5 rounded-xl border border-white/20 p-4">
+        <div className="bg-[#1A1F2C]">
           <PropertiesMap properties={properties} />
         </div>
 
-        <div className="flex gap-6 flex-wrap justify-center">
+        <div className="flex gap-6 flex-wrap justify-center px-4">
           {properties?.map((property) => (
             <PropertyCard key={property.id} property={property} />
           ))}

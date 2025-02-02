@@ -49,7 +49,7 @@ export const PropertiesMap = ({ properties }: PropertiesMapProps) => {
   return (
     <div 
       ref={mapRef} 
-      className="w-full h-[400px] rounded-lg overflow-hidden"
+      className="w-[100vw] h-[400px] -ml-[calc(50vw-50%)] relative left-[calc(50%-50vw)]"
     />
   )
 }
