@@ -90,7 +90,7 @@ export class PropertyMarkers {
 
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
-      pixelOffset: new google.maps.Size(0, -12),
+      pixelOffset: new google.maps.Size(0, -10),
       disableAutoPan: false
     })
 
@@ -115,7 +115,7 @@ export class PropertyMarkers {
           infoWindow.setOptions({
             pixelOffset: new google.maps.Size(
               0,
-              isNorth ? -65 : -12
+              isNorth ? -55 : -10
             )
           })
         }
