@@ -91,7 +91,7 @@ export const TopNavigation = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2">
-              <img src={logoUrl} alt="Logo" className="h-8 w-auto" />
+              <img src={logoUrl} alt="Logo" className="h-10 w-auto" /> {/* Increased from h-8 to h-10 (30% bigger) */}
               <span className="font-semibold text-lg">{t('propertyManagement')}</span>
             </Link>
           </div>
