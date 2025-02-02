@@ -35,6 +35,7 @@ export const PropertiesMap = ({ properties }: PropertiesMapProps) => {
 
         // Add markers for each property
         const bounds = L.latLngBounds([])
+        let hasValidMarkers = false
         
         validProperties.forEach(property => {
           let lat = property.latitude
@@ -75,11 +76,12 @@ export const PropertiesMap = ({ properties }: PropertiesMapProps) => {
 
             // Extend bounds to include this marker
             bounds.extend([lat, lng])
+            hasValidMarkers = true
           }
         })
 
-        // Fit bounds with padding
-        if (!bounds.isEmpty()) {
+        // Fit bounds with padding if we have valid markers
+        if (hasValidMarkers && bounds.getNorthEast() && bounds.getSouthWest()) {
           map.fitBounds(bounds, {
             padding: [50, 50]
           })
