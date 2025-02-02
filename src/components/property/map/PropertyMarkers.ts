@@ -15,7 +15,7 @@ interface Property {
 }
 
 export class PropertyMarkers {
-  private markers: google.maps.marker.AdvancedMarkerElement[] = []
+  private markers: google.maps.Marker[] = []
   private infoWindows: google.maps.InfoWindow[] = []
   private map: google.maps.Map
   private navigate: (path: string) => void
@@ -73,24 +73,21 @@ export class PropertyMarkers {
   }
 
   private addMarker(property: Property, position: google.maps.LatLng | google.maps.LatLngLiteral) {
-    // Create marker container
-    const markerContainer = document.createElement('div')
-    markerContainer.className = 'custom-marker'
-    
-    // Create pin element with styles
-    const pinElement = document.createElement('div')
-    pinElement.innerHTML = `
-      <div class="marker-pin" style="
-        width: 20px;
-        height: 20px;
-        background-color: #F97316;
-        border: 2px solid white;
-        border-radius: 50%;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        transition: transform 0.2s ease-in-out;
-      "></div>
-    `
+    // Create marker with custom icon
+    const marker = new google.maps.Marker({
+      position,
+      map: this.map,
+      title: property.name,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 10,
+        fillColor: "#F97316",
+        fillOpacity: 1,
+        strokeColor: "#FFFFFF",
+        strokeWeight: 2,
+      },
+      animation: google.maps.Animation.DROP
+    })
 
     // Create info window content using PropertyMarkerCard
     const infoWindowContent = document.createElement('div')
@@ -105,14 +102,6 @@ export class PropertyMarkers {
       minWidth: 150
     })
 
-    // Create advanced marker
-    const marker = new google.maps.marker.AdvancedMarkerElement({
-      map: this.map,
-      position,
-      title: property.name,
-      content: pinElement
-    })
-
     // Add click event listener
     marker.addListener("click", () => {
       this.navigate(`/properties/${property.id}`)
@@ -125,7 +114,7 @@ export class PropertyMarkers {
       if (closeTimeout) clearTimeout(closeTimeout)
       this.infoWindows.forEach(window => window.close())
       
-      const markerPosition = marker.position as google.maps.LatLng
+      const markerPosition = marker.getPosition()
       if (markerPosition) {
         const mapBounds = this.map.getBounds()
         if (mapBounds) {
@@ -153,8 +142,8 @@ export class PropertyMarkers {
     }
 
     // Add hover event listeners
-    marker.addEventListener("mouseover", openInfoWindow)
-    marker.addEventListener("mouseout", closeInfoWindow)
+    marker.addListener("mouseover", openInfoWindow)
+    marker.addListener("mouseout", closeInfoWindow)
 
     // Add hover events for info window content
     google.maps.event.addListener(infoWindow, 'domready', () => {
@@ -172,7 +161,7 @@ export class PropertyMarkers {
   }
 
   private clearMarkers() {
-    this.markers.forEach(marker => marker.map = null)
+    this.markers.forEach(marker => marker.setMap(null))
     this.markers = []
     this.infoWindows.forEach(infoWindow => infoWindow.close())
     this.infoWindows = []
