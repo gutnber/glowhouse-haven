@@ -15,7 +15,7 @@ interface Property {
 }
 
 export class PropertyMarkers {
-  private markers: google.maps.Marker[] = []
+  private markers: google.maps.marker.AdvancedMarkerElement[] = []
   private infoWindows: google.maps.InfoWindow[] = []
   private map: google.maps.Map
   private navigate: (path: string) => void
@@ -73,20 +73,27 @@ export class PropertyMarkers {
   }
 
   private addMarker(property: Property, position: google.maps.LatLng | google.maps.LatLngLiteral) {
-    const marker = new google.maps.Marker({
+    // Create pin element
+    const pinElement = document.createElement('div');
+    pinElement.innerHTML = `
+      <div style="
+        width: 20px;
+        height: 20px;
+        background-color: #F97316;
+        border: 2px solid white;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      "></div>
+    `;
+
+    // Create advanced marker
+    const marker = new google.maps.marker.AdvancedMarkerElement({
       position,
       map: this.map,
       title: property.name,
-      animation: google.maps.Animation.DROP,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 10,
-        fillColor: "#F97316",
-        fillOpacity: 1,
-        strokeColor: "#FFFFFF",
-        strokeWeight: 2,
-      }
-    })
+      content: pinElement
+    });
 
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
@@ -94,7 +101,7 @@ export class PropertyMarkers {
       disableAutoPan: false,
       maxWidth: 150,
       minWidth: 150
-    })
+    });
 
     google.maps.event.addListener(infoWindow, 'domready', () => {
       const iwOuter = document.querySelector('.gm-style-iw');
@@ -142,63 +149,63 @@ export class PropertyMarkers {
 
     marker.addListener("click", () => {
       this.navigate(`/properties/${property.id}`)
-    })
+    });
 
-    let isInfoWindowOpen = false
-    let closeTimeout: NodeJS.Timeout | null = null
+    let isInfoWindowOpen = false;
+    let closeTimeout: NodeJS.Timeout | null = null;
 
     const openInfoWindow = () => {
-      if (closeTimeout) clearTimeout(closeTimeout)
-      this.infoWindows.forEach(window => window.close())
+      if (closeTimeout) clearTimeout(closeTimeout);
+      this.infoWindows.forEach(window => window.close());
       
-      const markerPosition = marker.getPosition()
+      const markerPosition = marker.position as google.maps.LatLng;
       if (markerPosition) {
-        const mapBounds = this.map.getBounds()
+        const mapBounds = this.map.getBounds();
         if (mapBounds) {
-          const center = mapBounds.getCenter()
-          const isNorth = markerPosition.lat() > center.lat()
+          const center = mapBounds.getCenter();
+          const isNorth = markerPosition.lat() > center.lat();
           
           infoWindow.setOptions({
             pixelOffset: new google.maps.Size(
               0,
               isNorth ? -45 : -8
             )
-          })
+          });
         }
       }
       
-      infoWindow.open(this.map, marker)
-      isInfoWindowOpen = true
-    }
+      infoWindow.open(this.map, marker);
+      isInfoWindowOpen = true;
+    };
 
     const closeInfoWindow = () => {
       closeTimeout = setTimeout(() => {
-        infoWindow.close()
-        isInfoWindowOpen = false
-      }, 300)
-    }
+        infoWindow.close();
+        isInfoWindowOpen = false;
+      }, 300);
+    };
 
-    marker.addListener("mouseover", openInfoWindow)
-    marker.addListener("mouseout", closeInfoWindow)
+    marker.addListener("mouseover", openInfoWindow);
+    marker.addListener("mouseout", closeInfoWindow);
 
     google.maps.event.addListener(infoWindow, 'domready', () => {
-      const content = infoWindow.getContent()
+      const content = infoWindow.getContent();
       if (content && typeof content !== 'string') {
         content.addEventListener('mouseover', () => {
-          if (closeTimeout) clearTimeout(closeTimeout)
-        })
-        content.addEventListener('mouseout', closeInfoWindow)
+          if (closeTimeout) clearTimeout(closeTimeout);
+        });
+        content.addEventListener('mouseout', closeInfoWindow);
       }
-    })
+    });
 
-    this.markers.push(marker)
-    this.infoWindows.push(infoWindow)
+    this.markers.push(marker);
+    this.infoWindows.push(infoWindow);
   }
 
   private clearMarkers() {
-    this.markers.forEach(marker => marker.setMap(null))
-    this.markers = []
-    this.infoWindows.forEach(infoWindow => infoWindow.close())
-    this.infoWindows = []
+    this.markers.forEach(marker => marker.map = null);
+    this.markers = [];
+    this.infoWindows.forEach(infoWindow => infoWindow.close());
+    this.infoWindows = [];
   }
 }
