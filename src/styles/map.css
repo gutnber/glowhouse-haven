@@ -1,7 +1,7 @@
 .property-popup .leaflet-popup-content-wrapper {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: transparent;
+  box-shadow: none;
+  border: none;
 }
 
 .property-popup .leaflet-popup-content {
@@ -10,5 +10,13 @@
 }
 
 .property-popup .leaflet-popup-tip {
-  background: rgba(255, 255, 255, 0.95);
+  display: none;
+}
+
+.property-popup {
+  transition: transform 0.2s ease-in-out;
+}
+
+.property-popup:hover {
+  transform: translateY(-4px);
 }
