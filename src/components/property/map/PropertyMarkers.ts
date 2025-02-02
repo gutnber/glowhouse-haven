@@ -75,12 +75,12 @@ export class PropertyMarkers {
   private addMarker(property: Property, position: google.maps.LatLng | google.maps.LatLngLiteral) {
     // Create marker container
     const markerContainer = document.createElement('div')
-    markerContainer.className = 'marker-container'
+    markerContainer.className = 'custom-marker'
     
-    // Create pin element
+    // Create pin element with styles
     const pinElement = document.createElement('div')
     pinElement.innerHTML = `
-      <div style="
+      <div class="marker-pin" style="
         width: 20px;
         height: 20px;
         background-color: #F97316;
@@ -92,7 +92,7 @@ export class PropertyMarkers {
       "></div>
     `
 
-    // Create info window content
+    // Create info window content using PropertyMarkerCard
     const infoWindowContent = document.createElement('div')
     infoWindowContent.innerHTML = PropertyMarkerCard({ property })
 
@@ -107,13 +107,13 @@ export class PropertyMarkers {
 
     // Create advanced marker
     const marker = new google.maps.marker.AdvancedMarkerElement({
-      position,
       map: this.map,
+      position,
       title: property.name,
       content: pinElement
     })
 
-    // Add event listeners
+    // Add click event listener
     marker.addListener("click", () => {
       this.navigate(`/properties/${property.id}`)
     })
@@ -152,9 +152,11 @@ export class PropertyMarkers {
       }, 300)
     }
 
-    marker.addListener("mouseover", openInfoWindow)
-    marker.addListener("mouseout", closeInfoWindow)
+    // Add hover event listeners
+    marker.addEventListener("mouseover", openInfoWindow)
+    marker.addEventListener("mouseout", closeInfoWindow)
 
+    // Add hover events for info window content
     google.maps.event.addListener(infoWindow, 'domready', () => {
       const content = infoWindow.getContent()
       if (content && typeof content !== 'string') {
