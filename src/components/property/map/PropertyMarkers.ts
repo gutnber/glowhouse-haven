@@ -73,18 +73,17 @@ export class PropertyMarkers {
   }
 
   private addMarker(property: Property, position: google.maps.LatLng | google.maps.LatLngLiteral) {
-    // Create marker with custom icon
+    // Create marker with custom icon - removed white border
     const marker = new google.maps.Marker({
       position,
       map: this.map,
       title: property.name,
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        scale: 10,
+        scale: 8,
         fillColor: "#F97316",
         fillOpacity: 1,
-        strokeColor: "#FFFFFF",
-        strokeWeight: 2,
+        strokeWeight: 0, // Removed the white border by setting strokeWeight to 0
       },
       animation: google.maps.Animation.DROP
     })
