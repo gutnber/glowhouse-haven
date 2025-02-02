@@ -62,7 +62,7 @@ const Properties = () => {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen overflow-x-hidden">
       <div className="fixed inset-0 bg-black" />
       
       <div className="relative space-y-8">
@@ -84,7 +84,7 @@ const Properties = () => {
           )}
         </div>
 
-        <div className="bg-[#1A1F2C]">
+        <div className="bg-[#1A1F2C] w-full">
           <PropertiesMap properties={properties} />
         </div>
 
