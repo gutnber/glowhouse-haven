@@ -7,6 +7,7 @@ export const Logo = () => {
 
   useEffect(() => {
     const fetchLogoUrl = async () => {
+      console.log("Fetching logo URL...")
       const { data, error } = await supabase
         .from('app_settings')
         .select('logo_url')
@@ -18,6 +19,7 @@ export const Logo = () => {
       }
       
       if (data?.logo_url) {
+        console.log("Setting new logo URL:", data.logo_url)
         setLogoUrl(data.logo_url)
       }
     }
@@ -25,9 +27,17 @@ export const Logo = () => {
     fetchLogoUrl()
   }, [])
 
+  console.log("Rendering Logo component with URL:", logoUrl)
+  
   return (
     <Link to="/" className="flex items-center gap-2">
-      <img src={logoUrl} alt="Logo" className="h-14 w-auto" />
+      <img 
+        src={logoUrl} 
+        alt="Logo" 
+        className="h-14 w-auto" 
+        onLoad={() => console.log("Logo image loaded")}
+        onError={(e) => console.error("Logo image failed to load:", e)}
+      />
       <span className="font-semibold text-lg">Inma Soluciones Inmobiliarias</span>
     </Link>
   )
