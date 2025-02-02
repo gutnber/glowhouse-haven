@@ -1,112 +1,142 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { Loader } from "@googlemaps/js-api-loader"
-import { useQuery } from "@tanstack/react-query"
-import { supabase } from "@/integrations/supabase/client"
-import { useNavigate } from "react-router-dom"
-import { Loader as UILoader } from "@/components/ui/loader"
-import { PropertyMarkers } from "./map/PropertyMarkers"
-import { createMapStyles } from "./map/MapStyles"
+import { Tables } from "@/integrations/supabase/types"
 
-export const PropertiesMap = () => {
+interface PropertiesMapProps {
+  properties: Tables<'properties'>[]
+}
+
+export const PropertiesMap = ({ properties }: PropertiesMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
-  const mapInstanceRef = useRef<google.maps.Map | null>(null)
-  const markersManagerRef = useRef<PropertyMarkers | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const navigate = useNavigate()
-
-  const { data: properties } = useQuery({
-    queryKey: ['properties'],
-    queryFn: async () => {
-      console.log('Fetching properties for map')
-      const { data, error } = await supabase
-        .from('properties')
-        .select('id, name, address, bedrooms, bathrooms, price, feature_image_url, google_maps_url, latitude, longitude')
-
-      if (error) throw error
-      console.log('Fetched properties:', data)
-      return data
-    }
-  })
-
+  
   useEffect(() => {
     const initMap = async () => {
-      if (!mapRef.current || !properties?.length) {
-        console.log('Map initialization skipped:', { 
-          hasMapRef: !!mapRef.current, 
-          hasProperties: !!properties?.length 
-        })
-        return
-      }
+      const loader = new Loader({
+        apiKey: "AIzaSyDj7PNdT4nHJRXrE2kzJdT_SQ7AHE4Okw8",
+        version: "weekly",
+      })
 
       try {
-        console.log('Initializing map with properties')
-        setIsLoading(true)
-        setError(null)
+        const google = await loader.load()
+        const validProperties = properties.filter(
+          (p) => p.latitude && p.longitude
+        )
 
-        const loader = new Loader({
-          apiKey: "AIzaSyBEUM9Ra3L3pHapDvDXrsnf9p3uZ8girGQ",
-          version: "weekly",
+        if (!mapRef.current || validProperties.length === 0) return
+
+        const map = new google.maps.Map(mapRef.current, {
+          center: { 
+            lat: validProperties[0].latitude || 0,
+            lng: validProperties[0].longitude || 0
+          },
+          zoom: 12,
+          styles: [
+            {
+              featureType: "all",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#ffffff" }],
+            },
+            {
+              featureType: "all",
+              elementType: "labels.text.stroke",
+              stylers: [{ color: "#000000" }, { lightness: 13 }],
+            },
+            {
+              featureType: "administrative",
+              elementType: "geometry.fill",
+              stylers: [{ color: "#000000" }],
+            },
+            {
+              featureType: "administrative",
+              elementType: "geometry.stroke",
+              stylers: [{ color: "#144b53" }, { lightness: 14 }, { weight: 1.4 }],
+            },
+            {
+              featureType: "landscape",
+              elementType: "all",
+              stylers: [{ color: "#08304b" }],
+            },
+            {
+              featureType: "poi",
+              elementType: "geometry",
+              stylers: [{ color: "#0c4152" }, { lightness: 5 }],
+            },
+            {
+              featureType: "road.highway",
+              elementType: "geometry.fill",
+              stylers: [{ color: "#000000" }],
+            },
+            {
+              featureType: "road.highway",
+              elementType: "geometry.stroke",
+              stylers: [{ color: "#0b434f" }, { lightness: 25 }],
+            },
+            {
+              featureType: "road.arterial",
+              elementType: "geometry.fill",
+              stylers: [{ color: "#000000" }],
+            },
+            {
+              featureType: "road.arterial",
+              elementType: "geometry.stroke",
+              stylers: [{ color: "#0b3d51" }, { lightness: 16 }],
+            },
+            {
+              featureType: "road.local",
+              elementType: "geometry",
+              stylers: [{ color: "#000000" }],
+            },
+            {
+              featureType: "transit",
+              elementType: "all",
+              stylers: [{ color: "#146474" }],
+            },
+            {
+              featureType: "water",
+              elementType: "all",
+              stylers: [{ color: "#021019" }],
+            },
+          ],
         })
 
-        await loader.load()
+        validProperties.forEach((property) => {
+          if (property.latitude && property.longitude) {
+            const marker = new google.maps.Marker({
+              position: { 
+                lat: property.latitude,
+                lng: property.longitude
+              },
+              map,
+              title: property.name,
+            })
 
-        const mapInstance = new google.maps.Map(mapRef.current, {
-          zoom: 10,
-          mapTypeControl: false,
-          streetViewControl: false,
-          fullscreenControl: true,
-          gestureHandling: 'cooperative',
-          styles: createMapStyles()
+            const infoWindow = new google.maps.InfoWindow({
+              content: `
+                <div style="color: black;">
+                  <h3>${property.name}</h3>
+                  <p>${property.address}</p>
+                  <p>$${property.price.toLocaleString()}</p>
+                </div>
+              `,
+            })
+
+            marker.addListener("click", () => {
+              infoWindow.open(map, marker)
+            })
+          }
         })
-
-        const markersManager = new PropertyMarkers(mapInstance, navigate)
-        const bounds = markersManager.addMarkers(properties)
-
-        mapInstance.fitBounds(bounds, {
-          top: 50,
-          right: 50,
-          bottom: 50,
-          left: 50
-        })
-
-        mapInstanceRef.current = mapInstance
-        markersManagerRef.current = markersManager
-        console.log('Map initialized successfully')
-        setIsLoading(false)
       } catch (error) {
         console.error("Error loading map:", error)
-        setError("Failed to load map")
-        setIsLoading(false)
       }
     }
 
     initMap()
-
-    return () => {
-      if (mapInstanceRef.current) {
-        markersManagerRef.current = null
-      }
-    }
-  }, [properties, navigate])
+  }, [properties])
 
   return (
-    <div className="relative w-full h-[400px] overflow-hidden rounded-xl border border-white/20">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm rounded-xl z-10">
-          <UILoader />
-        </div>
-      )}
-      {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm rounded-xl z-10">
-          <p className="text-destructive">{error}</p>
-        </div>
-      )}
-      <div 
-        ref={mapRef} 
-        className="w-full h-full rounded-xl"
-        style={{ border: 'none' }}
-      />
-    </div>
+    <div 
+      ref={mapRef} 
+      className="w-full h-[400px] rounded-lg overflow-hidden"
+    />
   )
 }

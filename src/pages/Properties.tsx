@@ -5,16 +5,30 @@ import { PropertyCard } from "@/components/home/PropertyCard"
 import { PropertiesMap } from "@/components/property/PropertiesMap"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { PropertyTypeSelect } from "@/components/property/PropertyTypeSelect"
 import { Tables } from "@/integrations/supabase/types"
+import { useEffect } from "react"
 
 const Properties = () => {
   const { isAdmin } = useIsAdmin()
   const { t } = useLanguage()
   const [propertyType, setPropertyType] = useState("all")
+  const navigate = useNavigate()
+  
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        console.log('No active session found, redirecting to home')
+        navigate('/')
+      }
+    }
+    checkAuth()
+  }, [navigate])
   
   const { data: properties = [], isLoading } = useQuery({
     queryKey: ['properties', propertyType],
