@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Card } from "@/components/ui/card"
-import { Loader } from "@/components/ui/loader"
-import { Loader as GoogleMapsLoader } from "@googlemaps/js-api-loader"
+import { Loader as UILoader } from "@/components/ui/loader"
+import { googleMapsLoader } from "@/utils/googleMaps"
 
 interface PropertyMapProps {
   googleMapsUrl?: string | null
@@ -81,12 +81,7 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
         setIsLoading(true)
         setError(null)
 
-        const loader = new GoogleMapsLoader({
-          apiKey: "AIzaSyBEUM9Ra3L3pHapDvDXrsnf9p3uZ8girGQ",
-          version: "weekly",
-        })
-
-        await loader.load()
+        const google = await googleMapsLoader.load()
 
         // Create the map instance
         const mapInstance = new google.maps.Map(mapRef.current, {
@@ -140,7 +135,7 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
       <div className="relative w-full h-[250px] rounded-lg overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-muted">
-            <Loader />
+            <UILoader />
           </div>
         )}
         {error && (

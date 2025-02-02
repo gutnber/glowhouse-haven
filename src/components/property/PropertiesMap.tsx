@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
-import { Loader } from "@googlemaps/js-api-loader"
 import { Tables } from "@/integrations/supabase/types"
+import { googleMapsLoader } from "@/utils/googleMaps"
 
 interface PropertiesMapProps {
   properties: Tables<'properties'>[]
@@ -11,13 +11,8 @@ export const PropertiesMap = ({ properties }: PropertiesMapProps) => {
   
   useEffect(() => {
     const initMap = async () => {
-      const loader = new Loader({
-        apiKey: "AIzaSyDj7PNdT4nHJRXrE2kzJdT_SQ7AHE4Okw8",
-        version: "weekly",
-      })
-
       try {
-        const google = await loader.load()
+        const google = await googleMapsLoader.load()
         const validProperties = properties.filter(
           (p) => p.latitude && p.longitude
         )
