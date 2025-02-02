@@ -11,7 +11,7 @@ interface PropertyMarkerCardProps {
 
 export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
   return `
-    <div class="w-[150px] [&_*]:!m-0 [&_*]:!p-0 overflow-hidden rounded-lg shadow-lg">
+    <div class="w-[150px] [&_*]:!m-0 [&_*]:!p-0 overflow-hidden">
       ${property.feature_image_url ? 
         `<div class="relative">
           <img 
@@ -20,7 +20,7 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
             class="w-full h-24 object-cover"
           />
           <div class="absolute top-0 right-0">
-            <span class="bg-[#F97316] text-white text-[10px] leading-none px-1 rounded-bl">
+            <span class="bg-[#F97316] text-white text-[10px] leading-none px-1">
               $${property.price.toLocaleString()}
             </span>
           </div>
