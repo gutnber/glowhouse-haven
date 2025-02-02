@@ -37,20 +37,38 @@ export class PropertyMarkers {
       this.addMarker(property, coords)
     })
 
+    // Only adjust bounds if we have markers
+    if (this.markers.length > 0) {
+      this.map.fitBounds(bounds)
+      
+      // Add some padding to the bounds
+      const padded = new google.maps.LatLngBounds(
+        new google.maps.LatLng(
+          bounds.getSouthWest().lat() - 0.01,
+          bounds.getSouthWest().lng() - 0.01
+        ),
+        new google.maps.LatLng(
+          bounds.getNorthEast().lat() + 0.01,
+          bounds.getNorthEast().lng() + 0.01
+        )
+      )
+      this.map.fitBounds(padded)
+    }
+
     return bounds
   }
 
   private getPropertyCoordinates(property: Property) {
-    if (property.google_maps_url) {
-      const coords = extractCoordinates(property.google_maps_url)
-      if (coords) return coords
-    }
-    
     if (property.latitude && property.longitude) {
       return { 
         lat: Number(property.latitude), 
         lng: Number(property.longitude) 
       }
+    }
+    
+    if (property.google_maps_url) {
+      const coords = extractCoordinates(property.google_maps_url)
+      if (coords) return coords
     }
 
     return null
@@ -74,43 +92,62 @@ export class PropertyMarkers {
 
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
-      disableAutoPan: true,
       pixelOffset: new google.maps.Size(0, -10)
     })
-
-    let closeTimeout: NodeJS.Timeout
 
     marker.addListener("click", () => {
       this.navigate(`/properties/${property.id}`)
     })
 
-    marker.addListener("mouseover", () => {
+    let isInfoWindowOpen = false
+    let closeTimeout: NodeJS.Timeout | null = null
+
+    const openInfoWindow = () => {
       if (closeTimeout) clearTimeout(closeTimeout)
       this.infoWindows.forEach(window => window.close())
       
+      // Calculate optimal position for info window
       const markerPosition = marker.getPosition()
       if (markerPosition) {
-        const mapCenter = this.map.getCenter()
-        if (mapCenter) {
-          const isNorth = markerPosition.lat() > mapCenter.lat()
-          const isEast = markerPosition.lng() > mapCenter.lng()
+        const mapBounds = this.map.getBounds()
+        if (mapBounds) {
+          const center = mapBounds.getCenter()
+          const isNorth = markerPosition.lat() > center.lat()
+          const isEast = markerPosition.lng() > center.lng()
           
+          // Adjust offset based on marker position relative to center
           infoWindow.setOptions({
             pixelOffset: new google.maps.Size(
               isEast ? -110 : 110,
-              isNorth ? -20 : 20
+              isNorth ? -130 : 10
             )
           })
         }
       }
       
       infoWindow.open(this.map, marker)
-    })
+      isInfoWindowOpen = true
+    }
 
-    marker.addListener("mouseout", () => {
+    const closeInfoWindow = () => {
       closeTimeout = setTimeout(() => {
         infoWindow.close()
+        isInfoWindowOpen = false
       }, 300)
+    }
+
+    marker.addListener("mouseover", openInfoWindow)
+    marker.addListener("mouseout", closeInfoWindow)
+
+    // Handle mouse events on the info window content
+    google.maps.event.addListener(infoWindow, 'domready', () => {
+      const content = infoWindow.getContent()
+      if (content && typeof content !== 'string') {
+        content.addEventListener('mouseover', () => {
+          if (closeTimeout) clearTimeout(closeTimeout)
+        })
+        content.addEventListener('mouseout', closeInfoWindow)
+      }
     })
 
     this.markers.push(marker)

@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react"
 import { Tables } from "@/integrations/supabase/types"
 import { googleMapsLoader } from "@/utils/googleMaps"
+import { createMapStyles } from "./map/MapStyles"
+import { PropertyMarkers } from "./map/PropertyMarkers"
+import { useNavigate } from "react-router-dom"
 
 interface PropertiesMapProps {
   properties: Tables<'properties'>[]
@@ -8,13 +11,14 @@ interface PropertiesMapProps {
 
 export const PropertiesMap = ({ properties }: PropertiesMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
   
   useEffect(() => {
     const initMap = async () => {
       try {
         const google = await googleMapsLoader.load()
         const validProperties = properties.filter(
-          (p) => p.latitude && p.longitude
+          (p) => (p.latitude && p.longitude) || p.google_maps_url
         )
 
         if (!mapRef.current || validProperties.length === 0) return
@@ -25,108 +29,22 @@ export const PropertiesMap = ({ properties }: PropertiesMapProps) => {
             lng: validProperties[0].longitude || 0
           },
           zoom: 12,
-          styles: [
-            {
-              featureType: "all",
-              elementType: "labels.text.fill",
-              stylers: [{ color: "#ffffff" }],
-            },
-            {
-              featureType: "all",
-              elementType: "labels.text.stroke",
-              stylers: [{ color: "#000000" }, { lightness: 13 }],
-            },
-            {
-              featureType: "administrative",
-              elementType: "geometry.fill",
-              stylers: [{ color: "#000000" }],
-            },
-            {
-              featureType: "administrative",
-              elementType: "geometry.stroke",
-              stylers: [{ color: "#144b53" }, { lightness: 14 }, { weight: 1.4 }],
-            },
-            {
-              featureType: "landscape",
-              elementType: "all",
-              stylers: [{ color: "#08304b" }],
-            },
-            {
-              featureType: "poi",
-              elementType: "geometry",
-              stylers: [{ color: "#0c4152" }, { lightness: 5 }],
-            },
-            {
-              featureType: "road.highway",
-              elementType: "geometry.fill",
-              stylers: [{ color: "#000000" }],
-            },
-            {
-              featureType: "road.highway",
-              elementType: "geometry.stroke",
-              stylers: [{ color: "#0b434f" }, { lightness: 25 }],
-            },
-            {
-              featureType: "road.arterial",
-              elementType: "geometry.fill",
-              stylers: [{ color: "#000000" }],
-            },
-            {
-              featureType: "road.arterial",
-              elementType: "geometry.stroke",
-              stylers: [{ color: "#0b3d51" }, { lightness: 16 }],
-            },
-            {
-              featureType: "road.local",
-              elementType: "geometry",
-              stylers: [{ color: "#000000" }],
-            },
-            {
-              featureType: "transit",
-              elementType: "all",
-              stylers: [{ color: "#146474" }],
-            },
-            {
-              featureType: "water",
-              elementType: "all",
-              stylers: [{ color: "#021019" }],
-            },
-          ],
+          styles: createMapStyles(),
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: true,
         })
 
-        validProperties.forEach((property) => {
-          if (property.latitude && property.longitude) {
-            const marker = new google.maps.Marker({
-              position: { 
-                lat: property.latitude,
-                lng: property.longitude
-              },
-              map,
-              title: property.name,
-            })
+        const propertyMarkers = new PropertyMarkers(map, navigate)
+        propertyMarkers.addMarkers(validProperties)
 
-            const infoWindow = new google.maps.InfoWindow({
-              content: `
-                <div style="color: black;">
-                  <h3>${property.name}</h3>
-                  <p>${property.address}</p>
-                  <p>$${property.price.toLocaleString()}</p>
-                </div>
-              `,
-            })
-
-            marker.addListener("click", () => {
-              infoWindow.open(map, marker)
-            })
-          }
-        })
       } catch (error) {
         console.error("Error loading map:", error)
       }
     }
 
     initMap()
-  }, [properties])
+  }, [properties, navigate])
 
   return (
     <div 
