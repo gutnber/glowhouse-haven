@@ -19,15 +19,16 @@ const propertyFormSchema = z.object({
   arv: z.coerce.number().positive("ARV must be greater than 0").optional(),
   features: z.string().transform(str => str ? str.split(',').map(s => s.trim()).filter(Boolean) : []),
   images: z.array(z.string()).optional(),
+  property_type: z.string(),
+  mode: z.string(),
+  status: z.string()
 })
-
-type PropertyFormValues = z.infer<typeof propertyFormSchema>
 
 const AddProperty = () => {
   const { toast } = useToast()
   const navigate = useNavigate()
   
-  const form = useForm<PropertyFormValues>({
+  const form = useForm<z.infer<typeof propertyFormSchema>>({
     resolver: zodResolver(propertyFormSchema),
     defaultValues: {
       name: "",
@@ -40,11 +41,14 @@ const AddProperty = () => {
       arv: undefined,
       features: [],
       images: [],
+      property_type: "singleFamily",
+      mode: "sale",
+      status: "available"
     },
   })
 
   const mutation = useMutation({
-    mutationFn: async (values: PropertyFormValues) => {
+    mutationFn: async (values: z.infer<typeof propertyFormSchema>) => {
       console.log('Submitting property:', values)
       const { data, error } = await supabase
         .from('properties')
@@ -59,6 +63,9 @@ const AddProperty = () => {
           arv: values.arv,
           features: values.features,
           images: values.images,
+          property_type: values.property_type,
+          mode: values.mode,
+          status: values.status
         })
         .select()
         .single()
@@ -83,7 +90,7 @@ const AddProperty = () => {
     },
   })
 
-  const onSubmit = (values: PropertyFormValues) => {
+  const onSubmit = (values: z.infer<typeof propertyFormSchema>) => {
     mutation.mutate(values)
   }
 

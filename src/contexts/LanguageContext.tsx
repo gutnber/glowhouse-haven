@@ -38,7 +38,16 @@ const translations = {
     "apartment": "Apartment",
     "multifamily": "Multi-Family",
     "singleFamily": "Single Family",
-    "commercial": "Commercial"
+    "commercial": "Commercial",
+    "propertyMode": "Property Mode",
+    "propertyStatus": "Status",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "available": "Available",
+    "pending": "Pending",
+    "sold": "Sold",
+    "cabin": "Cabin",
+    "ranch": "Ranch"
   },
   es: {
     "welcome": "Bienvenidos a INMA 2.0",
@@ -69,7 +78,16 @@ const translations = {
     "apartment": "Departamento",
     "multifamily": "Multi-Familiar",
     "singleFamily": "Unifamiliar",
-    "commercial": "Comercial"
+    "commercial": "Comercial",
+    "propertyMode": "Modo de Propiedad",
+    "propertyStatus": "Estado",
+    "forSale": "En Venta",
+    "forRent": "En Alquiler",
+    "available": "Disponible",
+    "pending": "Pendiente",
+    "sold": "Vendido",
+    "cabin": "Cabaña",
+    "ranch": "Rancho"
   }
 };
 

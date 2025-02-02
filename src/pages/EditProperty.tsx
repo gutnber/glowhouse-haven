@@ -25,6 +25,9 @@ const propertyFormSchema = z.object({
   youtube_muted: z.boolean().optional().nullable(),
   youtube_controls: z.boolean().optional().nullable(),
   enable_border_beam: z.boolean().optional().nullable(),
+  property_type: z.string(),
+  mode: z.string(),
+  status: z.string()
 })
 
 type PropertyFormValues = z.infer<typeof propertyFormSchema>

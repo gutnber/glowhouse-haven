@@ -114,9 +114,11 @@ export type Database = {
           images: string[] | null
           latitude: number | null
           longitude: number | null
+          mode: string | null
           name: string
           price: number
           property_type: string | null
+          status: string | null
           updated_at: string
           youtube_autoplay: boolean | null
           youtube_controls: boolean | null
@@ -140,9 +142,11 @@ export type Database = {
           images?: string[] | null
           latitude?: number | null
           longitude?: number | null
+          mode?: string | null
           name: string
           price: number
           property_type?: string | null
+          status?: string | null
           updated_at?: string
           youtube_autoplay?: boolean | null
           youtube_controls?: boolean | null
@@ -166,9 +170,11 @@ export type Database = {
           images?: string[] | null
           latitude?: number | null
           longitude?: number | null
+          mode?: string | null
           name?: string
           price?: number
           property_type?: string | null
+          status?: string | null
           updated_at?: string
           youtube_autoplay?: boolean | null
           youtube_controls?: boolean | null
