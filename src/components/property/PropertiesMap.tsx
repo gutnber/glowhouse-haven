@@ -49,7 +49,7 @@ export const PropertiesMap = ({ properties }: PropertiesMapProps) => {
   return (
     <div 
       ref={mapRef} 
-      className="w-[100vw] h-[400px] -ml-[calc(50vw-50%)] relative left-[calc(50%-50vw)]"
+      className="w-screen h-[50vh] -ml-[50vw] relative left-[50%] transition-all duration-300 ease-in-out"
     />
   )
 }
