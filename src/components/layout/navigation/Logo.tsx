@@ -27,7 +27,7 @@ export const Logo = () => {
 
   return (
     <Link to="/" className="flex items-center gap-2">
-      <img src={logoUrl} alt="Logo" className="h-10 w-auto" />
+      <img src={logoUrl} alt="Logo" className="h-13 w-auto" />
       <span className="font-semibold text-lg">Inma Soluciones Inmobiliarias</span>
     </Link>
   )
