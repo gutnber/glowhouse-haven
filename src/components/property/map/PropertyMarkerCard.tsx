@@ -11,16 +11,18 @@ interface PropertyMarkerCardProps {
 
 export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
   return `
-    <div class="w-[150px] bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="w-[150px] bg-white rounded-lg overflow-hidden shadow-lg">
       ${property.feature_image_url ? 
-        `<div class="w-full h-24 relative overflow-hidden">
-          <img 
-            src="${property.feature_image_url}" 
-            alt="${property.name}" 
-            class="w-full h-full object-cover"
-          />
-          <div class="absolute top-0 right-0 bg-[#F97316] text-white px-2 py-0.5 text-xs font-semibold">
-            $${property.price.toLocaleString()}
+        `<div class="relative">
+          <div class="w-full h-24 relative overflow-hidden">
+            <img 
+              src="${property.feature_image_url}" 
+              alt="${property.name}" 
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute top-2 right-2 bg-[#F97316] text-white px-2 py-0.5 text-xs font-semibold rounded">
+              $${property.price.toLocaleString()}
+            </div>
           </div>
         </div>` 
         : `<div class="w-full h-24 bg-gray-100 flex items-center justify-center">
@@ -29,10 +31,10 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
             </svg>
           </div>`
       }
-      <div class="p-2">
-        <h3 class="text-sm font-semibold text-[#1A1F2C] truncate">${property.name}</h3>
+      <div class="p-2 space-y-0.5">
+        <h3 class="text-sm font-semibold text-[#1A1F2C] leading-tight truncate">${property.name}</h3>
         <p class="text-xs text-[#8E9196] truncate">${property.address}</p>
-        <div class="flex items-center justify-between mt-1">
+        <div class="flex items-center gap-1">
           <span class="text-xs text-[#8E9196]">${property.bedrooms}b ${property.bathrooms}ba</span>
         </div>
       </div>

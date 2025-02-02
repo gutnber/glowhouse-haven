@@ -88,10 +88,10 @@ export class PropertyMarkers {
       }
     })
 
-    // Create InfoWindow with adjusted offset
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
-      pixelOffset: new google.maps.Size(0, -20), // Adjusted base offset
+      pixelOffset: new google.maps.Size(0, -15),
+      disableAutoPan: false
     })
 
     marker.addListener("click", () => {
@@ -105,21 +105,17 @@ export class PropertyMarkers {
       if (closeTimeout) clearTimeout(closeTimeout)
       this.infoWindows.forEach(window => window.close())
       
-      // Calculate optimal position for info window based on viewport
       const markerPosition = marker.getPosition()
       if (markerPosition) {
         const mapBounds = this.map.getBounds()
         if (mapBounds) {
           const center = mapBounds.getCenter()
-          
-          // Calculate relative position to center
           const isNorth = markerPosition.lat() > center.lat()
           
-          // Adjust vertical offset based on position
           infoWindow.setOptions({
             pixelOffset: new google.maps.Size(
-              0, // Keep horizontal centering
-              isNorth ? -85 : -20 // Adjust vertical offset based on position
+              0,
+              isNorth ? -75 : -15
             )
           })
         }
@@ -139,7 +135,6 @@ export class PropertyMarkers {
     marker.addListener("mouseover", openInfoWindow)
     marker.addListener("mouseout", closeInfoWindow)
 
-    // Handle mouse events on the info window content
     google.maps.event.addListener(infoWindow, 'domready', () => {
       const content = infoWindow.getContent()
       if (content && typeof content !== 'string') {
