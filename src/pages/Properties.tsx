@@ -9,6 +9,7 @@ import { Link } from "react-router-dom"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { PropertyTypeSelect } from "@/components/property/PropertyTypeSelect"
+import { Tables } from "@/integrations/supabase/types"
 
 const Properties = () => {
   const { isAdmin } = useIsAdmin()
@@ -18,6 +19,7 @@ const Properties = () => {
   const { data: properties = [], isLoading } = useQuery({
     queryKey: ['properties', propertyType],
     queryFn: async () => {
+      console.log('Fetching properties with type:', propertyType)
       let query = supabase
         .from('properties')
         .select('*')
@@ -29,8 +31,12 @@ const Properties = () => {
       
       const { data, error } = await query
       
-      if (error) throw error
-      return data || []
+      if (error) {
+        console.error('Error fetching properties:', error)
+        throw error
+      }
+      console.log('Fetched properties:', data)
+      return (data || []) as Tables<'properties'>[]
     }
   })
 

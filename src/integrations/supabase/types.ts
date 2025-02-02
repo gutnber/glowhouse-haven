@@ -116,6 +116,7 @@ export type Database = {
           longitude: number | null
           name: string
           price: number
+          property_type: string | null
           updated_at: string
           youtube_autoplay: boolean | null
           youtube_controls: boolean | null
@@ -141,6 +142,7 @@ export type Database = {
           longitude?: number | null
           name: string
           price: number
+          property_type?: string | null
           updated_at?: string
           youtube_autoplay?: boolean | null
           youtube_controls?: boolean | null
@@ -166,6 +168,7 @@ export type Database = {
           longitude?: number | null
           name?: string
           price?: number
+          property_type?: string | null
           updated_at?: string
           youtube_autoplay?: boolean | null
           youtube_controls?: boolean | null
