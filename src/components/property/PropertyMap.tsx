@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Loader as UILoader } from "@/components/ui/loader"
-import { googleMapsLoader } from "@/utils/googleMaps"
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 
 interface PropertyMapProps {
   googleMapsUrl?: string | null
@@ -11,7 +12,6 @@ interface PropertyMapProps {
 
 export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
-  const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null)
@@ -20,7 +20,6 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
     const extractCoordinates = async (url: string) => {
       try {
         console.log('Attempting to extract coordinates from URL:', url)
-        // Handle different Google Maps URL formats
         const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/
         const match = url.match(regex)
         
@@ -67,54 +66,43 @@ export const PropertyMap = ({ googleMapsUrl, latitude, longitude }: PropertyMapP
   }, [googleMapsUrl, latitude, longitude])
 
   useEffect(() => {
-    const initMap = async () => {
-      if (!mapRef.current || !coordinates) {
-        console.log('Map initialization skipped:', { 
-          hasMapRef: !!mapRef.current, 
-          hasCoordinates: !!coordinates 
-        })
-        return
-      }
-
-      try {
-        console.log('Initializing map with coordinates:', coordinates)
-        setIsLoading(true)
-        setError(null)
-
-        const google = await googleMapsLoader.load()
-
-        // Create the map instance
-        const mapInstance = new google.maps.Map(mapRef.current, {
-          center: coordinates,
-          zoom: 15,
-          mapTypeControl: false,
-          streetViewControl: false,
-          fullscreenControl: true,
-        })
-
-        // Add a marker for the property
-        new google.maps.Marker({
-          position: coordinates,
-          map: mapInstance,
-          animation: google.maps.Animation.DROP,
-        })
-
-        mapInstanceRef.current = mapInstance
-        console.log('Map initialized successfully')
-        setIsLoading(false)
-      } catch (error) {
-        console.error("Error loading map:", error)
-        setError("Failed to load map")
-        setIsLoading(false)
-      }
+    if (!mapRef.current || !coordinates) {
+      console.log('Map initialization skipped:', { 
+        hasMapRef: !!mapRef.current, 
+        hasCoordinates: !!coordinates 
+      })
+      return
     }
 
-    initMap()
+    try {
+      console.log('Initializing map with coordinates:', coordinates)
+      setIsLoading(true)
+      setError(null)
 
-    return () => {
-      if (mapInstanceRef.current) {
-        // Cleanup map instance if needed
+      // Create map instance
+      const map = L.map(mapRef.current).setView([coordinates.lat, coordinates.lng], 15)
+      
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map)
+
+      // Add marker
+      L.marker([coordinates.lat, coordinates.lng])
+        .addTo(map)
+        .bindPopup('Property Location')
+        .openPopup()
+
+      console.log('Map initialized successfully')
+      setIsLoading(false)
+
+      return () => {
+        map.remove()
       }
+    } catch (error) {
+      console.error("Error loading map:", error)
+      setError("Failed to load map")
+      setIsLoading(false)
     }
   }, [coordinates])
 
