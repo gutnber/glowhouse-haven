@@ -15,7 +15,7 @@ export const FeaturedProperties = ({ properties }: FeaturedPropertiesProps) => {
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       <h2 className="text-3xl font-semibold text-center text-white">{t('featuredProperties')}</h2>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex gap-6 justify-center flex-wrap">
         {properties.map((property) => (
           <PropertyCard key={property.id} property={property} />
         ))}

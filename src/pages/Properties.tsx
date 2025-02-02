@@ -89,7 +89,7 @@ const Properties = () => {
           <PropertiesMap properties={properties} />
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="flex gap-6 flex-wrap justify-center">
           {properties?.map((property) => (
             <PropertyCard key={property.id} property={property} />
           ))}
