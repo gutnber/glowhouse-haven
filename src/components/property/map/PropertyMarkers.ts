@@ -81,7 +81,7 @@ export class PropertyMarkers {
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
         scale: 10,
-        fillColor: "#F59E0B",
+        fillColor: "#F97316",
         fillOpacity: 1,
         strokeColor: "#FFFFFF",
         strokeWeight: 2,
@@ -90,7 +90,7 @@ export class PropertyMarkers {
 
     const infoWindow = new google.maps.InfoWindow({
       content: PropertyMarkerCard({ property }),
-      pixelOffset: new google.maps.Size(0, -15),
+      pixelOffset: new google.maps.Size(0, -12),
       disableAutoPan: false
     })
 
@@ -115,7 +115,7 @@ export class PropertyMarkers {
           infoWindow.setOptions({
             pixelOffset: new google.maps.Size(
               0,
-              isNorth ? -75 : -15
+              isNorth ? -65 : -12
             )
           })
         }

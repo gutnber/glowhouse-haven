@@ -11,18 +11,18 @@ interface PropertyMarkerCardProps {
 
 export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
   return `
-    <div class="w-[150px] bg-white rounded-lg overflow-hidden shadow-lg">
+    <div class="w-[150px] bg-white rounded-lg overflow-hidden">
       ${property.feature_image_url ? 
         `<div class="relative">
-          <div class="w-full h-24 relative overflow-hidden">
-            <img 
-              src="${property.feature_image_url}" 
-              alt="${property.name}" 
-              class="w-full h-full object-cover"
-            />
-            <div class="absolute top-2 right-2 bg-[#F97316] text-white px-2 py-0.5 text-xs font-semibold rounded">
+          <img 
+            src="${property.feature_image_url}" 
+            alt="${property.name}" 
+            class="w-full h-24 object-cover"
+          />
+          <div class="absolute top-2 right-2 flex gap-2 items-center">
+            <span class="bg-[#F97316] text-white px-1.5 py-0.5 text-xs font-medium rounded">
               $${property.price.toLocaleString()}
-            </div>
+            </span>
           </div>
         </div>` 
         : `<div class="w-full h-24 bg-gray-100 flex items-center justify-center">
@@ -31,7 +31,7 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
             </svg>
           </div>`
       }
-      <div class="p-2 space-y-0.5">
+      <div class="px-2 py-1.5 space-y-0.5">
         <h3 class="text-sm font-semibold text-[#1A1F2C] leading-tight truncate">${property.name}</h3>
         <p class="text-xs text-[#8E9196] truncate">${property.address}</p>
         <div class="flex items-center gap-1">
