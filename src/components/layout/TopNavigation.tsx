@@ -44,11 +44,11 @@ export const TopNavigation = () => {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
-      <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <img src="/placeholder.svg" alt="Logo" className="h-8 w-auto" />
-          <span className="font-semibold text-lg">{t('propertyManagement')}</span>
+          <span className="font-semibold text-lg text-[#F97316]">{t('propertyManagement')}</span>
         </Link>
 
         <div className="flex items-center gap-4">
@@ -56,8 +56,8 @@ export const TopNavigation = () => {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Menu className="h-4 w-4" />
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
