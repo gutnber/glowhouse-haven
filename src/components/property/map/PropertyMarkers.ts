@@ -96,26 +96,44 @@ export class PropertyMarkers {
       minWidth: 150
     })
 
-    // Remove default InfoWindow styles
     google.maps.event.addListener(infoWindow, 'domready', () => {
       const iwOuter = document.querySelector('.gm-style-iw');
       if (iwOuter) {
         const parent = iwOuter.parentElement;
-        // Remove the default close button
-        const closeButton = parent?.querySelector('.gm-ui-hover-effect');
-        if (closeButton) {
-          closeButton.remove();
-        }
-        // Remove default InfoWindow styles
-        const iwBackground = parent?.querySelector('.gm-style-iw-t');
-        if (iwBackground) {
+        if (parent) {
+          const closeButton = parent.querySelector('.gm-ui-hover-effect');
+          if (closeButton) closeButton.remove();
+          
           const style = document.createElement('style');
           style.textContent = `
-            .gm-style-iw { padding: 0 !important; }
+            .gm-style-iw { 
+              padding: 0 !important; 
+              margin: 0 !important;
+              border: none !important;
+              box-shadow: none !important;
+              background: transparent !important;
+            }
             .gm-style-iw > button { display: none !important; }
-            .gm-style-iw > div { overflow: hidden !important; }
-            .gm-style-iw-d { overflow: hidden !important; }
+            .gm-style-iw > div { 
+              overflow: hidden !important;
+              padding: 0 !important;
+              margin: 0 !important;
+            }
+            .gm-style-iw-d { 
+              overflow: hidden !important;
+              padding: 0 !important;
+              margin: 0 !important;
+            }
             .gm-style .gm-style-iw-t::after { display: none !important; }
+            .gm-style-iw-tc { display: none !important; }
+            .gm-style .gm-style-iw-tc { display: none !important; }
+            .gm-style .gm-style-iw-c { 
+              padding: 0 !important;
+              margin: 0 !important;
+              border: none !important;
+              box-shadow: none !important;
+              background: transparent !important;
+            }
           `;
           document.head.appendChild(style);
         }
