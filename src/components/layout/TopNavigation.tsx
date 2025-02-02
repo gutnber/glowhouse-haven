@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
@@ -6,6 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench, Menu } from "lucide-react"
 import { AuthDialog } from "@/components/auth/AuthDialog"
@@ -24,11 +25,51 @@ export const TopNavigation = () => {
   const { isAdmin } = useIsAdmin()
   const { t } = useLanguage()
 
+  // Fetch the current session on mount and listen for auth changes
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session)
+      setSession(session)
+    })
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state changed:', session)
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  // Fetch logo URL from app_settings
+  useEffect(() => {
+    const fetchLogoUrl = async () => {
+      const { data, error } = await supabase
+        .from('app_settings')
+        .select('logo_url')
+        .single()
+      
+      if (error) {
+        console.error('Error fetching logo:', error)
+        return
+      }
+      
+      if (data?.logo_url) {
+        setLogoUrl(data.logo_url)
+      }
+    }
+
+    fetchLogoUrl()
+  }, [])
+
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
-      setSession(null)
+      
       toast({
         title: "Success",
         description: "You have been signed out",
@@ -56,6 +97,7 @@ export const TopNavigation = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <LanguageToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -75,8 +117,10 @@ export const TopNavigation = () => {
                     <span>{t('properties')}</span>
                   </Link>
                 </DropdownMenuItem>
+
                 {isAdmin && (
                   <>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/users" className="flex items-center gap-2">
                         <Users className="h-4 w-4" />
@@ -91,33 +135,35 @@ export const TopNavigation = () => {
                     </DropdownMenuItem>
                   </>
                 )}
+
                 {session && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/settings" className="flex items-center gap-2">
-                      <Settings className="h-4 w-4" />
-                      <span>{t('settings')}</span>
-                    </Link>
-                  </DropdownMenuItem>
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/settings" className="flex items-center gap-2">
+                        <Settings className="h-4 w-4" />
+                        <span>{t('settings')}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
                 )}
-                <DropdownMenuItem>
-                  <div className="w-full">
-                    <LanguageToggle />
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={session ? handleSignOut : () => setIsAuthDialogOpen(true)}>
-                  <div className="flex items-center gap-2 w-full">
-                    {session ? (
-                      <>
-                        <LogOut className="h-4 w-4" />
-                        <span>{t('signOut')}</span>
-                      </>
-                    ) : (
-                      <>
-                        <LogIn className="h-4 w-4" />
-                        <span>{t('signIn')}</span>
-                      </>
-                    )}
-                  </div>
+
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={session ? handleSignOut : () => setIsAuthDialogOpen(true)}
+                  className="flex items-center gap-2"
+                >
+                  {session ? (
+                    <>
+                      <LogOut className="h-4 w-4" />
+                      <span>{t('signOut')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <LogIn className="h-4 w-4" />
+                      <span>{t('signIn')}</span>
+                    </>
+                  )}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
