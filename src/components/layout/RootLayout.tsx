@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Outlet } from "react-router-dom"
-import TopNavigation from "./TopNavigation"
+import { TopNavigation } from "./TopNavigation"
 
 export default function RootLayout() {
   const { data: profile } = useQuery({
