@@ -6,16 +6,32 @@ import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { NewsEditor } from "@/components/news/NewsEditor"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Pencil, Trash2, Plus } from "lucide-react"
+import { Pencil, Trash2, Plus, Upload } from "lucide-react"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 
 export default function Tools() {
   const [isUploading, setIsUploading] = useState(false)
-  const [uploadedLogoPath, setUploadedLogoPath] = useState<string | null>(null)
+  const [currentLogoUrl, setCurrentLogoUrl] = useState<string | null>(null)
   const [newsPosts, setNewsPosts] = useState<any[]>([])
   const [isCreatingPost, setIsCreatingPost] = useState(false)
   const [editingPost, setEditingPost] = useState<any>(null)
   const { toast } = useToast()
+
+  // Fetch current logo on component mount
+  useEffect(() => {
+    const fetchCurrentLogo = async () => {
+      const { data } = await supabase
+        .from('app_settings')
+        .select('logo_url')
+        .single()
+      
+      if (data?.logo_url) {
+        setCurrentLogoUrl(data.logo_url)
+      }
+    }
+    
+    fetchCurrentLogo()
+  }, [])
 
   const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -25,7 +41,7 @@ export default function Tools() {
     try {
       console.log('Starting logo upload process...')
       const fileExt = file.name.split('.').pop()
-      const filePath = `logo.${fileExt}`
+      const filePath = `logo-${Date.now()}.${fileExt}` // Add timestamp to prevent caching
 
       const { error: uploadError } = await supabase.storage
         .from('app-assets')
@@ -58,7 +74,7 @@ export default function Tools() {
         throw updateError
       }
 
-      setUploadedLogoPath(publicUrl)
+      setCurrentLogoUrl(publicUrl)
       
       toast({
         title: "Success",
@@ -125,27 +141,41 @@ export default function Tools() {
       
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Logo Settings</h2>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="logo">Upload Logo</Label>
-            <Input
-              id="logo"
-              type="file"
-              onChange={handleLogoUpload}
-              disabled={isUploading}
-              accept="image/*"
-            />
-          </div>
-          
-          {uploadedLogoPath && (
-            <div className="border rounded p-4">
-              <img 
-                src={uploadedLogoPath} 
-                alt="Uploaded logo preview" 
-                className="max-h-[100px] w-auto"
-              />
+        <div className="space-y-6">
+          {currentLogoUrl && (
+            <div className="space-y-2">
+              <Label>Current Logo</Label>
+              <div className="border rounded-lg p-4 bg-background">
+                <img 
+                  src={currentLogoUrl} 
+                  alt="Current logo" 
+                  className="max-h-[100px] w-auto"
+                />
+              </div>
             </div>
           )}
+          
+          <div className="space-y-2">
+            <Label htmlFor="logo">Upload New Logo</Label>
+            <div className="flex items-center gap-4">
+              <Input
+                id="logo"
+                type="file"
+                onChange={handleLogoUpload}
+                disabled={isUploading}
+                accept="image/*"
+                className="flex-1"
+              />
+              {isUploading && (
+                <div className="text-sm text-muted-foreground animate-pulse">
+                  Uploading...
+                </div>
+              )}
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Select a new image file from your computer to update the logo
+            </p>
+          </div>
         </div>
       </div>
 
