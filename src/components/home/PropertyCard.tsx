@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { Building2, Bed, Bath, MapPin, Home, Trees } from "lucide-react"
+import { Building2, Bed, Bath, MapPin, Home } from "lucide-react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
@@ -37,26 +37,26 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
               <img
                 src={property.feature_image_url}
                 alt={property.name}
-                className="object-cover w-full h-full"
+                className="object-cover w-full h-full rounded-t-lg"
               />
             ) : (
-              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                <Building2 className="h-12 w-12 text-gray-400" />
+              <div className="w-full h-full bg-secondary flex items-center justify-center rounded-t-lg">
+                <Building2 className="h-12 w-12 text-muted-foreground" />
               </div>
             )}
           </AspectRatio>
-          <div className="absolute top-4 -right-8 rotate-45 bg-[#F97316] text-white px-10 py-1 text-sm font-semibold shadow-lg transform group-hover:scale-110 transition-transform">
+          <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
             ${property.price.toLocaleString()}
           </div>
           {isNewProperty(property.created_at) && (
-            <div className="absolute top-0 right-0 bg-[#F97316] text-white px-4 py-1 rounded-bl-lg">
+            <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground">
               NEW
-            </div>
+            </Badge>
           )}
         </div>
         <CardHeader className="p-4">
-          <h3 className="text-lg font-bold text-[#1A1F2C] line-clamp-1">{property.name}</h3>
-          <div className="flex items-start gap-2 text-[#8E9196]">
+          <h3 className="text-lg font-bold text-card-foreground line-clamp-1">{property.name}</h3>
+          <div className="flex items-start gap-2 text-muted-foreground">
             <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
             <span className="text-sm line-clamp-2">{property.address}</span>
           </div>
@@ -64,16 +64,16 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
         <CardContent className="p-4 pt-0">
           <div className="grid grid-cols-3 gap-4 text-sm">
             <div className="flex flex-col items-center gap-1">
-              <Bed className="h-5 w-5" strokeWidth={1.5} stroke="#F97316" />
-              <span className="text-[#8E9196]">{property.bedrooms}</span>
+              <Bed className="h-5 w-5" strokeWidth={1.5} />
+              <span className="text-muted-foreground">{property.bedrooms}</span>
             </div>
             <div className="flex flex-col items-center gap-1">
-              <Bath className="h-5 w-5" strokeWidth={1.5} stroke="#F97316" />
-              <span className="text-[#8E9196]">{property.bathrooms}</span>
+              <Bath className="h-5 w-5" strokeWidth={1.5} />
+              <span className="text-muted-foreground">{property.bathrooms}</span>
             </div>
             <div className="flex flex-col items-center gap-1">
-              <Home className="h-5 w-5" strokeWidth={1.5} stroke="#F97316" />
-              <span className="text-[#8E9196]">{property.build_year}</span>
+              <Home className="h-5 w-5" strokeWidth={1.5} />
+              <span className="text-muted-foreground">{property.build_year}</span>
             </div>
           </div>
         </CardContent>
