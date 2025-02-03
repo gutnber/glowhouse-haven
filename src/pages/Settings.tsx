@@ -2,12 +2,12 @@ import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ProfileAvatar } from "@/components/settings/ProfileAvatar"
-import { ProfileForm, ProfileFormValues } from "@/components/settings/ProfileForm"
-import { TemplateSelector } from "@/components/settings/TemplateSelector"
+import { ProfileTab } from "@/components/settings/tabs/ProfileTab"
+import { AppearanceTab } from "@/components/settings/tabs/AppearanceTab"
 import { UITemplate } from "@/types/templates"
+import { ProfileFormValues } from "@/components/settings/ProfileForm"
 
 const templates: UITemplate[] = [
   {
@@ -30,13 +30,10 @@ const templates: UITemplate[] = [
   }
 ]
 
-// ... keep existing code (ProfileFormValues interface and other imports)
-
 export default function Settings() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const [selectedTemplate, setSelectedTemplate] = useState("original")
 
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryKey: ['profile'],
@@ -56,7 +53,6 @@ export default function Settings() {
     }
   })
 
-  // Update profile mutation
   const updateProfile = useMutation({
     mutationFn: async (values: ProfileFormValues) => {
       console.log('Updating profile with values:', values)
@@ -94,18 +90,6 @@ export default function Settings() {
     }
   })
 
-  const handleSubmit = async (values: ProfileFormValues) => {
-    setIsLoading(true)
-    await updateProfile.mutateAsync(values)
-    setIsLoading(false)
-  }
-
-  const handleAvatarChange = (url: string) => {
-    if (profile) {
-      handleSubmit({ ...profile, avatar_url: url })
-    }
-  }
-
   const updateTemplate = useMutation({
     mutationFn: async (templateId: string) => {
       const { data: { session } } = await supabase.auth.getSession()
@@ -135,9 +119,16 @@ export default function Settings() {
     }
   })
 
-  const handleTemplateSelect = async (templateId: string) => {
-    setSelectedTemplate(templateId)
-    await updateTemplate.mutateAsync(templateId)
+  const handleSubmit = async (values: ProfileFormValues) => {
+    setIsLoading(true)
+    await updateProfile.mutateAsync(values)
+    setIsLoading(false)
+  }
+
+  const handleAvatarChange = (url: string) => {
+    if (profile) {
+      handleSubmit({ ...profile, avatar_url: url })
+    }
   }
 
   if (isLoadingProfile) {
@@ -153,13 +144,6 @@ export default function Settings() {
     )
   }
 
-  // Get the current user ID
-  const getUserId = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    return session?.user?.id
-  }
-
-  // Initialize form with profile data or empty values
   const initialValues: ProfileFormValues = profile ? {
     full_name: profile.full_name || '',
     email: profile.email || '',
@@ -183,44 +167,21 @@ export default function Settings() {
         </TabsList>
         
         <TabsContent value="profile">
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile</CardTitle>
-              <CardDescription>
-                Manage your profile information and preferences
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ProfileAvatar
-                userId={profile?.id || ''}
-                avatarUrl={initialValues.avatar_url}
-                onAvatarChange={handleAvatarChange}
-              />
-              <ProfileForm
-                initialValues={initialValues}
-                onSubmit={handleSubmit}
-                isLoading={isLoading}
-              />
-            </CardContent>
-          </Card>
+          <ProfileTab
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+            userId={profile?.id || ''}
+            onAvatarChange={handleAvatarChange}
+          />
         </TabsContent>
 
         <TabsContent value="appearance">
-          <Card>
-            <CardHeader>
-              <CardTitle>Appearance</CardTitle>
-              <CardDescription>
-                Customize the look and feel of your application
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <TemplateSelector
-                templates={templates}
-                selectedTemplate={selectedTemplate}
-                onSelect={handleTemplateSelect}
-              />
-            </CardContent>
-          </Card>
+          <AppearanceTab
+            templates={templates}
+            currentTemplate={profile?.ui_template || 'original'}
+            onApplyTemplate={(templateId) => updateTemplate.mutateAsync(templateId)}
+          />
         </TabsContent>
       </Tabs>
     </div>
