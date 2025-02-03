@@ -67,7 +67,7 @@ export class PropertyMarkers {
     const infoWindowContent = document.createElement('div')
     infoWindowContent.innerHTML = PropertyMarkerCard({ property })
     
-    // Add styles to remove InfoWindow borders
+    // Add styles to remove InfoWindow borders and close button
     const style = document.createElement('style')
     style.textContent = `
       .gm-style .gm-style-iw-c {
@@ -75,6 +75,8 @@ export class PropertyMarkers {
         border-radius: 8px !important;
         box-shadow: none !important;
         border: none !important;
+        top: 0 !important;
+        margin-top: -8px !important;
       }
       .gm-style .gm-style-iw-d {
         overflow: hidden !important;
@@ -86,6 +88,13 @@ export class PropertyMarkers {
       }
       .gm-style-iw-tc {
         display: none !important;
+      }
+      .gm-ui-hover-effect {
+        display: none !important;
+      }
+      .gm-style-iw {
+        padding: 0 !important;
+        margin: 0 !important;
       }
     `
     infoWindowContent.appendChild(style)
