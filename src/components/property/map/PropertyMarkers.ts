@@ -25,37 +25,6 @@ export class PropertyMarkers {
     this.navigate = navigate
   }
 
-  addMarkers(properties: Property[]) {
-    this.clearMarkers()
-    const bounds = new google.maps.LatLngBounds()
-
-    properties.forEach(property => {
-      const coords = this.getPropertyCoordinates(property)
-      if (!coords) return
-
-      bounds.extend(coords)
-      this.addMarker(property, coords)
-    })
-
-    if (this.markers.length > 0) {
-      this.map.fitBounds(bounds)
-      
-      const padded = new google.maps.LatLngBounds(
-        new google.maps.LatLng(
-          bounds.getSouthWest().lat() - 0.01,
-          bounds.getSouthWest().lng() - 0.01
-        ),
-        new google.maps.LatLng(
-          bounds.getNorthEast().lat() + 0.01,
-          bounds.getNorthEast().lng() + 0.01
-        )
-      )
-      this.map.fitBounds(padded)
-    }
-
-    return bounds
-  }
-
   private getPropertyCoordinates(property: Property) {
     if (property.latitude && property.longitude) {
       return { 
@@ -70,6 +39,13 @@ export class PropertyMarkers {
     }
 
     return null
+  }
+
+  private clearMarkers() {
+    this.markers.forEach(marker => marker.setMap(null))
+    this.markers = []
+    this.infoWindows.forEach(infoWindow => infoWindow.close())
+    this.infoWindows = []
   }
 
   private addMarker(property: Property, position: google.maps.LatLng | google.maps.LatLngLiteral) {
@@ -96,16 +72,14 @@ export class PropertyMarkers {
     style.textContent = `
       .gm-style .gm-style-iw-c {
         padding: 0 !important;
-        border-radius: 0 !important;
+        border-radius: 8px !important;
         box-shadow: none !important;
         border: none !important;
-        background: transparent !important;
       }
       .gm-style .gm-style-iw-d {
         overflow: hidden !important;
         padding: 0 !important;
         margin: 0 !important;
-        background: transparent !important;
       }
       .gm-style .gm-style-iw-t::after {
         display: none !important;
@@ -182,10 +156,34 @@ export class PropertyMarkers {
     this.infoWindows.push(infoWindow)
   }
 
-  private clearMarkers() {
-    this.markers.forEach(marker => marker.setMap(null))
-    this.markers = []
-    this.infoWindows.forEach(infoWindow => infoWindow.close())
-    this.infoWindows = []
+  addMarkers(properties: Property[]) {
+    this.clearMarkers()
+    const bounds = new google.maps.LatLngBounds()
+
+    properties.forEach(property => {
+      const coords = this.getPropertyCoordinates(property)
+      if (!coords) return
+
+      bounds.extend(coords)
+      this.addMarker(property, coords)
+    })
+
+    if (this.markers.length > 0) {
+      this.map.fitBounds(bounds)
+      
+      const padded = new google.maps.LatLngBounds(
+        new google.maps.LatLng(
+          bounds.getSouthWest().lat() - 0.01,
+          bounds.getSouthWest().lng() - 0.01
+        ),
+        new google.maps.LatLng(
+          bounds.getNorthEast().lat() + 0.01,
+          bounds.getNorthEast().lng() + 0.01
+        )
+      )
+      this.map.fitBounds(padded)
+    }
+
+    return bounds
   }
 }
