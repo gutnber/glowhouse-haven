@@ -19,8 +19,8 @@ export function TopNavigation() {
     <nav 
       className={`fixed top-0 left-0 right-0 z-40 border-b border-border transition-all duration-200 ${
         scrolled 
-          ? 'bg-gradient-to-r from-gray-300/70 via-gray-100/70 to-gray-300/70 backdrop-blur-lg' 
-          : 'bg-gradient-to-r from-gray-300 via-gray-100 to-gray-300 backdrop-blur-md'
+          ? 'bg-gradient-to-r from-gray-400/70 via-gray-200/70 to-gray-400/70 backdrop-blur-lg' 
+          : 'bg-gradient-to-r from-gray-400 via-gray-200 to-gray-400 backdrop-blur-md'
       } animate-gradient`}
       style={{
         backgroundSize: '200% 100%',
