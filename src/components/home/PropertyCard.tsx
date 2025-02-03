@@ -30,50 +30,52 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
 
   return (
     <Link key={property.id} to={`/properties/${property.id}`}>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow bg-white border-white/20 group w-[300px]">
+      <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 bg-white/5 backdrop-blur-md border-white/10 group w-[320px]">
         <div className="relative">
           <AspectRatio ratio={4/3}>
             {property.feature_image_url ? (
               <img
                 src={property.feature_image_url}
                 alt={property.name}
-                className="object-cover w-full h-full rounded-t-lg"
+                className="object-cover w-full h-full transform transition-transform duration-500 group-hover:scale-110"
               />
             ) : (
-              <div className="w-full h-full bg-secondary flex items-center justify-center rounded-t-lg">
-                <Building2 className="h-12 w-12 text-muted-foreground" />
+              <div className="w-full h-full bg-orange-500/10 flex items-center justify-center">
+                <Building2 className="h-12 w-12 text-orange-500/50" />
               </div>
             )}
           </AspectRatio>
-          <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
+          <div className="absolute bottom-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg transform transition-transform duration-300 group-hover:scale-110">
             ${property.price.toLocaleString()}
           </div>
           {isNewProperty(property.created_at) && (
-            <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground">
+            <Badge className="absolute top-4 left-4 bg-white/90 text-orange-500 shadow-lg">
               NEW
             </Badge>
           )}
         </div>
-        <CardHeader className="p-4">
-          <h3 className="text-lg font-bold text-card-foreground line-clamp-1">{property.name}</h3>
-          <div className="flex items-start gap-2 text-muted-foreground">
+        <CardHeader className="p-6">
+          <h3 className="text-xl font-bold text-white group-hover:text-orange-500 transition-colors duration-300 line-clamp-1">
+            {property.name}
+          </h3>
+          <div className="flex items-start gap-2 text-white/70">
             <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
             <span className="text-sm line-clamp-2">{property.address}</span>
           </div>
         </CardHeader>
-        <CardContent className="p-4 pt-0">
+        <CardContent className="px-6 pb-6">
           <div className="grid grid-cols-3 gap-4 text-sm">
-            <div className="flex flex-col items-center gap-1">
-              <Bed className="h-5 w-5" strokeWidth={1.5} />
-              <span className="text-muted-foreground">{property.bedrooms}</span>
+            <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
+              <Bed className="h-5 w-5 text-orange-500" />
+              <span className="text-white/70">{property.bedrooms}</span>
             </div>
-            <div className="flex flex-col items-center gap-1">
-              <Bath className="h-5 w-5" strokeWidth={1.5} />
-              <span className="text-muted-foreground">{property.bathrooms}</span>
+            <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
+              <Bath className="h-5 w-5 text-orange-500" />
+              <span className="text-white/70">{property.bathrooms}</span>
             </div>
-            <div className="flex flex-col items-center gap-1">
-              <Home className="h-5 w-5" strokeWidth={1.5} />
-              <span className="text-muted-foreground">{property.build_year}</span>
+            <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
+              <Home className="h-5 w-5 text-orange-500" />
+              <span className="text-white/70">{property.build_year}</span>
             </div>
           </div>
         </CardContent>

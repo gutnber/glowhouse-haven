@@ -10,7 +10,6 @@ const StarryBackground = () => {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // Set canvas size
     const setCanvasSize = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
@@ -18,7 +17,6 @@ const StarryBackground = () => {
     setCanvasSize()
     window.addEventListener('resize', setCanvasSize)
 
-    // Star properties
     const stars: Array<{
       x: number
       y: number
@@ -27,25 +25,24 @@ const StarryBackground = () => {
       color: string
     }> = []
 
-    // Create stars
-    for (let i = 0; i < 200; i++) {
+    // Create more stars for a denser effect
+    for (let i = 0; i < 300; i++) {
       stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         z: Math.random() * 1000,
-        radius: Math.random() * 1.5,
+        radius: Math.random() * 2,
         color: `rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2})`,
       })
     }
 
-    // Animation
     let animationFrameId: number
     const animate = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
+      ctx.fillStyle = 'rgba(24, 24, 27, 0.2)' // Darker, more sophisticated background
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       stars.forEach((star) => {
-        star.z -= 1
+        star.z -= 0.5 // Slower movement for a more elegant effect
         if (star.z <= 0) {
           star.z = 1000
           star.x = Math.random() * canvas.width
@@ -76,7 +73,7 @@ const StarryBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 -z-10 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"
+      className="fixed inset-0 -z-10 bg-gradient-to-br from-zinc-900 via-orange-900/20 to-zinc-900"
     />
   )
 }

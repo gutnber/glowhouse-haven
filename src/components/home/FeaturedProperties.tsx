@@ -13,15 +13,21 @@ export const FeaturedProperties = ({ properties }: FeaturedPropertiesProps) => {
   if (properties.length === 0) return null
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
-      <h2 className="text-3xl font-semibold text-center text-white">{t('featuredProperties')}</h2>
-      <div className="flex gap-6 justify-center flex-wrap">
+    <div className="space-y-8 max-w-7xl mx-auto px-4">
+      <h2 className="text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-600">
+        {t('featuredProperties')}
+      </h2>
+      <div className="flex gap-8 justify-center flex-wrap">
         {properties.map((property) => (
           <PropertyCard key={property.id} property={property} />
         ))}
       </div>
       <div className="text-center">
-        <Button asChild size="lg" className="bg-white/10 hover:bg-white/20 text-white border border-white/20">
+        <Button 
+          asChild 
+          size="lg" 
+          className="bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+        >
           <Link to="/properties">{t('viewAllProperties')}</Link>
         </Button>
       </div>
