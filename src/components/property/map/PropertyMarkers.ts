@@ -73,26 +73,49 @@ export class PropertyMarkers {
   }
 
   private addMarker(property: Property, position: google.maps.LatLng | google.maps.LatLngLiteral) {
-    // Create marker with custom icon - removed white border
     const marker = new google.maps.Marker({
       position,
       map: this.map,
       title: property.name,
       icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 8,
+        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z',
         fillColor: "#F97316",
         fillOpacity: 1,
-        strokeWeight: 0, // Removed the white border by setting strokeWeight to 0
+        strokeWeight: 0,
+        scale: 2,
+        anchor: new google.maps.Point(12, 17),
       },
       animation: google.maps.Animation.DROP
     })
 
-    // Create info window content using PropertyMarkerCard
     const infoWindowContent = document.createElement('div')
     infoWindowContent.innerHTML = PropertyMarkerCard({ property })
+    
+    // Add styles to remove InfoWindow borders
+    const style = document.createElement('style')
+    style.textContent = `
+      .gm-style .gm-style-iw-c {
+        padding: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: transparent !important;
+      }
+      .gm-style .gm-style-iw-d {
+        overflow: hidden !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+      }
+      .gm-style .gm-style-iw-t::after {
+        display: none !important;
+      }
+      .gm-style-iw-tc {
+        display: none !important;
+      }
+    `
+    infoWindowContent.appendChild(style)
 
-    // Create info window
     const infoWindow = new google.maps.InfoWindow({
       content: infoWindowContent,
       pixelOffset: new google.maps.Size(0, -8),
