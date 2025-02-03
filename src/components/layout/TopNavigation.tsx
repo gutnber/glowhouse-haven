@@ -21,10 +21,9 @@ export function TopNavigation() {
         scrolled 
           ? 'bg-gradient-to-r from-gray-300/70 via-gray-100/70 to-gray-300/70 backdrop-blur-lg' 
           : 'bg-gradient-to-r from-gray-300 via-gray-100 to-gray-300 backdrop-blur-md'
-      }`}
+      } animate-gradient`}
       style={{
         backgroundSize: '200% 100%',
-        animation: 'shimmer 3s infinite',
       }}
     >
       <div className="container flex h-16 items-center justify-between">
@@ -34,17 +33,6 @@ export function TopNavigation() {
           <UserMenu />
         </div>
       </div>
-
-      <style jsx global>{`
-        @keyframes shimmer {
-          0% {
-            background-position: -200% 0;
-          }
-          100% {
-            background-position: 200% 0;
-          }
-        }
-      `}</style>
     </nav>
   )
 }
