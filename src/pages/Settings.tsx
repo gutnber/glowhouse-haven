@@ -3,13 +3,38 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ProfileAvatar } from "@/components/settings/ProfileAvatar"
 import { ProfileForm, ProfileFormValues } from "@/components/settings/ProfileForm"
+import { TemplateSelector } from "@/components/settings/TemplateSelector"
+import { UITemplate } from "@/types/templates"
+
+const templates: UITemplate[] = [
+  {
+    id: "default",
+    name: "Default Template",
+    description: "The standard layout with a clean and modern design",
+    previewImage: "/placeholder.svg"
+  },
+  {
+    id: "modern",
+    name: "Modern Template",
+    description: "A contemporary design with bold colors and typography",
+    previewImage: "/placeholder.svg"
+  },
+  {
+    id: "classic",
+    name: "Classic Template",
+    description: "Traditional layout with elegant styling",
+    previewImage: "/placeholder.svg"
+  }
+]
 
 export default function Settings() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const queryClient = useQueryClient()
+  const [selectedTemplate, setSelectedTemplate] = useState("default")
 
   // Fetch profile data
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
@@ -80,14 +105,48 @@ export default function Settings() {
     }
   }
 
+  const updateTemplate = useMutation({
+    mutationFn: async (templateId: string) => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Not authenticated')
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ ui_template: templateId })
+        .eq('id', session.user.id)
+
+      if (error) throw error
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Template updated successfully",
+      })
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
+    },
+    onError: (error) => {
+      console.error('Error updating template:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update template",
+        variant: "destructive",
+      })
+    }
+  })
+
+  const handleTemplateSelect = async (templateId: string) => {
+    setSelectedTemplate(templateId)
+    await updateTemplate.mutateAsync(templateId)
+  }
+
   // Show loading state while fetching profile
   if (isLoadingProfile) {
     return (
-      <div className="container max-w-2xl py-10">
+      <div className="container max-w-4xl py-10">
         <Card>
           <CardHeader>
             <CardTitle>Settings</CardTitle>
-            <CardDescription>Loading profile information...</CardDescription>
+            <CardDescription>Loading settings...</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -116,27 +175,54 @@ export default function Settings() {
   }
 
   return (
-    <div className="container max-w-2xl py-10">
-      <Card>
-        <CardHeader>
-          <CardTitle>Settings</CardTitle>
-          <CardDescription>
-            Manage your profile information and preferences
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ProfileAvatar
-            userId={profile?.id || ''}
-            avatarUrl={initialValues.avatar_url}
-            onAvatarChange={handleAvatarChange}
-          />
-          <ProfileForm
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
-        </CardContent>
-      </Card>
+    <div className="container max-w-4xl py-10">
+      <Tabs defaultValue="profile" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="appearance">Appearance</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="profile">
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile</CardTitle>
+              <CardDescription>
+                Manage your profile information and preferences
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ProfileAvatar
+                userId={profile?.id || ''}
+                avatarUrl={initialValues.avatar_url}
+                onAvatarChange={handleAvatarChange}
+              />
+              <ProfileForm
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                isLoading={isLoading}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="appearance">
+          <Card>
+            <CardHeader>
+              <CardTitle>Appearance</CardTitle>
+              <CardDescription>
+                Customize the look and feel of your application
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TemplateSelector
+                templates={templates}
+                selectedTemplate={selectedTemplate}
+                onSelect={handleTemplateSelect}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
