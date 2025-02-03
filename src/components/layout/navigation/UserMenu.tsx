@@ -63,19 +63,26 @@ export const UserMenu = () => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="hover:bg-primary/10 transition-colors"
+          >
             <Menu className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent 
+          align="end" 
+          className="w-56 bg-background/95 backdrop-blur-md border border-border shadow-lg"
+        >
           <DropdownMenuItem asChild>
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
               <Home className="h-4 w-4" />
               <span>{t('home')}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to="/properties" className="flex items-center gap-2">
+            <Link to="/properties" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
               <Building2 className="h-4 w-4" />
               <span>{t('properties')}</span>
             </Link>
@@ -83,15 +90,15 @@ export const UserMenu = () => {
 
           {isAdmin && (
             <>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="bg-border/50" />
               <DropdownMenuItem asChild>
-                <Link to="/users" className="flex items-center gap-2">
+                <Link to="/users" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
                   <Users className="h-4 w-4" />
                   <span>{t('users')}</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/tools" className="flex items-center gap-2">
+                <Link to="/tools" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
                   <Wrench className="h-4 w-4" />
                   <span>{t('tools')}</span>
                 </Link>
@@ -101,9 +108,9 @@ export const UserMenu = () => {
 
           {session && (
             <>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="bg-border/50" />
               <DropdownMenuItem asChild>
-                <Link to="/settings" className="flex items-center gap-2">
+                <Link to="/settings" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
                   <Settings className="h-4 w-4" />
                   <span>{t('settings')}</span>
                 </Link>
@@ -111,10 +118,10 @@ export const UserMenu = () => {
             </>
           )}
 
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator className="bg-border/50" />
           <DropdownMenuItem 
             onClick={session ? handleSignOut : () => setIsAuthDialogOpen(true)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 hover:bg-primary/10 transition-colors cursor-pointer"
           >
             {session ? (
               <>
