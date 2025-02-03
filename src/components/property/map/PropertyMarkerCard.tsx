@@ -11,7 +11,7 @@ interface PropertyMarkerCardProps {
 
 export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
   return `
-    <div class="w-[150px] [&_*]:!m-0 [&_*]:!p-0 overflow-hidden">
+    <div class="w-[150px] [&_*]:!m-0 [&_*]:!p-0 overflow-hidden rounded-lg">
       ${property.feature_image_url ? 
         `<div class="relative">
           <img 
