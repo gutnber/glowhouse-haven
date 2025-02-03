@@ -17,13 +17,13 @@ export function TopNavigation() {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-40 border-b border-border transition-all duration-200 ${
+      className={`fixed top-0 left-0 right-0 z-40 border-b border-border pointer-events-none ${
         scrolled 
           ? 'bg-gradient-to-r from-gray-300/70 via-gray-100/70 to-gray-300/70 backdrop-blur-lg' 
           : 'bg-gradient-to-r from-gray-300 via-gray-100 to-gray-300 backdrop-blur-md'
       }`}
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between pointer-events-auto">
         <Logo />
         <div className="flex items-center gap-4">
           <LanguageToggle />
