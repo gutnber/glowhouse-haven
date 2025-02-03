@@ -73,34 +73,34 @@ export const UserMenu = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent 
           align="end" 
-          className="w-56 bg-background/95 backdrop-blur-md border border-border shadow-lg"
+          className="w-56 bg-background/95 backdrop-blur-xl border border-border/50 shadow-lg rounded-lg overflow-hidden"
         >
           <DropdownMenuItem asChild>
-            <Link to="/" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
-              <Home className="h-4 w-4" />
-              <span>{t('home')}</span>
+            <Link to="/" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
+              <Home className="h-4 w-4 text-primary/80" />
+              <span className="font-medium">{t('home')}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to="/properties" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
-              <Building2 className="h-4 w-4" />
-              <span>{t('properties')}</span>
+            <Link to="/properties" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
+              <Building2 className="h-4 w-4 text-primary/80" />
+              <span className="font-medium">{t('properties')}</span>
             </Link>
           </DropdownMenuItem>
 
           {isAdmin && (
             <>
-              <DropdownMenuSeparator className="bg-border/50" />
+              <DropdownMenuSeparator className="bg-border/30 my-1" />
               <DropdownMenuItem asChild>
-                <Link to="/users" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
-                  <Users className="h-4 w-4" />
-                  <span>{t('users')}</span>
+                <Link to="/users" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
+                  <Users className="h-4 w-4 text-primary/80" />
+                  <span className="font-medium">{t('users')}</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/tools" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
-                  <Wrench className="h-4 w-4" />
-                  <span>{t('tools')}</span>
+                <Link to="/tools" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
+                  <Wrench className="h-4 w-4 text-primary/80" />
+                  <span className="font-medium">{t('tools')}</span>
                 </Link>
               </DropdownMenuItem>
             </>
@@ -108,30 +108,30 @@ export const UserMenu = () => {
 
           {session && (
             <>
-              <DropdownMenuSeparator className="bg-border/50" />
+              <DropdownMenuSeparator className="bg-border/30 my-1" />
               <DropdownMenuItem asChild>
-                <Link to="/settings" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
-                  <Settings className="h-4 w-4" />
-                  <span>{t('settings')}</span>
+                <Link to="/settings" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
+                  <Settings className="h-4 w-4 text-primary/80" />
+                  <span className="font-medium">{t('settings')}</span>
                 </Link>
               </DropdownMenuItem>
             </>
           )}
 
-          <DropdownMenuSeparator className="bg-border/50" />
+          <DropdownMenuSeparator className="bg-border/30 my-1" />
           <DropdownMenuItem 
             onClick={session ? handleSignOut : () => setIsAuthDialogOpen(true)}
-            className="flex items-center gap-2 hover:bg-primary/10 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200 cursor-pointer"
           >
             {session ? (
               <>
-                <LogOut className="h-4 w-4" />
-                <span>{t('signOut')}</span>
+                <LogOut className="h-4 w-4 text-primary/80" />
+                <span className="font-medium">{t('signOut')}</span>
               </>
             ) : (
               <>
-                <LogIn className="h-4 w-4" />
-                <span>{t('signIn')}</span>
+                <LogIn className="h-4 w-4 text-primary/80" />
+                <span className="font-medium">{t('signIn')}</span>
               </>
             )}
           </DropdownMenuItem>
