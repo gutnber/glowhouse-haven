@@ -19,8 +19,8 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
             alt="${property.name}" 
             class="w-full h-24 object-cover"
           />
-          <div class="absolute top-0 right-0">
-            <span class="bg-[#F97316] text-white text-[10px] leading-none px-1">
+          <div class="absolute top-2 right-2">
+            <span class="bg-[#F97316] text-white text-xs px-2 py-1 rounded-sm">
               $${property.price.toLocaleString()}
             </span>
           </div>
@@ -31,10 +31,9 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
             </svg>
           </div>`
       }
-      <div class="bg-[#1A1F2C] text-[10px] leading-none p-2">
-        <h3 class="text-white truncate">${property.name}</h3>
-        <p class="text-gray-400 truncate mt-1">${property.address}</p>
-        <div class="text-gray-400 mt-1">${property.bedrooms}b ${property.bathrooms}ba</div>
+      <div class="bg-white text-sm p-2">
+        <h3 class="font-medium text-gray-900 truncate">${property.name}</h3>
+        <p class="text-gray-500 text-xs truncate mt-0.5">${property.address}</p>
       </div>
     </div>
   `
