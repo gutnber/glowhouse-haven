@@ -1,14 +1,31 @@
-import { TopNavigation } from "./TopNavigation"
+import { useQuery } from "@tanstack/react-query"
+import { supabase } from "@/integrations/supabase/client"
 import { Outlet } from "react-router-dom"
+import TopNavigation from "./TopNavigation"
 
-export const RootLayout = () => {
+export default function RootLayout() {
+  const { data: profile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.user) return null
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single()
+
+      if (error) throw error
+      return data
+    }
+  })
+
   return (
-    <div className="min-h-screen">
+    <div data-template={profile?.ui_template || "original"} className="min-h-screen">
       <TopNavigation />
-      <main className="pt-16">
-        <div className="container mx-auto px-4 py-6">
-          <Outlet />
-        </div>
+      <main>
+        <Outlet />
       </main>
     </div>
   )

@@ -19,13 +19,7 @@ const templates: UITemplate[] = [
   {
     id: "modern",
     name: "Modern Template",
-    description: "A contemporary design with bold colors and typography",
-    previewImage: "/placeholder.svg"
-  },
-  {
-    id: "classic",
-    name: "Classic Template",
-    description: "Traditional layout with elegant styling",
+    description: "A Zillow-inspired design with vibrant orange accents",
     previewImage: "/placeholder.svg"
   }
 ]
