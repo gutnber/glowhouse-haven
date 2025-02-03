@@ -5,4 +5,4 @@ export interface UITemplate {
   previewImage?: string
 }
 
-export type TemplateId = 'default' | 'modern' | 'classic'
+export type TemplateId = 'original' | 'modern' | 'classic'

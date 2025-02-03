@@ -11,9 +11,9 @@ import { UITemplate } from "@/types/templates"
 
 const templates: UITemplate[] = [
   {
-    id: "default",
-    name: "Default Template",
-    description: "The standard layout with a clean and modern design",
+    id: "original",
+    name: "Original Template",
+    description: "The original layout with a clean and modern design",
     previewImage: "/placeholder.svg"
   },
   {
@@ -30,13 +30,14 @@ const templates: UITemplate[] = [
   }
 ]
 
+// ... keep existing code (ProfileFormValues interface and other imports)
+
 export default function Settings() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const [selectedTemplate, setSelectedTemplate] = useState("default")
+  const [selectedTemplate, setSelectedTemplate] = useState("original")
 
-  // Fetch profile data
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
@@ -139,7 +140,6 @@ export default function Settings() {
     await updateTemplate.mutateAsync(templateId)
   }
 
-  // Show loading state while fetching profile
   if (isLoadingProfile) {
     return (
       <div className="container max-w-4xl py-10">
