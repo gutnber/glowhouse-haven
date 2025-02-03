@@ -1,5 +1,7 @@
 import { PropertyMarkerCard } from "./PropertyMarkerCard"
 import { extractCoordinates } from "./CoordinatesUtils"
+import { perfectInfoWindowStyles } from "./configs/InfoWindowStyles"
+import { perfectMarkerConfig, infoWindowConfig, mapConfig } from "./configs/MarkerConfig"
 
 interface Property {
   id: string;
@@ -54,12 +56,11 @@ export class PropertyMarkers {
       map: this.map,
       title: property.name,
       icon: {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z',
-        fillColor: "#F97316",
-        fillOpacity: 1,
-        strokeWeight: 0,
-        scale: 2,
-        anchor: new google.maps.Point(12, 17),
+        ...perfectMarkerConfig,
+        anchor: new google.maps.Point(
+          perfectMarkerConfig.anchor.x,
+          perfectMarkerConfig.anchor.y
+        ),
       },
       animation: google.maps.Animation.DROP
     })
@@ -68,54 +69,18 @@ export class PropertyMarkers {
     infoWindowContent.innerHTML = PropertyMarkerCard({ property })
     
     const style = document.createElement('style')
-    style.textContent = `
-      .gm-style .gm-style-iw-c {
-        padding: 0 !important;
-        border-radius: 8px !important;
-        box-shadow: none !important;
-        border: none !important;
-        background: none !important;
-        top: 0 !important;
-        margin: 0 !important;
-        transform: translate(-50%, -100%) !important;
-      }
-      .gm-style .gm-style-iw-d {
-        overflow: hidden !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        background: none !important;
-      }
-      .gm-style .gm-style-iw-t::after {
-        display: none !important;
-      }
-      .gm-style-iw-tc {
-        display: none !important;
-      }
-      .gm-ui-hover-effect {
-        display: none !important;
-      }
-      .gm-style-iw {
-        padding: 0 !important;
-        margin: 0 !important;
-        background: none !important;
-      }
-      .gm-style-iw > div {
-        margin: 0 !important;
-        padding: 0 !important;
-        background: none !important;
-      }
-      .gm-style-iw > button {
-        display: none !important;
-      }
-    `
+    style.textContent = perfectInfoWindowStyles
     infoWindowContent.appendChild(style)
 
     const infoWindow = new google.maps.InfoWindow({
       content: infoWindowContent,
-      pixelOffset: new google.maps.Size(0, 0),
-      disableAutoPan: false,
-      maxWidth: 150,
-      minWidth: 150
+      pixelOffset: new google.maps.Size(
+        infoWindowConfig.pixelOffset.x,
+        infoWindowConfig.pixelOffset.y
+      ),
+      disableAutoPan: infoWindowConfig.disableAutoPan,
+      maxWidth: infoWindowConfig.maxWidth,
+      minWidth: infoWindowConfig.minWidth
     })
 
     marker.addListener("click", () => {
@@ -153,7 +118,7 @@ export class PropertyMarkers {
       closeTimeout = setTimeout(() => {
         infoWindow.close()
         isInfoWindowOpen = false
-      }, 300)
+      }, infoWindowConfig.closeTimeout)
     }
 
     marker.addListener("mouseover", openInfoWindow)
