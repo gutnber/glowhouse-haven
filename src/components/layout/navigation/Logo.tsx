@@ -30,7 +30,7 @@ export const Logo = () => {
   console.log("Rendering Logo component with URL:", logoUrl)
   
   return (
-    <Link to="/" className="flex items-center gap-2">
+    <Link to="/" className="flex items-center">
       <img 
         src={logoUrl} 
         alt="Logo" 
@@ -38,7 +38,6 @@ export const Logo = () => {
         onLoad={() => console.log("Logo image loaded")}
         onError={(e) => console.error("Logo image failed to load:", e)}
       />
-      <span className="font-semibold text-lg">Inma Soluciones Inmobiliarias</span>
     </Link>
   )
 }
