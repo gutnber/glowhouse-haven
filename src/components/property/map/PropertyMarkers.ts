@@ -67,7 +67,7 @@ export class PropertyMarkers {
     const infoWindowContent = document.createElement('div')
     infoWindowContent.innerHTML = PropertyMarkerCard({ property })
     
-    // Add styles to remove InfoWindow borders and close button
+    // Add styles to remove InfoWindow borders and all spacing
     const style = document.createElement('style')
     style.textContent = `
       .gm-style .gm-style-iw-c {
@@ -76,7 +76,8 @@ export class PropertyMarkers {
         box-shadow: none !important;
         border: none !important;
         top: 0 !important;
-        margin-top: -8px !important;
+        margin: 0 !important;
+        transform: translate(-50%, -100%) !important;
       }
       .gm-style .gm-style-iw-d {
         overflow: hidden !important;
@@ -96,12 +97,16 @@ export class PropertyMarkers {
         padding: 0 !important;
         margin: 0 !important;
       }
+      .gm-style-iw > div {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
     `
     infoWindowContent.appendChild(style)
 
     const infoWindow = new google.maps.InfoWindow({
       content: infoWindowContent,
-      pixelOffset: new google.maps.Size(0, -8),
+      pixelOffset: new google.maps.Size(0, 0),
       disableAutoPan: false,
       maxWidth: 150,
       minWidth: 150
