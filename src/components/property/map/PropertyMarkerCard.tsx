@@ -13,7 +13,7 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
   return `
     <div class="w-[150px] [&_*]:!m-0 [&_*]:!p-0 overflow-hidden rounded-lg">
       ${property.feature_image_url ? 
-        `<div class="relative">
+        `<div class="relative w-full">
           <img 
             src="${property.feature_image_url}" 
             alt="${property.name}" 

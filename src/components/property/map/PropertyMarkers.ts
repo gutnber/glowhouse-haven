@@ -67,7 +67,6 @@ export class PropertyMarkers {
     const infoWindowContent = document.createElement('div')
     infoWindowContent.innerHTML = PropertyMarkerCard({ property })
     
-    // Add styles to remove InfoWindow borders and all spacing
     const style = document.createElement('style')
     style.textContent = `
       .gm-style .gm-style-iw-c {
@@ -75,6 +74,7 @@ export class PropertyMarkers {
         border-radius: 8px !important;
         box-shadow: none !important;
         border: none !important;
+        background: none !important;
         top: 0 !important;
         margin: 0 !important;
         transform: translate(-50%, -100%) !important;
@@ -83,6 +83,7 @@ export class PropertyMarkers {
         overflow: hidden !important;
         padding: 0 !important;
         margin: 0 !important;
+        background: none !important;
       }
       .gm-style .gm-style-iw-t::after {
         display: none !important;
@@ -96,10 +97,15 @@ export class PropertyMarkers {
       .gm-style-iw {
         padding: 0 !important;
         margin: 0 !important;
+        background: none !important;
       }
       .gm-style-iw > div {
         margin: 0 !important;
         padding: 0 !important;
+        background: none !important;
+      }
+      .gm-style-iw > button {
+        display: none !important;
       }
     `
     infoWindowContent.appendChild(style)
@@ -112,7 +118,6 @@ export class PropertyMarkers {
       minWidth: 150
     })
 
-    // Add click event listener
     marker.addListener("click", () => {
       this.navigate(`/properties/${property.id}`)
     })
@@ -151,11 +156,9 @@ export class PropertyMarkers {
       }, 300)
     }
 
-    // Add hover event listeners
     marker.addListener("mouseover", openInfoWindow)
     marker.addListener("mouseout", closeInfoWindow)
 
-    // Add hover events for info window content
     google.maps.event.addListener(infoWindow, 'domready', () => {
       const content = infoWindow.getContent()
       if (content && typeof content !== 'string') {
