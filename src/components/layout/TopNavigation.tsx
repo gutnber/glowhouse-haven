@@ -2,9 +2,10 @@ import { useEffect, useState } from "react"
 import { Logo } from "./navigation/Logo"
 import { UserMenu } from "./navigation/UserMenu"
 import { LanguageToggle } from "@/components/LanguageToggle"
+import { Session } from "@supabase/supabase-js"
 
 interface TopNavigationProps {
-  session: any
+  session: Session | null
 }
 
 export function TopNavigation({ session }: TopNavigationProps) {
