@@ -20,47 +20,39 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
   const { toast } = useToast()
   const navigate = useNavigate()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     console.log("Attempting authentication:", { isSignUp, email })
 
     try {
-      if (isSignUp) {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: window.location.origin
-          }
-        })
-        console.log("Sign up response:", { data, error })
+      const authAction = isSignUp 
+        ? () => supabase.auth.signUp({
+            email,
+            password,
+            options: { emailRedirectTo: window.location.origin }
+          })
+        : () => supabase.auth.signInWithPassword({ email, password })
 
-        if (error) throw error
-        
+      const { data, error } = await authAction()
+      console.log(`${isSignUp ? 'Sign up' : 'Sign in'} response:`, { data, error })
+
+      if (error) {
+        if (error.message === "Invalid login credentials") {
+          throw new Error("Invalid email or password. Please try again.")
+        }
+        throw error
+      }
+
+      if (isSignUp) {
         toast({
           title: "Success",
           description: "Please check your email to verify your account",
         })
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        })
-        console.log("Sign in response:", { data, error })
-
-        if (error) {
-          if (error.message === "Invalid login credentials") {
-            throw new Error("Invalid email or password. Please try again.")
-          }
-          throw error
-        }
-
-        // Ensure we have a valid session
         if (!data.session) {
           throw new Error("No session returned after login")
         }
-
         toast({
           title: "Success",
           description: "Successfully logged in",
@@ -91,7 +83,7 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
               : "Enter your email below to sign in to your account"}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        <form onSubmit={handleAuth} className="space-y-4 pt-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
