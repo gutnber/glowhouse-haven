@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import {
   DropdownMenu,
@@ -15,48 +15,33 @@ import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { AuthDialog } from "@/components/auth/AuthDialog"
 
-export const UserMenu = () => {
+interface UserMenuProps {
+  session: any
+}
+
+export const UserMenu = ({ session }: UserMenuProps) => {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
-  const [session, setSession] = useState<any>(null)
   const { toast } = useToast()
   const navigate = useNavigate()
   const { isAdmin } = useIsAdmin()
   const { t } = useLanguage()
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session:', session)
-      setSession(session)
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth state changed:', session)
-      setSession(session)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
   const handleSignOut = async () => {
     try {
-      // Check if we have a session before attempting to sign out
-      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      console.log('Attempting to sign out, current session:', session)
       
-      if (!currentSession) {
-        console.log('No active session found, clearing local state')
-        setSession(null)
+      if (!session) {
+        console.log('No active session found, redirecting to home')
         navigate("/")
         return
       }
 
       const { error } = await supabase.auth.signOut()
+      
       if (error) {
-        // Handle specific session not found error
+        console.error('Sign out error:', error)
         if (error.message.includes('session_not_found')) {
-          console.log('Session not found, clearing local state')
-          setSession(null)
+          console.log('Session not found, redirecting to home')
           navigate("/")
           return
         }

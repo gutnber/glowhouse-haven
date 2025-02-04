@@ -10,13 +10,13 @@ export default function RootLayout() {
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-      console.log('Initial session:', initialSession)
+      console.log('Initial session in RootLayout:', initialSession)
       setSession(initialSession)
     })
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth state changed:', session)
+      console.log('Auth state changed in RootLayout:', session)
       setSession(session)
     })
 
@@ -43,7 +43,7 @@ export default function RootLayout() {
 
   return (
     <div data-template={profile?.ui_template || "original"} className="min-h-screen relative">
-      <TopNavigation />
+      <TopNavigation session={session} />
       <main className="pt-20 relative z-0 pointer-events-auto">
         <Outlet />
       </main>
