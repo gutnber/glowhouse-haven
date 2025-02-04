@@ -41,8 +41,27 @@ export const UserMenu = () => {
 
   const handleSignOut = async () => {
     try {
+      // Check if we have a session before attempting to sign out
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      
+      if (!currentSession) {
+        console.log('No active session found, clearing local state')
+        setSession(null)
+        navigate("/")
+        return
+      }
+
       const { error } = await supabase.auth.signOut()
-      if (error) throw error
+      if (error) {
+        // Handle specific session not found error
+        if (error.message.includes('session_not_found')) {
+          console.log('Session not found, clearing local state')
+          setSession(null)
+          navigate("/")
+          return
+        }
+        throw error
+      }
       
       toast({
         title: "Success",
