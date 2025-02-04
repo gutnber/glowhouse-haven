@@ -23,15 +23,18 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    console.log("Attempting authentication:", { isSignUp, email }) // Log attempt
+    console.log("Attempting authentication:", { isSignUp, email })
 
     try {
       if (isSignUp) {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: window.location.origin
+          }
         })
-        console.log("Sign up response:", { data, error }) // Log response
+        console.log("Sign up response:", { data, error })
 
         if (error) throw error
         
@@ -44,7 +47,7 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
           email,
           password,
         })
-        console.log("Sign in response:", { data, error }) // Log response
+        console.log("Sign in response:", { data, error })
 
         if (error) {
           if (error.message === "Invalid login credentials") {
@@ -53,12 +56,17 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
           throw error
         }
 
+        // Ensure we have a valid session
+        if (!data.session) {
+          throw new Error("No session returned after login")
+        }
+
         toast({
           title: "Success",
           description: "Successfully logged in",
         })
         onClose()
-        navigate("/") // Changed from "/properties" to "/"
+        navigate("/")
       }
     } catch (error) {
       console.error("Authentication error:", error)

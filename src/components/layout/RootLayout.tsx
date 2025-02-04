@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import { TopNavigation } from "./TopNavigation"
 import { useEffect, useState } from "react"
 import { Session } from "@supabase/supabase-js"
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Get initial session
@@ -16,13 +17,45 @@ export default function RootLayout() {
     })
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth state changed in RootLayout:', session)
-      setSession(session)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      console.log('Auth state changed in RootLayout:', { event, session: currentSession })
+      
+      if (event === 'SIGNED_OUT') {
+        console.log('User signed out, clearing session')
+        setSession(null)
+        navigate('/')
+        return
+      }
+
+      if (event === 'SIGNED_IN') {
+        console.log('User signed in, updating session')
+        setSession(currentSession)
+        return
+      }
+
+      // Handle token refresh
+      if (event === 'TOKEN_REFRESHED') {
+        console.log('Token refreshed, updating session')
+        setSession(currentSession)
+        return
+      }
+
+      // Handle session expired
+      if (event === 'INITIAL_SESSION' && !currentSession) {
+        console.log('No initial session, redirecting to home')
+        setSession(null)
+        navigate('/')
+        return
+      }
+
+      setSession(currentSession)
     })
 
-    return () => subscription.unsubscribe()
-  }, [])
+    return () => {
+      console.log('Cleaning up auth subscription')
+      subscription.unsubscribe()
+    }
+  }, [navigate])
 
   const { data: profile } = useQuery({
     queryKey: ['profile', session?.user?.id],
