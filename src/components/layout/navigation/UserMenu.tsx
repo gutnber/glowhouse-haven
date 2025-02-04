@@ -30,22 +30,10 @@ export const UserMenu = ({ session }: UserMenuProps) => {
   const handleSignOut = async () => {
     try {
       console.log('Attempting to sign out, current session:', session)
-      
-      if (!session) {
-        console.log('No active session found, redirecting to home')
-        navigate("/")
-        return
-      }
-
       const { error } = await supabase.auth.signOut()
       
       if (error) {
         console.error('Sign out error:', error)
-        if (error.message.includes('session_not_found')) {
-          console.log('Session not found, redirecting to home')
-          navigate("/")
-          return
-        }
         throw error
       }
       
@@ -53,7 +41,9 @@ export const UserMenu = ({ session }: UserMenuProps) => {
         title: "Success",
         description: "You have been signed out",
       })
-      navigate("/")
+      
+      // Force navigation to home page after successful sign out
+      window.location.href = "/"
     } catch (error) {
       console.error("Error signing out:", error)
       toast({
