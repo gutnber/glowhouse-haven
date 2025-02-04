@@ -26,9 +26,9 @@ export default function RootLayout() {
   })
 
   return (
-    <div data-template={profile?.ui_template || "original"} className="min-h-screen relative">
+    <div data-template={profile?.ui_template || "original"} className="min-h-screen">
       <TopNavigation session={session} />
-      <main className="pt-16">
+      <main>
         <Outlet />
       </main>
     </div>
