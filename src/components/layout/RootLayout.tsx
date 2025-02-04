@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Outlet } from "react-router-dom"
@@ -43,9 +42,9 @@ export default function RootLayout() {
   })
 
   return (
-    <div data-template={profile?.ui_template || "original"} className="min-h-screen">
+    <div data-template={profile?.ui_template || "original"} className="min-h-screen relative">
       <TopNavigation />
-      <main className="pt-20">
+      <main className="pt-20 relative z-0 pointer-events-auto">
         <Outlet />
       </main>
     </div>
