@@ -58,7 +58,7 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
           description: "Successfully logged in",
         })
         onClose()
-        navigate("/properties")
+        navigate("/") // Changed from "/properties" to "/"
       }
     } catch (error) {
       console.error("Authentication error:", error)
