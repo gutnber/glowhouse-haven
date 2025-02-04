@@ -3,9 +3,10 @@ import { supabase } from "@/integrations/supabase/client"
 import { Outlet } from "react-router-dom"
 import { TopNavigation } from "./TopNavigation"
 import { useEffect, useState } from "react"
+import { Session } from "@supabase/supabase-js"
 
 export default function RootLayout() {
-  const [session, setSession] = useState(null)
+  const [session, setSession] = useState<Session | null>(null)
 
   useEffect(() => {
     // Get initial session

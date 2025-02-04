@@ -3,7 +3,11 @@ import { Logo } from "./navigation/Logo"
 import { UserMenu } from "./navigation/UserMenu"
 import { LanguageToggle } from "@/components/LanguageToggle"
 
-export function TopNavigation() {
+interface TopNavigationProps {
+  session: any
+}
+
+export function TopNavigation({ session }: TopNavigationProps) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -27,7 +31,7 @@ export function TopNavigation() {
         <Logo />
         <div className="flex items-center gap-4">
           <LanguageToggle />
-          <UserMenu />
+          <UserMenu session={session} />
         </div>
       </div>
     </nav>

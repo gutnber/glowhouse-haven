@@ -14,9 +14,10 @@ import { useToast } from "@/hooks/use-toast"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { AuthDialog } from "@/components/auth/AuthDialog"
+import { Session } from "@supabase/supabase-js"
 
 interface UserMenuProps {
-  session: any
+  session: Session | null
 }
 
 export const UserMenu = ({ session }: UserMenuProps) => {
