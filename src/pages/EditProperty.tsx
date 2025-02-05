@@ -1,13 +1,24 @@
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { PropertyForm } from "@/components/property/PropertyForm"
 import { useForm } from "react-hook-form"
 import { useToast } from "@/hooks/use-toast"
-import { useNavigate } from "react-router-dom"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
+import { Loader2, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const propertyFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -70,7 +81,7 @@ const EditProperty = () => {
     } : undefined,
   })
 
-  const mutation = useMutation({
+  const updateMutation = useMutation({
     mutationFn: async (values: PropertyFormValues) => {
       console.log('Updating property with values:', values)
       const { error } = await supabase
@@ -106,8 +117,35 @@ const EditProperty = () => {
     }
   })
 
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      console.log('Deleting property:', id)
+      const { error } = await supabase
+        .from('properties')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Property deleted successfully",
+      })
+      navigate('/properties')
+    },
+    onError: (error) => {
+      console.error('Error deleting property:', error)
+      toast({
+        title: "Error",
+        description: "Failed to delete property",
+        variant: "destructive",
+      })
+    }
+  })
+
   const onSubmit = (values: PropertyFormValues) => {
-    mutation.mutate(values)
+    updateMutation.mutate(values)
   }
 
   if (isLoading) {
@@ -128,11 +166,44 @@ const EditProperty = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8">
-      <h1 className="text-4xl font-bold mb-8">Edit Property</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold">Edit Property</h1>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Property
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the property
+                and all its associated data.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => deleteMutation.mutate()}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {deleteMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="mr-2 h-4 w-4" />
+                )}
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
       <PropertyForm
         form={form}
         onSubmit={onSubmit}
-        isSubmitting={mutation.isPending}
+        isSubmitting={updateMutation.isPending}
       />
     </div>
   )
