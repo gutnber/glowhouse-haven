@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 import { ArrowRight, Ruler } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 
@@ -17,23 +17,44 @@ interface FeaturedPropertyCardProps {
 export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) => {
   const { isAdmin } = useIsAdmin()
   const { toast } = useToast()
-  const [autoplay, setAutoplay] = useState<boolean>(property.youtube_autoplay || false)
-  const [muted, setMuted] = useState<boolean>(property.youtube_muted || true)
-  const [controls, setControls] = useState<boolean>(property.youtube_controls || true)
+  const [autoplay, setAutoplay] = useState<boolean>(false)
+  const [muted, setMuted] = useState<boolean>(true)
+  const [controls, setControls] = useState<boolean>(true)
   
   const isVacantLand = property.property_type === 'vacantLand'
+
+  // Load video settings from property when component mounts
+  useEffect(() => {
+    setAutoplay(property.youtube_autoplay || false)
+    setMuted(property.youtube_muted || true)
+    setControls(property.youtube_controls || true)
+  }, [property])
 
   const updateVideoSettings = async (
     setting: 'youtube_autoplay' | 'youtube_muted' | 'youtube_controls',
     value: boolean
   ) => {
     try {
+      console.log('Updating video settings:', setting, value)
       const { error } = await supabase
         .from('properties')
         .update({ [setting]: value })
         .eq('id', property.id)
 
       if (error) throw error
+
+      // Update local state to reflect the change
+      switch (setting) {
+        case 'youtube_autoplay':
+          setAutoplay(value)
+          break
+        case 'youtube_muted':
+          setMuted(value)
+          break
+        case 'youtube_controls':
+          setControls(value)
+          break
+      }
 
       toast({
         title: "Success",
@@ -69,7 +90,6 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
                     <Switch 
                       checked={autoplay}
                       onCheckedChange={(checked) => {
-                        setAutoplay(checked)
                         updateVideoSettings('youtube_autoplay', checked)
                       }}
                     />
@@ -79,7 +99,6 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
                     <Switch 
                       checked={muted}
                       onCheckedChange={(checked) => {
-                        setMuted(checked)
                         updateVideoSettings('youtube_muted', checked)
                       }}
                     />
@@ -89,7 +108,6 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
                     <Switch 
                       checked={controls}
                       onCheckedChange={(checked) => {
-                        setControls(checked)
                         updateVideoSettings('youtube_controls', checked)
                       }}
                     />
