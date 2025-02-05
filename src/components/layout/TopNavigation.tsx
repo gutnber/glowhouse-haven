@@ -28,7 +28,7 @@ export function TopNavigation({ session }: TopNavigationProps) {
           : 'bg-gradient-to-r from-gray-300 via-gray-100 to-gray-300'
       }`}
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container relative z-50 flex h-16 items-center justify-between">
         <Logo />
         <div className="flex items-center gap-4">
           <LanguageToggle />

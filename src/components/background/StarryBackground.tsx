@@ -71,10 +71,10 @@ const StarryBackground = () => {
   }, [])
 
   return (
-    <div className="fixed inset-0 -z-10">
+    <div className="fixed inset-0 -z-50 pointer-events-none">
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-orange-900/20 to-zinc-900 pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-orange-900/20 to-zinc-900"
       />
     </div>
   )
