@@ -14,7 +14,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="area"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Total Area (sq ft)</FormLabel>
+            <FormLabel>Total Area (m²)</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -22,7 +22,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
             </FormControl>
-            <FormDescription>Total area of the property</FormDescription>
+            <FormDescription>Total area of the property in square meters</FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -33,7 +33,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="heated_area"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Heated Area (sq ft)</FormLabel>
+            <FormLabel>Heated Area (m²)</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -41,7 +41,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
             </FormControl>
-            <FormDescription>Heated/cooled living area</FormDescription>
+            <FormDescription>Heated/cooled living area in square meters</FormDescription>
             <FormMessage />
           </FormItem>
         )}
