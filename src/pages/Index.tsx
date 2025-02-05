@@ -77,11 +77,9 @@ const Index = () => {
   const hasMorePosts = newsPosts.length < totalPosts
 
   return (
-    <div className="min-h-screen">
-      <div className="fixed inset-0 pointer-events-none">
-        <StarryBackground />
-      </div>
-      <div className="relative">
+    <>
+      <StarryBackground />
+      <div className="relative z-10">
         <div className="container mx-auto px-4 pb-12 space-y-12">
           <WelcomeSection />
           <NewsSection 
@@ -94,7 +92,7 @@ const Index = () => {
           <FeaturedProperties properties={featuredProperties} />
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
