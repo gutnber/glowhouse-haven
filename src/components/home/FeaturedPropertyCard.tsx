@@ -153,7 +153,7 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
                   </div>
                 )}
                 <Button asChild className="w-full mt-4">
-                  <Link to={`/property/${property.id}`}>
+                  <Link to={`/properties/${property.id}`}>
                     View More <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -199,7 +199,7 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
                 </div>
               )}
               <Button asChild className="w-full mt-4">
-                <Link to={`/property/${property.id}`}>
+                <Link to={`/properties/${property.id}`}>
                   View More <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
