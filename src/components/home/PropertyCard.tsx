@@ -95,7 +95,7 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
             {property.area && (
               <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
                 <Ruler className="h-5 w-5 text-orange-500" />
-                <span className="text-white/70">{property.area} m²</span>
+                <span className="text-white/70 whitespace-nowrap">{property.area} m²</span>
               </div>
             )}
           </div>
