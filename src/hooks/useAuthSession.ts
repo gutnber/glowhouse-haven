@@ -8,9 +8,6 @@ export function useAuthSession() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Clear any stale tokens on mount
-    localStorage.removeItem('sb-xqghledkjaojfpijpjhn-auth-token')
-
     // Get initial session
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       console.log('Initial session:', initialSession)
@@ -19,7 +16,6 @@ export function useAuthSession() {
       } else {
         console.log('No initial session found')
         setSession(null)
-        navigate('/')
       }
     })
 
@@ -29,33 +25,22 @@ export function useAuthSession() {
       
       switch (event) {
         case 'SIGNED_OUT':
-          console.log('User signed out, clearing session')
+          console.log('User signed out')
           setSession(null)
-          // Clear stored tokens
-          localStorage.removeItem('sb-xqghledkjaojfpijpjhn-auth-token')
           navigate('/')
           break
           
         case 'SIGNED_IN':
-          console.log('User signed in, setting session')
+          console.log('User signed in')
           if (currentSession) {
             setSession(currentSession)
           }
           break
           
         case 'TOKEN_REFRESHED':
-          console.log('Token refreshed, updating session')
+          console.log('Token refreshed')
           if (currentSession) {
             setSession(currentSession)
-          }
-          break
-          
-        case 'INITIAL_SESSION':
-          if (!currentSession) {
-            console.log('No initial session, clearing data')
-            setSession(null)
-            localStorage.removeItem('sb-xqghledkjaojfpijpjhn-auth-token')
-            navigate('/')
           }
           break
           
@@ -68,7 +53,6 @@ export function useAuthSession() {
       }
     })
 
-    // Cleanup subscription on unmount
     return () => {
       console.log('Cleaning up auth subscription')
       subscription.unsubscribe()
