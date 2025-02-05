@@ -18,6 +18,7 @@ interface PropertyCardProps {
     heated_area?: number
     reference_number?: string
     feature_image_url?: string
+    property_type?: string
     created_at: string
   }
 }
@@ -30,6 +31,8 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
     return diffDays <= 7
   }
+
+  const showLivingSpaceIcons = property.property_type !== 'vacantLand'
 
   return (
     <Link key={property.id} to={`/properties/${property.id}`}>
@@ -73,14 +76,18 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
         </CardHeader>
         <CardContent className="px-6 pb-6">
           <div className="grid grid-cols-4 gap-2 text-sm">
-            <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
-              <Bed className="h-5 w-5 text-orange-500" />
-              <span className="text-white/70">{property.bedrooms}</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
-              <Bath className="h-5 w-5 text-orange-500" />
-              <span className="text-white/70">{property.bathrooms}</span>
-            </div>
+            {showLivingSpaceIcons && (
+              <>
+                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
+                  <Bed className="h-5 w-5 text-orange-500" />
+                  <span className="text-white/70">{property.bedrooms}</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
+                  <Bath className="h-5 w-5 text-orange-500" />
+                  <span className="text-white/70">{property.bathrooms}</span>
+                </div>
+              </>
+            )}
             <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
               <Home className="h-5 w-5 text-orange-500" />
               <span className="text-white/70">{property.build_year}</span>

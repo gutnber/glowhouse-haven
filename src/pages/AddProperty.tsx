@@ -11,8 +11,8 @@ import { PropertyForm } from "@/components/property/PropertyForm"
 const propertyFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   address: z.string().min(5, "Address must be at least 5 characters"),
-  bedrooms: z.coerce.number().min(0, "Bedrooms must be 0 or more"),
-  bathrooms: z.coerce.number().min(0, "Bathrooms must be 0 or more"),
+  bedrooms: z.coerce.number().min(0, "Bedrooms must be 0 or more").optional(),
+  bathrooms: z.coerce.number().min(0, "Bathrooms must be 0 or more").optional(),
   build_year: z.coerce.number().min(1800, "Build year must be 1800 or later").max(new Date().getFullYear(), "Build year cannot be in the future"),
   description: z.string().optional(),
   price: z.coerce.number().positive("Price must be greater than 0"),

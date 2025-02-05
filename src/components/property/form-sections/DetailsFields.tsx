@@ -1,61 +1,73 @@
 import { UseFormReturn } from "react-hook-form"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 interface DetailsFieldsProps {
   form: UseFormReturn<any>
 }
 
 export const DetailsFields = ({ form }: DetailsFieldsProps) => {
+  const propertyType = form.watch('property_type')
+  const isVacantLand = propertyType === 'vacantLand'
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <FormField
-        control={form.control}
-        name="bedrooms"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Bedrooms</FormLabel>
-            <FormControl>
-              <Input 
-                type="number" 
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {!isVacantLand && (
+        <>
+          <FormField
+            control={form.control}
+            name="bedrooms"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bedrooms</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <FormField
-        control={form.control}
-        name="bathrooms"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Bathrooms</FormLabel>
-            <FormControl>
-              <Input 
-                type="number" 
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+          <FormField
+            control={form.control}
+            name="bathrooms"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bathrooms</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </>
+      )}
 
       <FormField
         control={form.control}
         name="build_year"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Build Year</FormLabel>
+            <FormLabel className={cn(isVacantLand && "text-muted-foreground")}>
+              Build Year
+            </FormLabel>
             <FormControl>
               <Input 
                 type="number" 
                 {...field}
                 onChange={(e) => field.onChange(Number(e.target.value))}
+                className={cn(isVacantLand && "bg-muted cursor-not-allowed")}
+                disabled={isVacantLand}
               />
             </FormControl>
             <FormMessage />
