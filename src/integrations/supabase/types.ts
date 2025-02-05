@@ -12,18 +12,21 @@ export type Database = {
       app_settings: {
         Row: {
           created_at: string
+          featured_property_enabled: boolean | null
           id: string
           logo_url: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
+          featured_property_enabled?: boolean | null
           id?: string
           logo_url?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
+          featured_property_enabled?: boolean | null
           id?: string
           logo_url?: string | null
           updated_at?: string
@@ -117,6 +120,7 @@ export type Database = {
           heated_area: number | null
           id: string
           images: string[] | null
+          is_featured: boolean | null
           latitude: number | null
           longitude: number | null
           mode: string | null
@@ -148,6 +152,7 @@ export type Database = {
           heated_area?: number | null
           id?: string
           images?: string[] | null
+          is_featured?: boolean | null
           latitude?: number | null
           longitude?: number | null
           mode?: string | null
@@ -179,6 +184,7 @@ export type Database = {
           heated_area?: number | null
           id?: string
           images?: string[] | null
+          is_featured?: boolean | null
           latitude?: number | null
           longitude?: number | null
           mode?: string | null
