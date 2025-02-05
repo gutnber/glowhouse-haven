@@ -17,9 +17,9 @@ interface FeaturedPropertyCardProps {
 export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) => {
   const { isAdmin } = useIsAdmin()
   const { toast } = useToast()
-  const [autoplay, setAutoplay] = useState(property.youtube_autoplay || false)
-  const [muted, setMuted] = useState(property.youtube_muted || true)
-  const [controls, setControls] = useState(property.youtube_controls || true)
+  const [autoplay, setAutoplay] = useState<boolean>(property.youtube_autoplay || false)
+  const [muted, setMuted] = useState<boolean>(property.youtube_muted || true)
+  const [controls, setControls] = useState<boolean>(property.youtube_controls || true)
   
   const isVacantLand = property.property_type === 'vacantLand'
 
