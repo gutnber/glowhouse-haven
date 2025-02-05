@@ -3,7 +3,7 @@ import { Tables } from "@/integrations/supabase/types"
 import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
-import { ArrowRight, Ruler } from "lucide-react"
+import { ArrowRight, Ruler, Save } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useState, useEffect } from "react"
@@ -20,6 +20,7 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
   const [autoplay, setAutoplay] = useState<boolean>(false)
   const [muted, setMuted] = useState<boolean>(true)
   const [controls, setControls] = useState<boolean>(true)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   
   const isVacantLand = property.property_type === 'vacantLand'
 
@@ -30,43 +31,50 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
     setControls(property.youtube_controls || true)
   }, [property])
 
-  const updateVideoSettings = async (
-    setting: 'youtube_autoplay' | 'youtube_muted' | 'youtube_controls',
-    value: boolean
-  ) => {
+  const updateVideoSettings = async () => {
     try {
-      console.log('Updating video settings:', setting, value)
+      console.log('Saving video settings:', { autoplay, muted, controls })
       const { error } = await supabase
         .from('properties')
-        .update({ [setting]: value })
+        .update({
+          youtube_autoplay: autoplay,
+          youtube_muted: muted,
+          youtube_controls: controls
+        })
         .eq('id', property.id)
 
       if (error) throw error
 
-      // Update local state to reflect the change
-      switch (setting) {
-        case 'youtube_autoplay':
-          setAutoplay(value)
-          break
-        case 'youtube_muted':
-          setMuted(value)
-          break
-        case 'youtube_controls':
-          setControls(value)
-          break
-      }
-
+      setHasUnsavedChanges(false)
       toast({
         title: "Success",
-        description: "Video settings updated successfully",
+        description: "Video settings saved successfully",
       })
     } catch (error) {
-      console.error('Error updating video settings:', error)
+      console.error('Error saving video settings:', error)
       toast({
         title: "Error",
-        description: "Failed to update video settings",
+        description: "Failed to save video settings",
         variant: "destructive",
       })
+    }
+  }
+
+  const handleSettingChange = (
+    setting: 'youtube_autoplay' | 'youtube_muted' | 'youtube_controls',
+    value: boolean
+  ) => {
+    setHasUnsavedChanges(true)
+    switch (setting) {
+      case 'youtube_autoplay':
+        setAutoplay(value)
+        break
+      case 'youtube_muted':
+        setMuted(value)
+        break
+      case 'youtube_controls':
+        setControls(value)
+        break
     }
   }
 
@@ -90,7 +98,7 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
                     <Switch 
                       checked={autoplay}
                       onCheckedChange={(checked) => {
-                        updateVideoSettings('youtube_autoplay', checked)
+                        handleSettingChange('youtube_autoplay', checked)
                       }}
                     />
                   </div>
@@ -99,7 +107,7 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
                     <Switch 
                       checked={muted}
                       onCheckedChange={(checked) => {
-                        updateVideoSettings('youtube_muted', checked)
+                        handleSettingChange('youtube_muted', checked)
                       }}
                     />
                   </div>
@@ -108,10 +116,20 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
                     <Switch 
                       checked={controls}
                       onCheckedChange={(checked) => {
-                        updateVideoSettings('youtube_controls', checked)
+                        handleSettingChange('youtube_controls', checked)
                       }}
                     />
                   </div>
+                  {hasUnsavedChanges && (
+                    <Button 
+                      onClick={updateVideoSettings}
+                      className="w-full mt-2"
+                      variant="secondary"
+                    >
+                      <Save className="w-4 h-4 mr-2" />
+                      Save Changes
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
