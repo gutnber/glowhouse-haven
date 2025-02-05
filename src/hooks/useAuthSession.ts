@@ -8,10 +8,19 @@ export function useAuthSession() {
   const navigate = useNavigate()
 
   useEffect(() => {
+    // Clear any stale tokens on mount
+    localStorage.removeItem('sb-xqghledkjaojfpijpjhn-auth-token')
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       console.log('Initial session:', initialSession)
-      setSession(initialSession)
+      if (initialSession) {
+        setSession(initialSession)
+      } else {
+        console.log('No initial session found')
+        setSession(null)
+        navigate('/')
+      }
     })
 
     // Listen for auth changes
@@ -20,38 +29,46 @@ export function useAuthSession() {
       
       switch (event) {
         case 'SIGNED_OUT':
-          console.log('User signed out')
+          console.log('User signed out, clearing session')
           setSession(null)
-          // Clear any stored tokens
-          localStorage.removeItem('supabase.auth.token')
+          // Clear stored tokens
+          localStorage.removeItem('sb-xqghledkjaojfpijpjhn-auth-token')
           navigate('/')
           break
           
         case 'SIGNED_IN':
-          console.log('User signed in')
-          setSession(currentSession)
+          console.log('User signed in, setting session')
+          if (currentSession) {
+            setSession(currentSession)
+          }
           break
           
         case 'TOKEN_REFRESHED':
-          console.log('Token refreshed')
-          setSession(currentSession)
+          console.log('Token refreshed, updating session')
+          if (currentSession) {
+            setSession(currentSession)
+          }
           break
           
         case 'INITIAL_SESSION':
           if (!currentSession) {
-            console.log('No initial session')
+            console.log('No initial session, clearing data')
             setSession(null)
-            // Clear any stored tokens
-            localStorage.removeItem('supabase.auth.token')
+            localStorage.removeItem('sb-xqghledkjaojfpijpjhn-auth-token')
             navigate('/')
           }
           break
           
         default:
-          setSession(currentSession)
+          if (currentSession) {
+            setSession(currentSession)
+          } else {
+            setSession(null)
+          }
       }
     })
 
+    // Cleanup subscription on unmount
     return () => {
       console.log('Cleaning up auth subscription')
       subscription.unsubscribe()
