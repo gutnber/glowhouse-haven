@@ -50,30 +50,26 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="build_year"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Build Year</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </>
       )}
-
-      <FormField
-        control={form.control}
-        name="build_year"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className={cn(isVacantLand && "text-muted-foreground")}>
-              Build Year
-            </FormLabel>
-            <FormControl>
-              <Input 
-                type="number" 
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-                className={cn(isVacantLand && "bg-muted cursor-not-allowed")}
-                disabled={isVacantLand}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
 
       <FormField
         control={form.control}
