@@ -22,6 +22,8 @@ export function useAuthSession() {
         case 'SIGNED_OUT':
           console.log('User signed out')
           setSession(null)
+          // Clear any stored tokens
+          localStorage.removeItem('supabase.auth.token')
           navigate('/')
           break
           
@@ -39,6 +41,8 @@ export function useAuthSession() {
           if (!currentSession) {
             console.log('No initial session')
             setSession(null)
+            // Clear any stored tokens
+            localStorage.removeItem('supabase.auth.token')
             navigate('/')
           }
           break

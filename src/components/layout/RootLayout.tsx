@@ -10,19 +10,32 @@ export default function RootLayout() {
   const { data: profile } = useQuery({
     queryKey: ['profile', session?.user?.id],
     queryFn: async () => {
-      if (!session?.user) return null
+      if (!session?.user) {
+        console.log('No session, skipping profile fetch')
+        return null
+      }
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .maybeSingle()
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .maybeSingle()
 
-      if (error) throw error
-      console.log('Profile data fetched:', data)
-      return data
+        if (error) {
+          console.error('Error fetching profile:', error)
+          throw error
+        }
+        
+        console.log('Profile data fetched:', data)
+        return data
+      } catch (error) {
+        console.error('Error in profile query:', error)
+        throw error
+      }
     },
-    enabled: !!session?.user
+    enabled: !!session?.user,
+    retry: 1
   })
 
   return (
