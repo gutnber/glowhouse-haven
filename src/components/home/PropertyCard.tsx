@@ -93,13 +93,13 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
                 </div>
               </>
             ) : (
-              // Show land features for vacant land with gradient backgrounds
+              // Show land features for vacant land with orange-grey gradient backgrounds
               property.features?.slice(0, 3).map((feature, index) => (
                 <div 
                   key={index} 
                   className="flex items-center justify-center p-2 rounded-lg text-xs font-medium text-white"
                   style={{
-                    background: `linear-gradient(225deg, #FFE29F 0%, #FFA99F 48%, #FF719A 100%)`,
+                    background: `linear-gradient(135deg, #F97316 0%, #8E9196 100%)`,
                     minHeight: '52px'
                   }}
                 >
