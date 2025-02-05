@@ -5,11 +5,11 @@ import { cn } from "@/lib/utils"
 
 interface TemplateSelectorProps {
   templates: UITemplate[]
-  selectedTemplate: string
-  onSelect: (templateId: string) => void
+  currentTemplate: string
+  onApplyTemplate: (templateId: string) => void
 }
 
-export function TemplateSelector({ templates, selectedTemplate, onSelect }: TemplateSelectorProps) {
+export function TemplateSelector({ templates, currentTemplate, onApplyTemplate }: TemplateSelectorProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {templates.map((template) => (
@@ -17,14 +17,14 @@ export function TemplateSelector({ templates, selectedTemplate, onSelect }: Temp
           key={template.id}
           className={cn(
             "cursor-pointer transition-all hover:border-primary",
-            selectedTemplate === template.id && "border-primary"
+            currentTemplate === template.id && "border-primary"
           )}
-          onClick={() => onSelect(template.id)}
+          onClick={() => onApplyTemplate(template.id)}
         >
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               {template.name}
-              {selectedTemplate === template.id && (
+              {currentTemplate === template.id && (
                 <Check className="h-5 w-5 text-primary" />
               )}
             </CardTitle>
