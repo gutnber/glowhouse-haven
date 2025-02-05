@@ -16,36 +16,40 @@ const Index = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch total count of news posts
-      const { count } = await supabase
-        .from('news_posts')
-        .select('*', { count: 'exact', head: true })
-      
-      if (count !== null) {
-        setTotalPosts(count)
-      }
+      try {
+        // Fetch total count of news posts
+        const { count } = await supabase
+          .from('news_posts')
+          .select('*', { count: 'exact', head: true })
+        
+        if (count !== null) {
+          setTotalPosts(count)
+        }
 
-      // Fetch news posts
-      const { data: newsData } = await supabase
-        .from('news_posts')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(POSTS_PER_PAGE * 2)
+        // Fetch news posts
+        const { data: newsData } = await supabase
+          .from('news_posts')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(POSTS_PER_PAGE * 2)
 
-      if (newsData) {
-        setNewsPosts(newsData)
-      }
+        if (newsData) {
+          setNewsPosts(newsData)
+        }
 
-      // Fetch featured properties
-      const { data: propertiesData } = await supabase
-        .from('properties')
-        .select('*')
-        .not('feature_image_url', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(3)
+        // Fetch featured properties
+        const { data: propertiesData } = await supabase
+          .from('properties')
+          .select('*')
+          .not('feature_image_url', 'is', null)
+          .order('created_at', { ascending: false })
+          .limit(3)
 
-      if (propertiesData) {
-        setFeaturedProperties(propertiesData)
+        if (propertiesData) {
+          setFeaturedProperties(propertiesData)
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error)
       }
     }
 
@@ -53,38 +57,44 @@ const Index = () => {
   }, [])
 
   const loadMorePosts = async () => {
-    const nextPage = currentPage + 1
-    const { data: newsData } = await supabase
-      .from('news_posts')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .range(nextPage * POSTS_PER_PAGE, (nextPage + 1) * POSTS_PER_PAGE - 1)
+    try {
+      const nextPage = currentPage + 1
+      const { data: newsData } = await supabase
+        .from('news_posts')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .range(nextPage * POSTS_PER_PAGE, (nextPage + 1) * POSTS_PER_PAGE - 1)
 
-    if (newsData && newsData.length > 0) {
-      setNewsPosts(prev => [...prev, ...newsData])
-      setCurrentPage(nextPage)
+      if (newsData && newsData.length > 0) {
+        setNewsPosts(prev => [...prev, ...newsData])
+        setCurrentPage(nextPage)
+      }
+    } catch (error) {
+      console.error('Error loading more posts:', error)
     }
   }
 
   const hasMorePosts = newsPosts.length < totalPosts
 
   return (
-    <>
-      <StarryBackground />
-      <div className="space-y-12 relative z-10 px-4 pb-12">
-        <WelcomeSection />
-        
-        <NewsSection 
-          newsPosts={newsPosts}
-          hasMorePosts={hasMorePosts}
-          loadMorePosts={loadMorePosts}
-          INITIAL_VISIBLE_POSTS={INITIAL_VISIBLE_POSTS}
-          POSTS_PER_PAGE={POSTS_PER_PAGE}
-        />
-        
-        <FeaturedProperties properties={featuredProperties} />
+    <div className="min-h-screen relative">
+      <div className="fixed inset-0 z-0">
+        <StarryBackground />
       </div>
-    </>
+      <div className="relative z-10">
+        <div className="container mx-auto px-4 pb-12 space-y-12">
+          <WelcomeSection />
+          <NewsSection 
+            newsPosts={newsPosts}
+            hasMorePosts={hasMorePosts}
+            loadMorePosts={loadMorePosts}
+            INITIAL_VISIBLE_POSTS={INITIAL_VISIBLE_POSTS}
+            POSTS_PER_PAGE={POSTS_PER_PAGE}
+          />
+          <FeaturedProperties properties={featuredProperties} />
+        </div>
+      </div>
+    </div>
   )
 }
 
