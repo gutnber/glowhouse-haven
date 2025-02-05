@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { Building2, Bed, Bath, MapPin, Home, Ruler } from "lucide-react"
+import { Building2, Bed, Bath, MapPin, Home, Ruler, Trees, LandPlot } from "lucide-react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
@@ -19,6 +19,7 @@ interface PropertyCardProps {
     reference_number?: string
     feature_image_url?: string
     property_type?: string
+    features?: string[]
     created_at: string
   }
 }
@@ -33,6 +34,14 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
   }
 
   const showLivingSpaceIcons = property.property_type !== 'vacantLand'
+
+  // Helper function to get icon for land feature
+  const getLandFeatureIcon = (feature: string) => {
+    const lowercaseFeature = feature.toLowerCase()
+    if (lowercaseFeature.includes('tree') || lowercaseFeature.includes('wooded')) return Trees
+    if (lowercaseFeature.includes('flat') || lowercaseFeature.includes('level')) return LandPlot
+    return LandPlot
+  }
 
   return (
     <Link key={property.id} to={`/properties/${property.id}`}>
@@ -76,7 +85,7 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
         </CardHeader>
         <CardContent className="px-6 pb-6">
           <div className="grid grid-cols-4 gap-2 text-sm">
-            {showLivingSpaceIcons && (
+            {showLivingSpaceIcons ? (
               <>
                 <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
                   <Bed className="h-5 w-5 text-orange-500" />
@@ -91,6 +100,17 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
                   <span className="text-white/70">{property.build_year}</span>
                 </div>
               </>
+            ) : (
+              // Show land features for vacant land
+              property.features?.slice(0, 3).map((feature, index) => {
+                const FeatureIcon = getLandFeatureIcon(feature)
+                return (
+                  <div key={index} className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/5">
+                    <FeatureIcon className="h-5 w-5 text-orange-500" />
+                    <span className="text-white/70 text-xs text-center line-clamp-1">{feature}</span>
+                  </div>
+                )
+              })
             )}
             {property.area && (
               <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/5 min-w-[70px]">
