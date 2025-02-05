@@ -1,4 +1,4 @@
-import { Bed, Bath, CalendarClock, DollarSign } from "lucide-react"
+import { Bed, Bath, CalendarClock, DollarSign, Ruler } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { PropertyMap } from "./PropertyMap"
@@ -11,6 +11,9 @@ interface PropertyDetailsProps {
   buildYear: number
   price: number
   arv?: number | null
+  area?: number | null
+  heatedArea?: number | null
+  referenceNumber?: string | null
   description?: string | null
   features?: string[] | null
   googleMapsUrl?: string | null
@@ -29,6 +32,9 @@ export const PropertyDetails = ({
   buildYear,
   price,
   arv,
+  area,
+  heatedArea,
+  referenceNumber,
   description,
   features,
   googleMapsUrl,
@@ -78,6 +84,32 @@ export const PropertyDetails = ({
                 {price.toLocaleString()}
               </div>
             </div>
+            {area && (
+              <div className="space-y-2">
+                <div className="text-muted-foreground">Total Area</div>
+                <div className="flex items-center gap-2 text-lg">
+                  <Ruler className="h-5 w-5" />
+                  {area.toLocaleString()} sq ft
+                </div>
+              </div>
+            )}
+            {heatedArea && (
+              <div className="space-y-2">
+                <div className="text-muted-foreground">Heated Area</div>
+                <div className="flex items-center gap-2 text-lg">
+                  <Ruler className="h-5 w-5" />
+                  {heatedArea.toLocaleString()} sq ft
+                </div>
+              </div>
+            )}
+            {referenceNumber && (
+              <div className="space-y-2">
+                <div className="text-muted-foreground">Reference #</div>
+                <div className="flex items-center gap-2 text-lg">
+                  {referenceNumber}
+                </div>
+              </div>
+            )}
           </div>
         </Card>
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { Building2, Bed, Bath, MapPin, Home } from "lucide-react"
+import { Building2, Bed, Bath, MapPin, Home, Ruler } from "lucide-react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
@@ -14,6 +14,9 @@ interface PropertyCardProps {
     build_year: number
     price: number
     arv?: number
+    area?: number
+    heated_area?: number
+    reference_number?: string
     feature_image_url?: string
     created_at: string
   }
@@ -53,6 +56,11 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
               NEW
             </Badge>
           )}
+          {property.reference_number && (
+            <Badge variant="secondary" className="absolute top-4 right-4 shadow-lg">
+              Ref: {property.reference_number}
+            </Badge>
+          )}
         </div>
         <CardHeader className="p-6">
           <h3 className="text-xl font-bold text-white group-hover:text-orange-500 transition-colors duration-300 line-clamp-1">
@@ -64,7 +72,7 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
           </div>
         </CardHeader>
         <CardContent className="px-6 pb-6">
-          <div className="grid grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-4 gap-2 text-sm">
             <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
               <Bed className="h-5 w-5 text-orange-500" />
               <span className="text-white/70">{property.bedrooms}</span>
@@ -77,6 +85,12 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
               <Home className="h-5 w-5 text-orange-500" />
               <span className="text-white/70">{property.build_year}</span>
             </div>
+            {property.area && (
+              <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
+                <Ruler className="h-5 w-5 text-orange-500" />
+                <span className="text-white/70">{property.area}</span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

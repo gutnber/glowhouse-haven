@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useLocation } from "react-router-dom"
 import { BasicInfoFields } from "./form-sections/BasicInfoFields"
 import { DetailsFields } from "./form-sections/DetailsFields"
+import { AdditionalDetailsFields } from "./form-sections/AdditionalDetailsFields"
 import { DescriptionField } from "./form-sections/DescriptionField"
 import { ImagesField } from "./form-sections/ImagesField"
 import { YouTubeFields } from "./form-sections/YouTubeFields"
@@ -26,6 +27,7 @@ export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <BasicInfoFields form={form} />
         <DetailsFields form={form} />
+        <AdditionalDetailsFields form={form} />
         <DescriptionField form={form} />
         <ImagesField form={form} />
         <YouTubeFields form={form} />

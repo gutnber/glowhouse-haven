@@ -102,6 +102,7 @@ export type Database = {
       properties: {
         Row: {
           address: string
+          area: number | null
           arv: number | null
           bathrooms: number
           bedrooms: number
@@ -113,6 +114,7 @@ export type Database = {
           feature_image_url: string | null
           features: string[] | null
           google_maps_url: string | null
+          heated_area: number | null
           id: string
           images: string[] | null
           latitude: number | null
@@ -121,6 +123,7 @@ export type Database = {
           name: string
           price: number
           property_type: string | null
+          reference_number: string | null
           status: string | null
           updated_at: string
           youtube_autoplay: boolean | null
@@ -130,6 +133,7 @@ export type Database = {
         }
         Insert: {
           address: string
+          area?: number | null
           arv?: number | null
           bathrooms: number
           bedrooms: number
@@ -141,6 +145,7 @@ export type Database = {
           feature_image_url?: string | null
           features?: string[] | null
           google_maps_url?: string | null
+          heated_area?: number | null
           id?: string
           images?: string[] | null
           latitude?: number | null
@@ -149,6 +154,7 @@ export type Database = {
           name: string
           price: number
           property_type?: string | null
+          reference_number?: string | null
           status?: string | null
           updated_at?: string
           youtube_autoplay?: boolean | null
@@ -158,6 +164,7 @@ export type Database = {
         }
         Update: {
           address?: string
+          area?: number | null
           arv?: number | null
           bathrooms?: number
           bedrooms?: number
@@ -169,6 +176,7 @@ export type Database = {
           feature_image_url?: string | null
           features?: string[] | null
           google_maps_url?: string | null
+          heated_area?: number | null
           id?: string
           images?: string[] | null
           latitude?: number | null
@@ -177,6 +185,7 @@ export type Database = {
           name?: string
           price?: number
           property_type?: string | null
+          reference_number?: string | null
           status?: string | null
           updated_at?: string
           youtube_autoplay?: boolean | null
