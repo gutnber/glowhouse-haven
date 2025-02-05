@@ -38,7 +38,10 @@ const propertyFormSchema = z.object({
   enable_border_beam: z.boolean().optional().nullable(),
   property_type: z.string(),
   mode: z.string(),
-  status: z.string()
+  status: z.string(),
+  area: z.number().min(0).optional().nullable(),
+  heated_area: z.number().min(0).optional().nullable(),
+  reference_number: z.string().optional().nullable(),
 })
 
 type PropertyFormValues = z.infer<typeof propertyFormSchema>
@@ -78,6 +81,8 @@ const EditProperty = () => {
       youtube_muted: property.youtube_muted ?? true,
       youtube_controls: property.youtube_controls ?? true,
       enable_border_beam: property.enable_border_beam ?? true,
+      area: property.area ?? null,
+      heated_area: property.heated_area ?? null,
     } : undefined,
   })
 
@@ -94,6 +99,8 @@ const EditProperty = () => {
           youtube_muted: values.youtube_muted,
           youtube_controls: values.youtube_controls,
           enable_border_beam: values.enable_border_beam,
+          area: values.area || null,
+          heated_area: values.heated_area || null,
         })
         .eq('id', id)
 
