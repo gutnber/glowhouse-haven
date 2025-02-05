@@ -7,6 +7,9 @@ interface AdditionalDetailsFieldsProps {
 }
 
 export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) => {
+  const propertyType = form.watch('property_type')
+  const showHeatedArea = propertyType !== 'vacantLand'
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <FormField
@@ -22,30 +25,32 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
             </FormControl>
-            <FormDescription>Total area of the property in square meters</FormDescription>
+            <FormDescription>Total area in square meters</FormDescription>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="heated_area"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Heated Area (m²)</FormLabel>
-            <FormControl>
-              <Input 
-                type="number" 
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormDescription>Heated/cooled living area in square meters</FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {showHeatedArea && (
+        <FormField
+          control={form.control}
+          name="heated_area"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Heated Area (m²)</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number" 
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormDescription>Heated/cooled living area in square meters</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
 
       <FormField
         control={form.control}

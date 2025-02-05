@@ -24,6 +24,7 @@ interface PropertyDetailsProps {
   youtubeMuted?: boolean | null
   youtubeControls?: boolean | null
   enableBorderBeam?: boolean | null
+  propertyType?: string | null
 }
 
 export const PropertyDetails = ({
@@ -44,15 +45,11 @@ export const PropertyDetails = ({
   youtubeAutoplay = false,
   youtubeMuted = true,
   youtubeControls = true,
-  enableBorderBeam = true
+  enableBorderBeam = true,
+  propertyType = 'singleFamily'
 }: PropertyDetailsProps) => {
-  console.log('Border beam enabled:', enableBorderBeam)
-  console.log('YouTube player props:', { youtubeAutoplay, youtubeMuted, youtubeControls })
-  
-  // Convert square feet to square meters (1 sq ft = 0.092903 m²)
-  const convertToSquareMeters = (sqft: number) => {
-    return Math.round(sqft * 0.092903)
-  }
+  console.log('Property type:', propertyType)
+  const showLivingSpaceDetails = propertyType !== 'vacantLand'
 
   return (
     <div className="grid md:grid-cols-3 gap-8">
@@ -61,27 +58,31 @@ export const PropertyDetails = ({
           {enableBorderBeam && <BorderBeam />}
           <h2 className="text-2xl font-semibold mb-4">Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="space-y-2">
-              <div className="text-muted-foreground">Bedrooms</div>
-              <div className="flex items-center gap-2 text-lg">
-                <Bed className="h-5 w-5" />
-                {bedrooms}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-muted-foreground">Bathrooms</div>
-              <div className="flex items-center gap-2 text-lg">
-                <Bath className="h-5 w-5" />
-                {bathrooms}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-muted-foreground">Year Built</div>
-              <div className="flex items-center gap-2 text-lg">
-                <CalendarClock className="h-5 w-5" />
-                {buildYear}
-              </div>
-            </div>
+            {showLivingSpaceDetails && (
+              <>
+                <div className="space-y-2">
+                  <div className="text-muted-foreground">Bedrooms</div>
+                  <div className="flex items-center gap-2 text-lg">
+                    <Bed className="h-5 w-5" />
+                    {bedrooms}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-muted-foreground">Bathrooms</div>
+                  <div className="flex items-center gap-2 text-lg">
+                    <Bath className="h-5 w-5" />
+                    {bathrooms}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-muted-foreground">Year Built</div>
+                  <div className="flex items-center gap-2 text-lg">
+                    <CalendarClock className="h-5 w-5" />
+                    {buildYear}
+                  </div>
+                </div>
+              </>
+            )}
             <div className="space-y-2">
               <div className="text-muted-foreground">Price</div>
               <div className="flex items-center gap-2 text-lg font-semibold">
@@ -94,16 +95,16 @@ export const PropertyDetails = ({
                 <div className="text-muted-foreground">Total Area</div>
                 <div className="flex items-center gap-2 text-lg">
                   <Ruler className="h-5 w-5" />
-                  {convertToSquareMeters(area)} m²
+                  {area} m²
                 </div>
               </div>
             )}
-            {heatedArea && (
+            {heatedArea && showLivingSpaceDetails && (
               <div className="space-y-2">
                 <div className="text-muted-foreground">Heated Area</div>
                 <div className="flex items-center gap-2 text-lg">
                   <Ruler className="h-5 w-5" />
-                  {convertToSquareMeters(heatedArea)} m²
+                  {heatedArea} m²
                 </div>
               </div>
             )}
