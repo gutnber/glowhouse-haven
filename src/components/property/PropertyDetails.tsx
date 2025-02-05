@@ -49,6 +49,11 @@ export const PropertyDetails = ({
   console.log('Border beam enabled:', enableBorderBeam)
   console.log('YouTube player props:', { youtubeAutoplay, youtubeMuted, youtubeControls })
   
+  // Convert square feet to square meters (1 sq ft = 0.092903 m²)
+  const convertToSquareMeters = (sqft: number) => {
+    return Math.round(sqft * 0.092903)
+  }
+
   return (
     <div className="grid md:grid-cols-3 gap-8">
       <div className="md:col-span-2 space-y-6">
@@ -89,7 +94,7 @@ export const PropertyDetails = ({
                 <div className="text-muted-foreground">Total Area</div>
                 <div className="flex items-center gap-2 text-lg">
                   <Ruler className="h-5 w-5" />
-                  {area.toLocaleString()} sq ft
+                  {convertToSquareMeters(area)} m²
                 </div>
               </div>
             )}
@@ -98,7 +103,7 @@ export const PropertyDetails = ({
                 <div className="text-muted-foreground">Heated Area</div>
                 <div className="flex items-center gap-2 text-lg">
                   <Ruler className="h-5 w-5" />
-                  {heatedArea.toLocaleString()} sq ft
+                  {convertToSquareMeters(heatedArea)} m²
                 </div>
               </div>
             )}

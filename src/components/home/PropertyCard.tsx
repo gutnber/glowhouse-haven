@@ -34,6 +34,11 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
 
   const showLivingSpaceIcons = property.property_type !== 'vacantLand'
 
+  // Convert square feet to square meters (1 sq ft = 0.092903 m²)
+  const convertToSquareMeters = (sqft: number) => {
+    return Math.round(sqft * 0.092903)
+  }
+
   return (
     <Link key={property.id} to={`/properties/${property.id}`}>
       <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 bg-white/5 backdrop-blur-md border-white/10 group w-[320px]">
@@ -95,7 +100,7 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
             {property.area && (
               <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
                 <Ruler className="h-5 w-5 text-orange-500" />
-                <span className="text-white/70">{property.area}</span>
+                <span className="text-white/70">{convertToSquareMeters(property.area)} m²</span>
               </div>
             )}
           </div>
