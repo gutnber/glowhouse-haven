@@ -39,9 +39,9 @@ export default function RootLayout() {
   })
 
   return (
-    <div data-template={profile?.ui_template || "original"} className="min-h-screen">
+    <div data-template={profile?.ui_template || "original"} className="min-h-screen pointer-events-auto">
       <TopNavigation session={session} />
-      <main>
+      <main className="pointer-events-auto">
         <Outlet />
       </main>
     </div>

@@ -77,9 +77,9 @@ const Index = () => {
   const hasMorePosts = newsPosts.length < totalPosts
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative pointer-events-auto">
       <StarryBackground />
-      <div className="relative z-10">
+      <div className="relative z-10 pointer-events-auto">
         <div className="container mx-auto px-4 pb-12 space-y-12">
           <WelcomeSection />
           <NewsSection 
