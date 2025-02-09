@@ -21,12 +21,14 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
   const [password, setPassword] = useState("")
   const [fullName, setFullName] = useState("")
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [showEmailConfirmationNeeded, setShowEmailConfirmationNeeded] = useState(false)
   const { toast } = useToast()
   const navigate = useNavigate()
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setShowEmailConfirmationNeeded(false)
     console.log("Attempting authentication:", { isSignUp, email })
 
     try {
@@ -57,6 +59,10 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
         })
 
         if (error) {
+          if (error.message.includes("Email not confirmed")) {
+            setShowEmailConfirmationNeeded(true)
+            throw new Error("Please confirm your email address before signing in.")
+          }
           if (error.message === "Invalid login credentials") {
             throw new Error("Invalid email or password. Please try again.")
           }
@@ -91,6 +97,7 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
     setPassword("")
     setFullName("")
     setShowSuccessMessage(false)
+    setShowEmailConfirmationNeeded(false)
   }
 
   const toggleAuthMode = () => {
@@ -126,6 +133,23 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
               }}
             >
               Sign In Now
+            </Button>
+          </div>
+        ) : showEmailConfirmationNeeded ? (
+          <div className="space-y-4 pt-4">
+            <Alert>
+              <AlertDescription>
+                Please confirm your email address before signing in. Check your inbox for the confirmation email.
+              </AlertDescription>
+            </Alert>
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => {
+                setShowEmailConfirmationNeeded(false)
+              }}
+            >
+              Try Again
             </Button>
           </div>
         ) : (
