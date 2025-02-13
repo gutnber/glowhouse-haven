@@ -23,6 +23,6 @@ export const Logo = () => {
   }, []);
   console.log("Rendering Logo component with URL:", logoUrl);
   return <Link to="/" className="flex items-center">
-      <img src={logoUrl} alt="Logo" onLoad={() => console.log("Logo image loaded")} onError={e => console.error("Logo image failed to load:", e)} className="h-18 w-auto" />
+      <img src={logoUrl} alt="Logo" onLoad={() => console.log("Logo image loaded")} onError={e => console.error("Logo image failed to load:", e)} className="h-20 w-auto" />
     </Link>;
 };
