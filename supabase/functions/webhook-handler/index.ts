@@ -20,31 +20,67 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
+    // Get the webhook type from URL parameters
+    const url = new URL(req.url)
+    const type = url.searchParams.get('type')
+
     // Get the request body
     const payload = await req.json()
-    console.log('Received webhook payload:', payload)
+    console.log('Received webhook payload:', { type, payload })
 
-    // Store the webhook event in the database
-    const { data, error } = await supabase
+    // Store the webhook event
+    const { data: eventData, error: eventError } = await supabase
       .from('webhook_events')
       .insert({
         source: 'zapier',
-        event_type: payload.event_type || 'webhook',
+        event_type: type || 'webhook',
         payload: payload
       })
       .select()
       .single()
 
-    if (error) {
-      console.error('Error storing webhook event:', error)
-      throw error
+    if (eventError) {
+      console.error('Error storing webhook event:', eventError)
+      throw eventError
     }
 
-    console.log('Successfully stored webhook event:', data)
+    // Process the webhook based on type
+    if (type === 'property') {
+      const { error: propertyError } = await supabase
+        .from('properties')
+        .insert({
+          title: payload.title,
+          description: payload.description,
+          price: payload.price,
+          location: payload.location,
+          images: payload.images || [],
+          features: payload.features || [],
+          property_type: payload.property_type || 'other',
+          status: payload.status || 'available',
+          created_at: new Date().toISOString(),
+        })
+
+      if (propertyError) throw propertyError
+    } else if (type === 'news') {
+      const { error: newsError } = await supabase
+        .from('news_posts')
+        .insert({
+          title: payload.title,
+          content: payload.content,
+          feature_image_url: payload.feature_image_url,
+          created_at: new Date().toISOString(),
+        })
+
+      if (newsError) throw newsError
+    }
 
     // Return success response
     return new Response(
-      JSON.stringify({ success: true, message: 'Webhook received and processed', data }),
+      JSON.stringify({
+        success: true,
+        message: `${type || 'webhook'} received and processed`,
+        data: eventData
+      }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200 

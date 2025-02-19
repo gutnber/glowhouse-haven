@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { NewsEditor } from "@/components/news/NewsEditor"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Pencil, Trash2, Plus, Upload } from "lucide-react"
+import { Pencil, Trash2, Plus, Upload, Copy } from "lucide-react"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 
 export default function Tools() {
@@ -15,9 +15,36 @@ export default function Tools() {
   const [newsPosts, setNewsPosts] = useState<any[]>([])
   const [isCreatingPost, setIsCreatingPost] = useState(false)
   const [editingPost, setEditingPost] = useState<any>(null)
+  const [copiedProperty, setCopiedProperty] = useState(false)
+  const [copiedNews, setCopiedNews] = useState(false)
   const { toast } = useToast()
 
-  // Fetch current logo on component mount
+  const webhookBaseUrl = "https://xqghledkjaojfpijpjhn.supabase.co/functions/v1/webhook-handler"
+
+  const copyWebhookUrl = async (type: 'property' | 'news') => {
+    const webhookUrl = `${webhookBaseUrl}?type=${type}`
+    try {
+      await navigator.clipboard.writeText(webhookUrl)
+      if (type === 'property') {
+        setCopiedProperty(true)
+        setTimeout(() => setCopiedProperty(false), 2000)
+      } else {
+        setCopiedNews(true)
+        setTimeout(() => setCopiedNews(false), 2000)
+      }
+      toast({
+        title: "Copied!",
+        description: "Webhook URL has been copied to clipboard",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to copy webhook URL",
+        variant: "destructive",
+      })
+    }
+  }
+
   useEffect(() => {
     const fetchCurrentLogo = async () => {
       const { data } = await supabase
@@ -176,6 +203,61 @@ export default function Tools() {
               Select a new image file from your computer to update the logo
             </p>
           </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">Webhooks</h2>
+        <div className="grid gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Property Upload Webhook</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Use this webhook URL in Zapier or other automation tools to automatically add new properties.
+              </p>
+              <div className="flex items-center gap-2">
+                <Input
+                  value={`${webhookBaseUrl}?type=property`}
+                  readOnly
+                  className="font-mono text-sm"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => copyWebhookUrl('property')}
+                >
+                  <Copy className={copiedProperty ? "text-green-500" : ""} />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>News Post Webhook</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Use this webhook URL in Zapier or other automation tools to automatically add news posts.
+              </p>
+              <div className="flex items-center gap-2">
+                <Input
+                  value={`${webhookBaseUrl}?type=news`}
+                  readOnly
+                  className="font-mono text-sm"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => copyWebhookUrl('news')}
+                >
+                  <Copy className={copiedNews ? "text-green-500" : ""} />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
