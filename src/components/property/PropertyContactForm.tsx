@@ -27,33 +27,13 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
     setIsSubmitting(true)
 
     try {
-      console.log('Submitting form with data:', { name, email, phone, message })
-
-      // First, detect area code using AI
-      console.log('Calling detect-area-code function with phone:', phone)
-      const { data: areaCodeData, error: areaCodeError } = await supabase.functions.invoke(
-        'detect-area-code',
-        {
-          body: { phone },
-        }
-      )
-
-      console.log('Area code detection response:', areaCodeData)
-      if (areaCodeError) {
-        console.error('Area code detection error:', areaCodeError)
-        throw areaCodeError
-      }
-
-      // Submit prospect
       console.log('Submitting prospect to database with data:', {
         name,
         email,
         phone,
         message,
         property_id: propertyId,
-        property_name: propertyName,
-        area_code: areaCodeData?.areaCode,
-        country: areaCodeData?.country
+        property_name: propertyName
       })
 
       const { error: insertError } = await supabase
@@ -64,9 +44,7 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
           phone,
           message,
           property_id: propertyId,
-          property_name: propertyName,
-          area_code: areaCodeData?.areaCode,
-          country: areaCodeData?.country
+          property_name: propertyName
         })
 
       if (insertError) {
