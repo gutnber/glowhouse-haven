@@ -27,28 +27,37 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
     setIsSubmitting(true)
 
     try {
+      console.log('Starting form submission with data:', { name, email, phone, message, propertyId, propertyName })
+      
       const timestamp = new Date().toISOString()
-      const { error: insertError } = await supabase
+      const formData = {
+        id: crypto.randomUUID(),
+        full_name: name,
+        email,
+        phone,
+        contact_message: message,
+        inquiry_property_id: propertyId,
+        inquiry_property_name: propertyName,
+        user_type: 'prospect',
+        tags: ['contact_form'],
+        last_contact: timestamp,
+        created_at: timestamp,
+        updated_at: timestamp
+      }
+      
+      console.log('Submitting to Supabase:', formData)
+      
+      const { error: insertError, data } = await supabase
         .from('profiles')
-        .insert({
-          id: crypto.randomUUID(),
-          full_name: name,
-          email,
-          phone,
-          contact_message: message,
-          inquiry_property_id: propertyId,
-          inquiry_property_name: propertyName,
-          user_type: 'prospect',
-          tags: ['contact_form'],
-          last_contact: timestamp,
-          created_at: timestamp,
-          updated_at: timestamp
-        })
+        .insert(formData)
+        .select()
 
       if (insertError) {
         console.error('Database insert error:', insertError)
         throw insertError
       }
+
+      console.log('Supabase response:', data)
 
       setIsSubmitted(true)
       setName("")
