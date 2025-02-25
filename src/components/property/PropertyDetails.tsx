@@ -144,7 +144,7 @@ export const PropertyDetails = ({
         )}
       </div>
 
-      <div className="space-y-6">
+      <div className="md:col-span-1 space-y-6">
         {arv && (
           <Card className="p-6 relative">
             {enableBorderBeam && <BorderBeam delay={6} />}
