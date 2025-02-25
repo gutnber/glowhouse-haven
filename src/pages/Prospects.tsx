@@ -15,9 +15,9 @@ import {
 import { Loader } from "@/components/ui/loader"
 
 const Prospects = () => {
-  const { isAdmin } = useIsAdmin()
+  const { isAdmin, isLoading: isAdminCheckLoading } = useIsAdmin()
 
-  const { data: prospects, isLoading } = useQuery({
+  const { data: prospects, isLoading: isProspectsLoading } = useQuery({
     queryKey: ['prospects'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -27,14 +27,26 @@ const Prospects = () => {
 
       if (error) throw error
       return data
-    }
+    },
+    enabled: isAdmin // Only fetch prospects when user is confirmed as admin
   })
 
+  // Show loading state while checking admin status
+  if (isAdminCheckLoading) {
+    return (
+      <div className="container mx-auto py-20">
+        <Loader className="mx-auto" />
+      </div>
+    )
+  }
+
+  // Redirect non-admin users
   if (!isAdmin) {
     return <Navigate to="/" />
   }
 
-  if (isLoading) {
+  // Show loading state while fetching prospects
+  if (isProspectsLoading) {
     return (
       <div className="container mx-auto py-20">
         <Loader className="mx-auto" />
@@ -88,3 +100,4 @@ const Prospects = () => {
 }
 
 export default Prospects
+
