@@ -9,7 +9,7 @@ import { UsersTable } from "@/components/users/UsersTable"
 const Users = () => {
   const { isAdmin, isLoading: isAdminLoading } = useIsAdmin()
 
-  const { data: profiles, isLoading: isProfilesLoading, refetch: refetchProfiles } = useQuery({
+  const { data: profiles, isLoading: isProfilesLoading, refetch: refetchProfilesOriginal } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
       const { data: profiles, error } = await supabase
@@ -31,6 +31,12 @@ const Users = () => {
       return data
     },
   })
+
+  // Wrap the refetch function to match the expected Promise<void> type
+  const refetchProfiles = async () => {
+    await refetchProfilesOriginal()
+    return
+  }
 
   if (isAdminLoading || isProfilesLoading || isRolesLoading) {
     return (
