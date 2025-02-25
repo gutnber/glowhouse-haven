@@ -17,21 +17,20 @@ import { Loader } from "@/components/ui/loader"
 const Prospects = () => {
   const { isAdmin, isLoading: isAdminCheckLoading } = useIsAdmin()
 
-  const { data: prospects, isLoading: isProspectsLoading } = useQuery({
-    queryKey: ['prospects'],
+  const { data: contacts, isLoading: isContactsLoading } = useQuery({
+    queryKey: ['contacts'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('prospects')
+        .from('contacts_export')
         .select('*')
         .order('created_at', { ascending: false })
 
       if (error) throw error
       return data
     },
-    enabled: isAdmin // Only fetch prospects when user is confirmed as admin
+    enabled: isAdmin
   })
 
-  // Show loading state while checking admin status
   if (isAdminCheckLoading) {
     return (
       <div className="container mx-auto py-20">
@@ -40,13 +39,11 @@ const Prospects = () => {
     )
   }
 
-  // Redirect non-admin users
   if (!isAdmin) {
     return <Navigate to="/" />
   }
 
-  // Show loading state while fetching prospects
-  if (isProspectsLoading) {
+  if (isContactsLoading) {
     return (
       <div className="container mx-auto py-20">
         <Loader className="mx-auto" />
@@ -69,26 +66,22 @@ const Prospects = () => {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead>Area Code</TableHead>
-              <TableHead>Country</TableHead>
               <TableHead>Property</TableHead>
               <TableHead>Message</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {prospects?.map((prospect) => (
-              <TableRow key={prospect.id}>
+            {contacts?.map((contact) => (
+              <TableRow key={contact.id}>
                 <TableCell>
-                  {format(new Date(prospect.created_at), 'MMM d, yyyy')}
+                  {format(new Date(contact.created_at), 'MMM d, yyyy')}
                 </TableCell>
-                <TableCell>{prospect.name}</TableCell>
-                <TableCell>{prospect.email}</TableCell>
-                <TableCell>{prospect.phone}</TableCell>
-                <TableCell>{prospect.area_code || '-'}</TableCell>
-                <TableCell>{prospect.country || '-'}</TableCell>
-                <TableCell>{prospect.property_name}</TableCell>
+                <TableCell>{contact.full_name}</TableCell>
+                <TableCell>{contact.email}</TableCell>
+                <TableCell>{contact.phone}</TableCell>
+                <TableCell>{contact.inquiry_property_name}</TableCell>
                 <TableCell className="max-w-[200px] truncate">
-                  {prospect.message}
+                  {contact.contact_message}
                 </TableCell>
               </TableRow>
             ))}
@@ -100,4 +93,3 @@ const Prospects = () => {
 }
 
 export default Prospects
-

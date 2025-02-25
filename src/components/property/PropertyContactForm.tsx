@@ -27,20 +27,16 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
     setIsSubmitting(true)
 
     try {
-      console.log('Creating unregistered user profile with data:', {
-        full_name: name,
-        email,
-        phone,
-        contact_message: message,
-        inquiry_property_id: propertyId,
-        inquiry_property_name: propertyName,
-        user_type: 'unregistered',
-        tags: ['contact']
-      })
+      // Generate a UUID for the profile
+      const { data: { id: profileId }, error: uuidError } = await supabase
+        .rpc('gen_random_uuid')
+
+      if (uuidError) throw uuidError
 
       const { error: insertError } = await supabase
         .from('profiles')
         .insert({
+          id: profileId,
           full_name: name,
           email,
           phone,
