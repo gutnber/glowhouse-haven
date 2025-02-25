@@ -27,24 +27,28 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
     setIsSubmitting(true)
 
     try {
-      console.log('Submitting prospect to database with data:', {
-        name,
+      console.log('Creating unregistered user profile with data:', {
+        full_name: name,
         email,
         phone,
-        message,
-        property_id: propertyId,
-        property_name: propertyName
+        contact_message: message,
+        inquiry_property_id: propertyId,
+        inquiry_property_name: propertyName,
+        user_type: 'unregistered',
+        tags: ['contact']
       })
 
       const { error: insertError } = await supabase
-        .from('prospects')
+        .from('profiles')
         .insert({
-          name,
+          full_name: name,
           email,
           phone,
-          message,
-          property_id: propertyId,
-          property_name: propertyName
+          contact_message: message,
+          inquiry_property_id: propertyId,
+          inquiry_property_name: propertyName,
+          user_type: 'unregistered',
+          tags: ['contact']
         })
 
       if (insertError) {
@@ -58,10 +62,7 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
         description: "Your message has been sent successfully!",
       })
 
-      // Set submitted state to true to show success message
       setIsSubmitted(true)
-
-      // Reset form
       setName("")
       setEmail("")
       setPhone("")
