@@ -27,19 +27,22 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
     setIsSubmitting(true)
 
     try {
-      // Generate UUID directly in the insert
+      const timestamp = new Date().toISOString()
       const { error: insertError } = await supabase
         .from('profiles')
         .insert({
-          id: crypto.randomUUID(), // Use browser's UUID generation
+          id: crypto.randomUUID(),
           full_name: name,
           email,
           phone,
           contact_message: message,
           inquiry_property_id: propertyId,
           inquiry_property_name: propertyName,
-          user_type: 'unregistered',
-          tags: ['contact']
+          user_type: 'prospect',
+          tags: ['contact_form'],
+          last_contact: timestamp,
+          created_at: timestamp,
+          updated_at: timestamp
         })
 
       if (insertError) {
@@ -47,17 +50,16 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
         throw insertError
       }
 
-      console.log('Form submitted successfully')
-      toast({
-        title: "Success",
-        description: "Your message has been sent successfully!",
-      })
-
       setIsSubmitted(true)
       setName("")
       setEmail("")
       setPhone("")
       setMessage("")
+      
+      toast({
+        title: "Success",
+        description: "Your message has been sent successfully!",
+      })
     } catch (error) {
       console.error('Error submitting contact form:', error)
       toast({
@@ -74,7 +76,8 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
     return (
       <div className="flex flex-col items-center justify-center space-y-4 py-8">
         <CheckCircle2 className="h-12 w-12 text-green-500" />
-        <p className="text-lg font-medium text-green-600">Message successfully sent</p>
+        <p className="text-lg font-medium text-green-600">Message sent successfully</p>
+        <p className="text-sm text-muted-foreground">We'll get back to you soon!</p>
       </div>
     )
   }
