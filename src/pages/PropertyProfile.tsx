@@ -1,8 +1,10 @@
+
 import { useParams, Link } from "react-router-dom"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Tables } from "@/integrations/supabase/types"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import { PropertyHeader } from "@/components/property/PropertyHeader"
 import { PropertyImageGallery } from "@/components/property/PropertyImageGallery"
 import { PropertyDetails } from "@/components/property/PropertyDetails"
