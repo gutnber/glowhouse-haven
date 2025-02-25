@@ -237,6 +237,56 @@ export type Database = {
         }
         Relationships: []
       }
+      prospects: {
+        Row: {
+          area_code: string | null
+          country: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          phone: string
+          property_id: string
+          property_name: string
+          updated_at: string
+        }
+        Insert: {
+          area_code?: string | null
+          country?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          phone: string
+          property_id: string
+          property_name: string
+          updated_at?: string
+        }
+        Update: {
+          area_code?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string
+          property_id?: string
+          property_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_property"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       translations: {
         Row: {
           created_at: string

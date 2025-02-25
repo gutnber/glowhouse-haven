@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Loader2 } from "lucide-react"
+import { Label } from "@/components/ui/label"
 
 interface PropertyContactFormProps {
   propertyId: string
@@ -75,16 +76,20 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
+      <div className="space-y-2">
+        <Label htmlFor="name">Name</Label>
         <Input
+          id="name"
           placeholder="Your Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
         />
       </div>
-      <div>
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
         <Input
+          id="email"
           type="email"
           placeholder="Your Email"
           value={email}
@@ -92,8 +97,10 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
           required
         />
       </div>
-      <div>
+      <div className="space-y-2">
+        <Label htmlFor="phone">Phone</Label>
         <Input
+          id="phone"
           type="tel"
           placeholder="Your Phone"
           value={phone}
@@ -101,8 +108,10 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
           required
         />
       </div>
-      <div>
+      <div className="space-y-2">
+        <Label htmlFor="message">Message</Label>
         <Textarea
+          id="message"
           placeholder="Your Message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}

@@ -1,75 +1,57 @@
 
-import "https://deno.land/x/xhr@0.1.0/mod.ts"
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { Configuration, OpenAIApi } from "https://esm.sh/openai@3.2.1"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
     const { phone } = await req.json()
-    
-    // Use OpenAI to analyze the phone number
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert in identifying phone number area codes for Mexico and USA. Analyze the provided phone number and identify its area code and country. Return only the area code and country name if found, or null if not recognized.'
-          },
-          {
-            role: 'user',
-            content: `Analyze this phone number and identify its area code and country (Mexico or USA): ${phone}`
-          }
-        ],
-      }),
-    })
 
-    const data = await response.json()
-    const analysis = data.choices[0].message.content
-
-    // Extract area code and country from the AI response
-    let areaCode = null
-    let country = null
-
-    // Simple parsing of the AI response
-    if (analysis.toLowerCase().includes('mexico')) {
-      country = 'Mexico'
-      const match = analysis.match(/\b\d{2,3}\b/)
-      if (match) areaCode = match[0]
-    } else if (analysis.toLowerCase().includes('usa') || analysis.toLowerCase().includes('united states')) {
-      country = 'USA'
-      const match = analysis.match(/\b\d{3}\b/)
-      if (match) areaCode = match[0]
+    if (!phone) {
+      throw new Error('Phone number is required')
     }
 
-    console.log('Phone analysis:', { phone, areaCode, country, analysis })
+    // Initialize OpenAI
+    const configuration = new Configuration({
+      apiKey: Deno.env.get('OPENAI_API_KEY'),
+    })
+    const openai = new OpenAIApi(configuration)
+
+    // Create prompt for detecting area code and country
+    const prompt = `Given the phone number "${phone}", what is its area code and country? Return only a JSON object with "areaCode" and "country" properties. If you cannot determine it, return null for both. Only analyze numbers from Mexico and USA.`
+
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }],
+    })
+
+    const result = completion.data.choices[0]?.message?.content
+    const parsed = JSON.parse(result || '{"areaCode": null, "country": null}')
 
     return new Response(
-      JSON.stringify({ areaCode, country }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify(parsed),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      },
     )
   } catch (error) {
-    console.error('Error in detect-area-code function:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      },
     )
   }
 })

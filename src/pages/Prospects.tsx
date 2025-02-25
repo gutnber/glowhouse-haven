@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Loader } from "@/components/ui/loader"
 
 const Prospects = () => {
   const { isAdmin } = useIsAdmin()
@@ -35,8 +36,8 @@ const Prospects = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <p>Loading prospects...</p>
+      <div className="container mx-auto py-20">
+        <Loader className="mx-auto" />
       </div>
     )
   }
