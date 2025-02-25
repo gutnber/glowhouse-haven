@@ -6,7 +6,11 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { Session } from "@supabase/supabase-js";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Shield } from "lucide-react";
-import { Tooltip } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent
+} from "@/components/ui/tooltip";
 
 interface TopNavigationProps {
   session: Session | null;
@@ -37,14 +41,14 @@ export function TopNavigation({ session }: TopNavigationProps) {
         <div className="flex items-center gap-4">
           {isAdmin && (
             <Tooltip>
-              <Tooltip.Trigger asChild>
+              <TooltipTrigger asChild>
                 <div className="flex items-center">
                   <Shield className="h-5 w-5 text-primary" />
                 </div>
-              </Tooltip.Trigger>
-              <Tooltip.Content>
+              </TooltipTrigger>
+              <TooltipContent>
                 <p>Administrator Account</p>
-              </Tooltip.Content>
+              </TooltipContent>
             </Tooltip>
           )}
           <LanguageToggle />
