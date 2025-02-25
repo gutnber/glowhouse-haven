@@ -4,6 +4,9 @@ import { Logo } from "./navigation/Logo";
 import { UserMenu } from "./navigation/UserMenu";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { Session } from "@supabase/supabase-js";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { Shield } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface TopNavigationProps {
   session: Session | null;
@@ -11,6 +14,7 @@ interface TopNavigationProps {
 
 export function TopNavigation({ session }: TopNavigationProps) {
   const [scrolled, setScrolled] = useState(false);
+  const { isAdmin } = useIsAdmin();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +35,18 @@ export function TopNavigation({ session }: TopNavigationProps) {
       <div className="container mx-auto relative z-50 flex h-19 items-center justify-between px-4">
         <Logo />
         <div className="flex items-center gap-4">
+          {isAdmin && (
+            <Tooltip>
+              <Tooltip.Trigger asChild>
+                <div className="flex items-center">
+                  <Shield className="h-5 w-5 text-primary" />
+                </div>
+              </Tooltip.Trigger>
+              <Tooltip.Content>
+                <p>Administrator Account</p>
+              </Tooltip.Content>
+            </Tooltip>
+          )}
           <LanguageToggle />
           <UserMenu session={session} />
         </div>
