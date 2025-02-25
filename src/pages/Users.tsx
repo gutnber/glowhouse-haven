@@ -163,9 +163,15 @@ const Users = () => {
 
   const handlePasswordReset = async (userId: string) => {
     try {
+      // First get the user's email
+      const user = profiles?.find(profile => profile.id === userId)
+      if (!user?.email) {
+        throw new Error("User email not found")
+      }
+
       const { error } = await supabase.auth.admin.generateLink({
         type: 'recovery',
-        id: userId,
+        email: user.email,
       })
       if (error) throw error
       
