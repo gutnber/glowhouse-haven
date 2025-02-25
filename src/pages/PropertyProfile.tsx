@@ -65,7 +65,7 @@ const PropertyProfile = () => {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isAdmin) return
     setIsDragging(true)
-    e.preventDefault() // Prevent image dragging
+    e.preventDefault()
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -75,7 +75,6 @@ const PropertyProfile = () => {
     const x = ((e.clientX - rect.left) / rect.width) * 100
     const y = ((e.clientY - rect.top) / rect.height) * 100
 
-    // Clamp values between 0 and 100
     const clampedX = Math.max(0, Math.min(100, x))
     const clampedY = Math.max(0, Math.min(100, y))
 
@@ -86,7 +85,6 @@ const PropertyProfile = () => {
     if (!isDragging) return
     setIsDragging(false)
 
-    // Convert position to CSS object-position format
     const positionString = `${position.x}% ${position.y}%`
     updateImagePositionMutation.mutate(positionString)
   }

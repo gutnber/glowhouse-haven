@@ -192,6 +192,7 @@ export const PropertyDetails = ({
 
         <Card className="p-6 relative">
           {enableBorderBeam && <BorderBeam delay={10} />}
+          <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
           <PropertyContactForm 
             propertyId={propertyId} 
             propertyName={propertyName}
