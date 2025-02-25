@@ -1,3 +1,4 @@
+
 import { useParams, Link } from "react-router-dom"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { PropertyHeader } from "@/components/property/PropertyHeader"
 import { PropertyImageGallery } from "@/components/property/PropertyImageGallery"
 import { PropertyDetails } from "@/components/property/PropertyDetails"
+import { PropertyContactForm } from "@/components/property/PropertyContactForm"
 import { House } from "lucide-react"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useToast } from "@/hooks/use-toast"
@@ -109,7 +111,7 @@ const PropertyProfile = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8 pb-8">
       <PropertyHeader
         id={property.id}
         name={property.name}
@@ -157,22 +159,37 @@ const PropertyProfile = () => {
         featureImageUrl={property.feature_image_url}
       />
 
-      <PropertyDetails
-        bedrooms={property.bedrooms}
-        bathrooms={property.bathrooms}
-        buildYear={property.build_year}
-        price={property.price}
-        arv={property.arv}
-        description={property.description}
-        features={property.features}
-        googleMapsUrl={property.google_maps_url}
-        latitude={property.latitude}
-        longitude={property.longitude}
-        youtubeUrl={property.youtube_url}
-        youtubeAutoplay={property.youtube_autoplay}
-        youtubeMuted={property.youtube_muted}
-        youtubeControls={property.youtube_controls}
-      />
+      <div className="grid md:grid-cols-3 gap-8">
+        <div className="md:col-span-2">
+          <PropertyDetails
+            bedrooms={property.bedrooms}
+            bathrooms={property.bathrooms}
+            buildYear={property.build_year}
+            price={property.price}
+            arv={property.arv}
+            description={property.description}
+            features={property.features}
+            googleMapsUrl={property.google_maps_url}
+            latitude={property.latitude}
+            longitude={property.longitude}
+            youtubeUrl={property.youtube_url}
+            youtubeAutoplay={property.youtube_autoplay}
+            youtubeMuted={property.youtube_muted}
+            youtubeControls={property.youtube_controls}
+          />
+        </div>
+        <div>
+          <div className="sticky top-24">
+            <div className="border rounded-lg p-6 space-y-6 bg-card">
+              <h3 className="text-lg font-semibold">Contact Us About This Property</h3>
+              <PropertyContactForm 
+                propertyId={property.id} 
+                propertyName={property.name}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
