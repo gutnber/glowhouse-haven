@@ -182,4 +182,3 @@ const PropertyProfile = () => {
 }
 
 export default PropertyProfile
-
