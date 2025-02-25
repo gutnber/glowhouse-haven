@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
@@ -19,16 +20,53 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, UserCog } from "lucide-react"
+import { Loader2, UserCog, UserPlus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
 
 type AppRole = "admin" | "user"
+
+const createUserSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  full_name: z.string().min(2, "Name must be at least 2 characters"),
+})
 
 const Users = () => {
   const { isAdmin, isLoading: isAdminLoading } = useIsAdmin()
   const { toast } = useToast()
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null)
+  const [isCreatingUser, setIsCreatingUser] = useState(false)
+  const [editingEmail, setEditingEmail] = useState<{ id: string; email: string } | null>(null)
 
-  const { data: profiles, isLoading: isProfilesLoading } = useQuery({
+  const createUserForm = useForm<z.infer<typeof createUserSchema>>({
+    resolver: zodResolver(createUserSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      full_name: "",
+    },
+  })
+
+  const { data: profiles, isLoading: isProfilesLoading, refetch: refetchProfiles } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
       const { data: profiles, error } = await supabase
@@ -100,6 +138,77 @@ const Users = () => {
     }
   }
 
+  const handleEmailUpdate = async (userId: string, newEmail: string) => {
+    try {
+      const { error } = await supabase.auth.admin.updateUserById(userId, {
+        email: newEmail,
+      })
+      if (error) throw error
+      
+      await refetchProfiles()
+      setEditingEmail(null)
+      toast({
+        title: "Success",
+        description: "Email updated successfully",
+      })
+    } catch (error) {
+      console.error("Error updating email:", error)
+      toast({
+        title: "Error",
+        description: "Failed to update email",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handlePasswordReset = async (userId: string) => {
+    try {
+      const { error } = await supabase.auth.admin.generateLink({
+        type: 'recovery',
+        userId,
+      })
+      if (error) throw error
+      
+      toast({
+        title: "Success",
+        description: "Password reset email sent",
+      })
+    } catch (error) {
+      console.error("Error sending password reset:", error)
+      toast({
+        title: "Error",
+        description: "Failed to send password reset email",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleCreateUser = async (values: z.infer<typeof createUserSchema>) => {
+    try {
+      const { data, error } = await supabase.auth.admin.createUser({
+        email: values.email,
+        password: values.password,
+        user_metadata: { full_name: values.full_name },
+      })
+      if (error) throw error
+
+      await refetchProfiles()
+      setIsCreatingUser(false)
+      createUserForm.reset()
+      toast({
+        title: "Success",
+        description: "User created successfully",
+      })
+    } catch (error) {
+      console.error("Error creating user:", error)
+      toast({
+        title: "Error",
+        description: "Failed to create user",
+        variant: "destructive",
+      })
+    }
+  }
+
   if (isAdminLoading || isProfilesLoading || isRolesLoading) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
@@ -124,6 +233,63 @@ const Users = () => {
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Users Management</h1>
+        <Dialog open={isCreatingUser} onOpenChange={setIsCreatingUser}>
+          <DialogTrigger asChild>
+            <Button>
+              <UserPlus className="w-4 h-4 mr-2" />
+              Create User
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New User</DialogTitle>
+            </DialogHeader>
+            <Form {...createUserForm}>
+              <form onSubmit={createUserForm.handleSubmit(handleCreateUser)} className="space-y-4">
+                <FormField
+                  control={createUserForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="email" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={createUserForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="password" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={createUserForm.control}
+                  name="full_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit">Create User</Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="rounded-md border">
@@ -132,7 +298,9 @@ const Users = () => {
             <TableRow>
               <TableHead>User ID</TableHead>
               <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -149,6 +317,47 @@ const Users = () => {
                       <Badge variant="secondary" className="ml-2">
                         Admin
                       </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editingEmail?.id === profile.id ? (
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={editingEmail.email}
+                          onChange={(e) =>
+                            setEditingEmail({ id: profile.id, email: e.target.value })
+                          }
+                          className="w-48"
+                        />
+                        <Button
+                          size="sm"
+                          onClick={() =>
+                            handleEmailUpdate(profile.id, editingEmail.email)
+                          }
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setEditingEmail(null)}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        {profile.email}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            setEditingEmail({ id: profile.id, email: profile.email || "" })
+                          }
+                        >
+                          Edit
+                        </Button>
+                      </div>
                     )}
                   </TableCell>
                   <TableCell>
@@ -169,6 +378,15 @@ const Users = () => {
                         </SelectContent>
                       </Select>
                     )}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePasswordReset(profile.id)}
+                    >
+                      Reset Password
+                    </Button>
                   </TableCell>
                 </TableRow>
               )
