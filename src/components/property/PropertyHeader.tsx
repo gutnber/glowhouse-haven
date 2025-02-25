@@ -1,3 +1,4 @@
+
 import { ChevronLeft, MapPin, Pencil } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
@@ -13,7 +14,7 @@ export const PropertyHeader = ({ id, name, address }: PropertyHeaderProps) => {
   const { isAdmin } = useIsAdmin()
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center pt-24">
       <div className="space-y-1">
         <Button variant="ghost" asChild className="-ml-4">
           <Link to="/properties">
