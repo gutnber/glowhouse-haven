@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +8,7 @@ import { NewsEditor } from "@/components/news/NewsEditor"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Pencil, Trash2, Plus, Upload, Copy } from "lucide-react"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { FooterSettings } from "@/components/footer/FooterSettings"
 
 export default function Tools() {
   const [isUploading, setIsUploading] = useState(false)
@@ -226,6 +226,11 @@ export default function Tools() {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">Footer Settings</h2>
+        <FooterSettings />
       </div>
 
       <div className="space-y-4">

@@ -1,7 +1,9 @@
+
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Outlet } from "react-router-dom"
 import { TopNavigation } from "./TopNavigation"
+import { Footer } from "./Footer"
 import { useAuthSession } from "@/hooks/useAuthSession"
 
 export default function RootLayout() {
@@ -39,11 +41,12 @@ export default function RootLayout() {
   })
 
   return (
-    <div data-template={profile?.ui_template || "original"} className="min-h-screen pointer-events-auto">
+    <div data-template={profile?.ui_template || "original"} className="min-h-screen flex flex-col pointer-events-auto">
       <TopNavigation session={session} />
-      <main className="pointer-events-auto">
+      <main className="flex-1 pointer-events-auto">
         <Outlet />
       </main>
+      <Footer />
     </div>
   )
 }

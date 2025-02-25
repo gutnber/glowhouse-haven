@@ -33,6 +33,42 @@ export type Database = {
         }
         Relationships: []
       }
+      footer_settings: {
+        Row: {
+          address: string | null
+          company: string | null
+          created_at: string
+          enabled: boolean | null
+          id: string
+          logo_url: string | null
+          phone: string | null
+          subscribe_email: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          company?: string | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          subscribe_email?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          company?: string | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          subscribe_email?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       news_posts: {
         Row: {
           content: string
