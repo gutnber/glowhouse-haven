@@ -9,7 +9,8 @@ import { Shield } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
-  TooltipContent
+  TooltipContent,
+  TooltipProvider
 } from "@/components/ui/tooltip";
 
 interface TopNavigationProps {
@@ -40,16 +41,18 @@ export function TopNavigation({ session }: TopNavigationProps) {
         <Logo />
         <div className="flex items-center gap-4">
           {isAdmin && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center">
-                  <Shield className="h-5 w-5 text-primary" />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Administrator Account</p>
-              </TooltipContent>
-            </Tooltip>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center">
+                    <Shield className="h-5 w-5 text-primary" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Administrator Account</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           <LanguageToggle />
           <UserMenu session={session} />
