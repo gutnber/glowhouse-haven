@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { PropertyMap } from "./PropertyMap"
 import { PropertyYouTubePlayer } from "./PropertyYouTubePlayer"
 import { BorderBeam } from "@/components/ui/border-beam"
+import { PropertyContactForm } from "./PropertyContactForm"
 
 interface PropertyDetailsProps {
   bedrooms: number
@@ -26,6 +27,8 @@ interface PropertyDetailsProps {
   youtubeControls?: boolean | null
   enableBorderBeam?: boolean | null
   propertyType?: string | null
+  propertyId: string
+  propertyName: string
 }
 
 export const PropertyDetails = ({
@@ -47,7 +50,9 @@ export const PropertyDetails = ({
   youtubeMuted = true,
   youtubeControls = true,
   enableBorderBeam = true,
-  propertyType = 'singleFamily'
+  propertyType = 'singleFamily',
+  propertyId,
+  propertyName
 }: PropertyDetailsProps) => {
   console.log('Property type:', propertyType)
   const showLivingSpaceDetails = propertyType !== 'vacantLand'
@@ -184,7 +189,16 @@ export const PropertyDetails = ({
           latitude={latitude} 
           longitude={longitude} 
         />
+
+        <Card className="p-6 relative">
+          {enableBorderBeam && <BorderBeam delay={10} />}
+          <PropertyContactForm 
+            propertyId={propertyId} 
+            propertyName={propertyName}
+          />
+        </Card>
       </div>
     </div>
   )
 }
+
