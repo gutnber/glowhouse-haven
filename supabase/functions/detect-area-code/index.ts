@@ -41,27 +41,49 @@ serve(async (req) => {
     })
 
     const data = await response.json()
-    console.log('Deepseek response:', data)
+    console.log('Deepseek API Response:', data)
 
-    // Parse the response to get the actual content
-    const result = JSON.parse(data.choices[0].message.content)
-    console.log('Parsed result:', result)
+    // Validate API response
+    if (!data || !data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+      console.error('Invalid API response structure:', data)
+      throw new Error('Invalid API response from Deepseek')
+    }
 
-    // Return the result
-    return new Response(
-      JSON.stringify(result),
-      { 
-        headers: { 
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        } 
+    try {
+      // Parse the response to get the actual content
+      const result = JSON.parse(data.choices[0].message.content)
+      
+      // Validate result structure
+      if (!result.areaCode || !result.country) {
+        console.error('Invalid parsed result structure:', result)
+        throw new Error('Invalid response format from AI')
       }
-    )
+      
+      console.log('Successfully parsed result:', result)
+
+      // Return the result
+      return new Response(
+        JSON.stringify(result),
+        { 
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          } 
+        }
+      )
+    } catch (parseError) {
+      console.error('Error parsing AI response:', parseError)
+      console.error('Raw content:', data.choices[0].message.content)
+      throw new Error('Failed to parse AI response')
+    }
 
   } catch (error) {
-    console.error('Error:', error)
+    console.error('Error in edge function:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message || 'An error occurred processing the phone number',
+        details: error.toString()
+      }),
       { 
         status: 400,
         headers: { 
