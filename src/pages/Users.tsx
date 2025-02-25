@@ -165,7 +165,7 @@ const Users = () => {
     try {
       const { error } = await supabase.auth.admin.generateLink({
         type: 'recovery',
-        userId,
+        id: userId,
       })
       if (error) throw error
       
@@ -399,3 +399,4 @@ const Users = () => {
 }
 
 export default Users
+
