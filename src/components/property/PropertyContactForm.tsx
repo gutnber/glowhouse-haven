@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Loader2 } from "lucide-react"
+import { Loader2, CheckCircle2 } from "lucide-react"
 import { Label } from "@/components/ui/label"
 
 interface PropertyContactFormProps {
@@ -19,6 +19,7 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
   const [phone, setPhone] = useState("")
   const [message, setMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
   const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,6 +58,9 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
         description: "Your message has been sent successfully!",
       })
 
+      // Set submitted state to true to show success message
+      setIsSubmitted(true)
+
       // Reset form
       setName("")
       setEmail("")
@@ -72,6 +76,15 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  if (isSubmitted) {
+    return (
+      <div className="flex flex-col items-center justify-center space-y-4 py-8">
+        <CheckCircle2 className="h-12 w-12 text-green-500" />
+        <p className="text-lg font-medium text-green-600">Message successfully sent</p>
+      </div>
+    )
   }
 
   return (
