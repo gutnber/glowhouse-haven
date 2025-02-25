@@ -27,16 +27,11 @@ export function PropertyContactForm({ propertyId, propertyName }: PropertyContac
     setIsSubmitting(true)
 
     try {
-      // Generate a UUID for the profile
-      const { data: { id: profileId }, error: uuidError } = await supabase
-        .rpc('gen_random_uuid')
-
-      if (uuidError) throw uuidError
-
+      // Generate UUID directly in the insert
       const { error: insertError } = await supabase
         .from('profiles')
         .insert({
-          id: profileId,
+          id: crypto.randomUUID(), // Use browser's UUID generation
           full_name: name,
           email,
           phone,
