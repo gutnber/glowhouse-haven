@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
@@ -70,11 +71,11 @@ export default function Settings() {
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Profile updated successfully",
+        title: "Successfully Updated",
+        description: "Your profile has been updated successfully",
         variant: "default",
         className: "bg-green-500 text-white border-green-600",
-        icon: <CheckCircle2 className="h-5 w-5" />,
+        icon: <CheckCircle2 className="h-5 w-5 text-white" />,
       })
       queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
@@ -102,11 +103,11 @@ export default function Settings() {
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Template updated successfully",
+        title: "Successfully Updated",
+        description: "Template has been updated successfully",
         variant: "default",
         className: "bg-green-500 text-white border-green-600",
-        icon: <CheckCircle2 className="h-5 w-5" />,
+        icon: <CheckCircle2 className="h-5 w-5 text-white" />,
       })
       queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
@@ -188,3 +189,4 @@ export default function Settings() {
     </div>
   )
 }
+
