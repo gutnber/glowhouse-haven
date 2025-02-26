@@ -30,7 +30,7 @@ interface UsersTableProps {
 
 export const UsersTable = ({ profiles, userRoles, onRefetch }: UsersTableProps) => {
   const { toast } = useToast()
-
+  
   const handlePasswordReset = async (userId: string) => {
     try {
       // First get the user's email
