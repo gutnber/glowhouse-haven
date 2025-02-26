@@ -8,6 +8,7 @@ import { ProfileTab } from "@/components/settings/tabs/ProfileTab"
 import { AppearanceTab } from "@/components/settings/tabs/AppearanceTab"
 import { UITemplate } from "@/types/templates"
 import { ProfileFormValues } from "@/components/settings/ProfileForm"
+import { CheckCircle2 } from "lucide-react"
 
 const templates: UITemplate[] = [
   {
@@ -71,6 +72,9 @@ export default function Settings() {
       toast({
         title: "Success",
         description: "Profile updated successfully",
+        variant: "default",
+        className: "bg-green-500 text-white border-green-600",
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
       queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
@@ -100,6 +104,9 @@ export default function Settings() {
       toast({
         title: "Success",
         description: "Template updated successfully",
+        variant: "default",
+        className: "bg-green-500 text-white border-green-600",
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
       queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
