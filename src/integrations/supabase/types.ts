@@ -69,6 +69,59 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          contact_message: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          inquiry_property_id: string | null
+          inquiry_property_name: string | null
+          last_contact: string | null
+          phone: string | null
+          status: string | null
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          contact_message?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          inquiry_property_id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          contact_message?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          inquiry_property_id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_inquiry_property_id_fkey"
+            columns: ["inquiry_property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news_posts: {
         Row: {
           content: string
@@ -370,6 +423,45 @@ export type Database = {
           phone?: string | null
           tags?: string[] | null
           user_type?: string | null
+        }
+        Relationships: []
+      }
+      leads_export: {
+        Row: {
+          contact_message: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string | null
+          inquiry_property_name: string | null
+          last_contact: string | null
+          phone: string | null
+          status: string | null
+          tags: string[] | null
+        }
+        Insert: {
+          contact_message?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
+        }
+        Update: {
+          contact_message?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
         }
         Relationships: []
       }
