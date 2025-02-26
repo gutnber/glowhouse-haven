@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
-import { Navigate } from "react-router-dom"
+import { Loader2, UserCog } from "lucide-react"
 import { format } from "date-fns"
 import {
   Table,
@@ -12,10 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Loader } from "@/components/ui/loader"
 
 const Prospects = () => {
-  const { isAdmin, isLoading: isAdminCheckLoading } = useIsAdmin()
+  const { isAdmin, isLoading: isAdminLoading } = useIsAdmin()
 
   const { data: contacts, isLoading: isContactsLoading } = useQuery({
     queryKey: ['contacts'],
@@ -31,22 +30,22 @@ const Prospects = () => {
     enabled: isAdmin
   })
 
-  if (isAdminCheckLoading) {
+  if (isAdminLoading || isContactsLoading) {
     return (
-      <div className="container mx-auto py-20">
-        <Loader className="mx-auto" />
+      <div className="flex items-center justify-center h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     )
   }
 
   if (!isAdmin) {
-    return <Navigate to="/" />
-  }
-
-  if (isContactsLoading) {
     return (
-      <div className="container mx-auto py-20">
-        <Loader className="mx-auto" />
+      <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
+        <UserCog className="h-16 w-16 text-muted-foreground" />
+        <h1 className="text-2xl font-semibold">Admin Access Required</h1>
+        <p className="text-muted-foreground">
+          You need admin privileges to view this page.
+        </p>
       </div>
     )
   }
@@ -93,4 +92,3 @@ const Prospects = () => {
 }
 
 export default Prospects
-
