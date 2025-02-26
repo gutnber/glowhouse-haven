@@ -69,6 +69,59 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          contact_message: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          inquiry_property_id: string | null
+          inquiry_property_name: string | null
+          last_contact: string | null
+          phone: string | null
+          status: string | null
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          contact_message?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          inquiry_property_id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          contact_message?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          inquiry_property_id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_inquiry_property_id_fkey"
+            columns: ["inquiry_property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news_posts: {
         Row: {
           content: string
@@ -106,37 +159,63 @@ export type Database = {
         Row: {
           avatar_url: string | null
           company: string | null
+          contact_message: string | null
           created_at: string
           email: string | null
           full_name: string | null
           id: string
+          inquiry_property_id: string | null
+          inquiry_property_name: string | null
+          last_contact: string | null
           phone: string | null
+          tags: string[] | null
           ui_template: string | null
           updated_at: string
+          user_type: string | null
         }
         Insert: {
           avatar_url?: string | null
           company?: string | null
+          contact_message?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
           id: string
+          inquiry_property_id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
           phone?: string | null
+          tags?: string[] | null
           ui_template?: string | null
           updated_at?: string
+          user_type?: string | null
         }
         Update: {
           avatar_url?: string | null
           company?: string | null
+          contact_message?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
           id?: string
+          inquiry_property_id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
           phone?: string | null
+          tags?: string[] | null
           ui_template?: string | null
           updated_at?: string
+          user_type?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_inquiry_property_id_fkey"
+            columns: ["inquiry_property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       properties: {
         Row: {
@@ -308,10 +387,93 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      contacts_export: {
+        Row: {
+          contact_message: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string | null
+          inquiry_property_name: string | null
+          last_contact: string | null
+          phone: string | null
+          tags: string[] | null
+          user_type: string | null
+        }
+        Insert: {
+          contact_message?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          tags?: string[] | null
+          user_type?: string | null
+        }
+        Update: {
+          contact_message?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          tags?: string[] | null
+          user_type?: string | null
+        }
+        Relationships: []
+      }
+      leads_export: {
+        Row: {
+          contact_message: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string | null
+          inquiry_property_name: string | null
+          last_contact: string | null
+          phone: string | null
+          status: string | null
+          tags: string[] | null
+        }
+        Insert: {
+          contact_message?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
+        }
+        Update: {
+          contact_message?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          inquiry_property_name?: string | null
+          last_contact?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          user_id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "user"
