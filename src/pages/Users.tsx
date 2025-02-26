@@ -12,16 +12,11 @@ const Users = () => {
   const { data: profiles, isLoading: isProfilesLoading, refetch: refetchProfilesOriginal } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
-      console.log('Fetching profiles...');
       const { data: profiles, error } = await supabase
         .from("profiles")
         .select("*")
-      if (error) {
-        console.error('Error fetching profiles:', error);
-        throw error;
-      }
-      console.log('Profiles fetched:', profiles);
-      return profiles;
+      if (error) throw error
+      return profiles
     },
     enabled: isAdmin,
   })
@@ -29,18 +24,12 @@ const Users = () => {
   const { data: userRoles, isLoading: isRolesLoading } = useQuery({
     queryKey: ["user-roles"],
     queryFn: async () => {
-      console.log('Fetching user roles...');
       const { data, error } = await supabase
         .from("user_roles")
         .select("*")
-      if (error) {
-        console.error('Error fetching user roles:', error);
-        throw error;
-      }
-      console.log('User roles fetched:', data);
-      return data;
+      if (error) throw error
+      return data
     },
-    enabled: isAdmin,
   })
 
   // Wrap the refetch function to match the expected Promise<void> type

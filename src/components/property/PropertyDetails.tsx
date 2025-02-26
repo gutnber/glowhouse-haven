@@ -1,11 +1,9 @@
-
 import { Bed, Bath, CalendarClock, DollarSign, Ruler } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { PropertyMap } from "./PropertyMap"
 import { PropertyYouTubePlayer } from "./PropertyYouTubePlayer"
 import { BorderBeam } from "@/components/ui/border-beam"
-import { PropertyContactForm } from "./PropertyContactForm"
 
 interface PropertyDetailsProps {
   bedrooms: number
@@ -27,8 +25,6 @@ interface PropertyDetailsProps {
   youtubeControls?: boolean | null
   enableBorderBeam?: boolean | null
   propertyType?: string | null
-  propertyId: string
-  propertyName: string
 }
 
 export const PropertyDetails = ({
@@ -50,9 +46,7 @@ export const PropertyDetails = ({
   youtubeMuted = true,
   youtubeControls = true,
   enableBorderBeam = true,
-  propertyType = 'singleFamily',
-  propertyId,
-  propertyName
+  propertyType = 'singleFamily'
 }: PropertyDetailsProps) => {
   console.log('Property type:', propertyType)
   const showLivingSpaceDetails = propertyType !== 'vacantLand'
@@ -149,7 +143,7 @@ export const PropertyDetails = ({
         )}
       </div>
 
-      <div className="md:col-span-1 space-y-6">
+      <div className="space-y-6">
         {arv && (
           <Card className="p-6 relative">
             {enableBorderBeam && <BorderBeam delay={6} />}
@@ -189,15 +183,6 @@ export const PropertyDetails = ({
           latitude={latitude} 
           longitude={longitude} 
         />
-
-        <Card className="p-6 relative">
-          {enableBorderBeam && <BorderBeam delay={10} />}
-          <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
-          <PropertyContactForm 
-            propertyId={propertyId} 
-            propertyName={propertyName}
-          />
-        </Card>
       </div>
     </div>
   )

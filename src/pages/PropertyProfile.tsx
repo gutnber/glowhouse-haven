@@ -1,10 +1,8 @@
-
 import { useParams, Link } from "react-router-dom"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Tables } from "@/integrations/supabase/types"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { PropertyHeader } from "@/components/property/PropertyHeader"
 import { PropertyImageGallery } from "@/components/property/PropertyImageGallery"
 import { PropertyDetails } from "@/components/property/PropertyDetails"
@@ -65,7 +63,7 @@ const PropertyProfile = () => {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isAdmin) return
     setIsDragging(true)
-    e.preventDefault()
+    e.preventDefault() // Prevent image dragging
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -75,6 +73,7 @@ const PropertyProfile = () => {
     const x = ((e.clientX - rect.left) / rect.width) * 100
     const y = ((e.clientY - rect.top) / rect.height) * 100
 
+    // Clamp values between 0 and 100
     const clampedX = Math.max(0, Math.min(100, x))
     const clampedY = Math.max(0, Math.min(100, y))
 
@@ -85,6 +84,7 @@ const PropertyProfile = () => {
     if (!isDragging) return
     setIsDragging(false)
 
+    // Convert position to CSS object-position format
     const positionString = `${position.x}% ${position.y}%`
     updateImagePositionMutation.mutate(positionString)
   }
@@ -109,7 +109,7 @@ const PropertyProfile = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-8">
+    <div className="max-w-6xl mx-auto space-y-8">
       <PropertyHeader
         id={property.id}
         name={property.name}
@@ -172,8 +172,6 @@ const PropertyProfile = () => {
         youtubeAutoplay={property.youtube_autoplay}
         youtubeMuted={property.youtube_muted}
         youtubeControls={property.youtube_controls}
-        propertyId={property.id}
-        propertyName={property.name}
       />
     </div>
   )

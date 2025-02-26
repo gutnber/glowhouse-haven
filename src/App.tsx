@@ -1,4 +1,3 @@
-
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import RootLayout from "./components/layout/RootLayout"
 import Index from "./pages/Index"
@@ -11,7 +10,6 @@ import Tools from "./pages/Tools"
 import Users from "./pages/Users"
 import NewsPost from "./pages/NewsPost"
 import News from "./pages/News"
-import Prospects from "./pages/Prospects"
 
 const router = createBrowserRouter([
   {
@@ -57,10 +55,6 @@ const router = createBrowserRouter([
         path: "/news/:id",
         element: <NewsPost />,
       },
-      {
-        path: "/leads",
-        element: <Prospects />,
-      },
     ],
   },
 ])
@@ -70,4 +64,3 @@ function App() {
 }
 
 export default App
-

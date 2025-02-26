@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench, Menu, MessageSquare } from "lucide-react";
+import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -79,12 +79,6 @@ export const UserMenu = ({ session }: UserMenuProps) => {
             <>
               <DropdownMenuSeparator className="bg-border/30 my-1" />
               <DropdownMenuItem asChild>
-                <Link to="/leads" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
-                  <MessageSquare className="h-4 w-4 text-primary/80" />
-                  <span className="font-medium">{t('leads')}</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
                 <Link to="/users" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
                   <Users className="h-4 w-4 text-primary/80" />
                   <span className="font-medium">{t('users')}</span>
@@ -134,4 +128,3 @@ export const UserMenu = ({ session }: UserMenuProps) => {
     </>
   );
 };
-
