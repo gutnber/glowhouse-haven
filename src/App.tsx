@@ -58,7 +58,7 @@ const router = createBrowserRouter([
         element: <NewsPost />,
       },
       {
-        path: "/prospects",
+        path: "/leads",
         element: <Prospects />,
       },
     ],
@@ -70,3 +70,4 @@ function App() {
 }
 
 export default App
+

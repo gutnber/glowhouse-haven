@@ -54,7 +54,7 @@ const Prospects = () => {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Prospects</h1>
+        <h1 className="text-3xl font-bold">Leads</h1>
         <p className="text-muted-foreground">Manage your leads and inquiries</p>
       </div>
 
@@ -93,3 +93,4 @@ const Prospects = () => {
 }
 
 export default Prospects
+

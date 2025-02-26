@@ -79,9 +79,9 @@ export const UserMenu = ({ session }: UserMenuProps) => {
             <>
               <DropdownMenuSeparator className="bg-border/30 my-1" />
               <DropdownMenuItem asChild>
-                <Link to="/prospects" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
+                <Link to="/leads" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
                   <MessageSquare className="h-4 w-4 text-primary/80" />
-                  <span className="font-medium">{t('prospects')}</span>
+                  <span className="font-medium">{t('leads')}</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
@@ -134,3 +134,4 @@ export const UserMenu = ({ session }: UserMenuProps) => {
     </>
   );
 };
+
