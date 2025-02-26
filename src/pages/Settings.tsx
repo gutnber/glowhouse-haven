@@ -10,6 +10,7 @@ import { AppearanceTab } from "@/components/settings/tabs/AppearanceTab"
 import { UITemplate } from "@/types/templates"
 import { ProfileFormValues } from "@/components/settings/ProfileForm"
 import { CheckCircle2 } from "lucide-react"
+import { Toaster } from "@/components/ui/toaster"
 
 const templates: UITemplate[] = [
   {
@@ -161,32 +162,34 @@ export default function Settings() {
   }
 
   return (
-    <div className="container max-w-4xl py-10">
-      <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="appearance">Appearance</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="profile">
-          <ProfileTab
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-            userId={profile?.id || ''}
-            onAvatarChange={handleAvatarChange}
-          />
-        </TabsContent>
+    <>
+      <div className="container max-w-4xl py-10">
+        <Tabs defaultValue="profile" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="appearance">Appearance</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="profile">
+            <ProfileTab
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+              userId={profile?.id || ''}
+              onAvatarChange={handleAvatarChange}
+            />
+          </TabsContent>
 
-        <TabsContent value="appearance">
-          <AppearanceTab
-            templates={templates}
-            currentTemplate={profile?.ui_template || 'original'}
-            onApplyTemplate={(templateId) => updateTemplate.mutateAsync(templateId)}
-          />
-        </TabsContent>
-      </Tabs>
-    </div>
+          <TabsContent value="appearance">
+            <AppearanceTab
+              templates={templates}
+              currentTemplate={profile?.ui_template || 'original'}
+              onApplyTemplate={(templateId) => updateTemplate.mutateAsync(templateId)}
+            />
+          </TabsContent>
+        </Tabs>
+      </div>
+      <Toaster />
+    </>
   )
 }
-
