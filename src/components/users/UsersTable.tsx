@@ -30,21 +30,19 @@ interface UsersTableProps {
 
 export const UsersTable = ({ profiles, userRoles, onRefetch }: UsersTableProps) => {
   const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState<{ [key: string]: boolean }>({})
 
   const handlePasswordReset = async (userId: string) => {
+    setIsLoading(prev => ({ ...prev, [userId]: true }))
     try {
-      // First get the user's email
-      const user = profiles?.find(profile => profile.id === userId)
-      if (!user?.email) {
+      const profile = profiles.find(p => p.id === userId)
+      if (!profile?.email) {
         throw new Error("User email not found")
       }
 
-      const { error } = await supabase.auth.admin.generateLink({
-        type: 'recovery',
-        email: user.email,
-      })
+      const { error } = await supabase.auth.resetPasswordForEmail(profile.email)
       if (error) throw error
-      
+
       toast({
         title: "Success",
         description: "Password reset email sent",
@@ -56,6 +54,8 @@ export const UsersTable = ({ profiles, userRoles, onRefetch }: UsersTableProps) 
         description: "Failed to send password reset email",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(prev => ({ ...prev, [userId]: false }))
     }
   }
 
@@ -64,7 +64,6 @@ export const UsersTable = ({ profiles, userRoles, onRefetch }: UsersTableProps) 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>User ID</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Role</TableHead>
@@ -72,20 +71,19 @@ export const UsersTable = ({ profiles, userRoles, onRefetch }: UsersTableProps) 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {profiles?.map((profile) => {
-            const userRole = userRoles?.find(
+          {profiles.map((profile) => {
+            const userRole = userRoles.find(
               (role) => role.user_id === profile.id
             )
-            const isMainAdmin = profile.id === "help@ignishomes.com"
+            const isMainAdmin = profile.email === "help@ignishomes.com"
 
             return (
               <TableRow key={profile.id}>
-                <TableCell>{profile.id}</TableCell>
                 <TableCell>
                   {profile.full_name || "No name provided"}
                   {isMainAdmin && (
                     <Badge variant="secondary" className="ml-2">
-                      Admin
+                      Main Admin
                     </Badge>
                   )}
                 </TableCell>
@@ -108,6 +106,7 @@ export const UsersTable = ({ profiles, userRoles, onRefetch }: UsersTableProps) 
                     variant="outline"
                     size="sm"
                     onClick={() => handlePasswordReset(profile.id)}
+                    disabled={isLoading[profile.id]}
                   >
                     Reset Password
                   </Button>
