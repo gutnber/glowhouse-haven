@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -127,15 +126,16 @@ export const PropertyContactForm = ({
 
       if (contactError) throw contactError;
 
+      // Show toast notification
       toast({
         title: getTranslatedText('common.success'),
         description: getTranslatedText('contact.messageSent'),
       });
       
-      // Show success animation
+      // Show success animation immediately
       setIsSuccess(true);
       
-      // Reset form after some time if user navigates back to this form
+      // Reset form after 5 seconds
       setTimeout(() => {
         setFormData({
           name: '',
@@ -143,12 +143,14 @@ export const PropertyContactForm = ({
           phone: '',
           message: `I'm interested in the property "${propertyName}". `
         });
-        // Reset success state after 5 seconds
+        
+        // Keep the success state for 5 seconds before allowing new submissions
         setTimeout(() => {
           setIsSuccess(false);
         }, 5000);
       }, 500);
     } catch (error: any) {
+      setIsSubmitting(false);
       toast({
         title: getTranslatedText('common.error'),
         description: error.message || getTranslatedText('contact.errorSending'),
@@ -165,7 +167,7 @@ export const PropertyContactForm = ({
       <Card className="p-6 relative bg-green-50 dark:bg-green-900/20">
         {enableBorderBeam && <BorderBeam delay={10} />}
         <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
-          <CheckCircle className="h-16 w-16 text-green-500 animate-fade-in" />
+          <CheckCircle className="h-16 w-16 text-green-500 animate-pulse" />
           <h2 className="text-2xl font-semibold">{getTranslatedText('common.success')}</h2>
           <p className="text-lg">{getTranslatedText('contact.messageSent')}</p>
         </div>
