@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
+import { Loader2, CheckCircle } from "lucide-react"
 
 interface FooterSettings {
   phone: string | null
@@ -18,6 +19,7 @@ export function Footer() {
   const [settings, setSettings] = useState<FooterSettings | null>(null)
   const [email, setEmail] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -78,7 +80,15 @@ export function Footer() {
           title: "Success",
           description: "Thank you for subscribing to our newsletter!",
         })
-        setEmail("")
+        
+        // Show success state
+        setIsSuccess(true)
+        
+        // Reset after delay
+        setTimeout(() => {
+          setEmail("")
+          setIsSuccess(false)
+        }, 3000)
       }
     } catch (error) {
       console.error('Error in subscribe function:', error)
@@ -137,10 +147,16 @@ export function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="max-w-sm"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSuccess}
               />
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Subscribing..." : "Subscribe"}
+              <Button type="submit" disabled={isSubmitting || isSuccess || !email}>
+                {isSuccess ? (
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                ) : isSubmitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Subscribe"
+                )}
               </Button>
             </form>
           </div>

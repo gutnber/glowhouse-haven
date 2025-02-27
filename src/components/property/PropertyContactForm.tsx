@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,7 +23,7 @@ export const PropertyContactForm = ({
   propertyName,
   enableBorderBeam = true
 }: PropertyContactFormProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -33,52 +34,15 @@ export const PropertyContactForm = ({
     message: ''
   });
 
-  const translations = {
-    en: {
-      "common.name": "Name",
-      "common.email": "Email",
-      "common.phone": "Phone",
-      "common.optional": "Optional",
-      "common.message": "Message",
-      "common.sending": "Sending...",
-      "common.sendMessage": "Send Message",
-      "common.success": "Success",
-      "contact.messageSent": "Your message has been sent successfully!",
-      "contact.errorSending": "There was an error sending your message. Please try again.",
-      "common.error": "Error",
-      "common.requiredFields": "Please fill in all required fields.",
-      "property.contactUs": "Contact Us",
-      "property.messageAboutProperty": "Message about the property..."
-    },
-    es: {
-      "common.name": "Nombre",
-      "common.email": "Correo Electrónico",
-      "common.phone": "Teléfono",
-      "common.optional": "Opcional",
-      "common.message": "Mensaje",
-      "common.sending": "Enviando...",
-      "common.sendMessage": "Enviar Mensaje",
-      "common.success": "Éxito",
-      "contact.messageSent": "¡Tu mensaje ha sido enviado con éxito!",
-      "contact.errorSending": "Hubo un error al enviar tu mensaje. Por favor intenta de nuevo.",
-      "common.error": "Error",
-      "common.requiredFields": "Por favor complete todos los campos requeridos.",
-      "property.contactUs": "Contáctenos",
-      "property.messageAboutProperty": "Mensaje sobre la propiedad..."
-    }
-  };
-
-  const getTranslatedText = (key: string) => {
-    const { language } = useLanguage();
-    return translations[language][key] || key;
-  };
-
+  // Set initial message when property name changes
   useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      message: `I'm interested in the property "${propertyName}". `
-    }));
-  }, [propertyName]);
+    if (!isSuccess) {
+      setFormData(prev => ({
+        ...prev,
+        message: `I'm interested in the property "${propertyName}". `
+      }));
+    }
+  }, [propertyName, isSuccess]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (isSubmitting || isSuccess) return;
@@ -96,7 +60,7 @@ export const PropertyContactForm = ({
 
     try {
       if (!formData.name || !formData.email || !formData.message) {
-        throw new Error(getTranslatedText('common.requiredFields'));
+        throw new Error(t('common.requiredFields'));
       }
 
       const { error: leadError } = await supabase
@@ -126,12 +90,13 @@ export const PropertyContactForm = ({
       if (contactError) throw contactError;
 
       toast({
-        title: getTranslatedText('common.success'),
-        description: getTranslatedText('contact.messageSent'),
+        title: t('common.success'),
+        description: t('contact.messageSent'),
       });
       
       setIsSuccess(true);
       
+      // Reset form after delay
       setTimeout(() => {
         setFormData({
           name: '',
@@ -139,15 +104,20 @@ export const PropertyContactForm = ({
           phone: '',
           message: `I'm interested in the property "${propertyName}". `
         });
+        // Reset success state after 5 seconds
+        setTimeout(() => {
+          setIsSuccess(false);
+        }, 5000);
       }, 500);
     } catch (error: any) {
-      setIsSubmitting(false);
       toast({
-        title: getTranslatedText('common.error'),
-        description: error.message || getTranslatedText('contact.errorSending'),
+        title: t('common.error'),
+        description: error.message || t('contact.errorSending'),
         variant: 'destructive',
       });
       console.error('Form submission error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -156,11 +126,11 @@ export const PropertyContactForm = ({
       <Card className="p-6 relative bg-green-50 dark:bg-green-900/20">
         {enableBorderBeam && <BorderBeam delay={10} />}
         <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
-          <div className="animate-pulse">
+          <div className="animate-bounce">
             <CheckCircle className="h-16 w-16 text-green-500" />
           </div>
-          <h2 className="text-2xl font-semibold">{getTranslatedText('common.success')}</h2>
-          <p className="text-lg">{getTranslatedText('contact.messageSent')}</p>
+          <h2 className="text-2xl font-semibold">{t('common.success')}</h2>
+          <p className="text-lg">{t('contact.messageSent')}</p>
         </div>
       </Card>
     );
@@ -169,10 +139,10 @@ export const PropertyContactForm = ({
   return (
     <Card className="p-6 relative">
       {enableBorderBeam && <BorderBeam delay={10} />}
-      <h2 className="text-2xl font-semibold mb-4">{getTranslatedText('property.contactUs')}</h2>
+      <h2 className="text-2xl font-semibold mb-4">{t('property.contactUs')}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="name">{getTranslatedText('common.name')} *</Label>
+          <Label htmlFor="name">{t('common.name')} *</Label>
           <Input
             id="name"
             name="name"
@@ -185,7 +155,7 @@ export const PropertyContactForm = ({
         </div>
 
         <div>
-          <Label htmlFor="email">{getTranslatedText('common.email')} *</Label>
+          <Label htmlFor="email">{t('common.email')} *</Label>
           <Input
             id="email"
             name="email"
@@ -199,7 +169,7 @@ export const PropertyContactForm = ({
         </div>
 
         <div>
-          <Label htmlFor="phone">{getTranslatedText('common.phone')} ({getTranslatedText('common.optional')})</Label>
+          <Label htmlFor="phone">{t('common.phone')} ({t('common.optional')})</Label>
           <Input
             id="phone"
             name="phone"
@@ -212,7 +182,7 @@ export const PropertyContactForm = ({
         </div>
 
         <div>
-          <Label htmlFor="message">{getTranslatedText('common.message')} *</Label>
+          <Label htmlFor="message">{t('common.message')} *</Label>
           <Textarea
             id="message"
             name="message"
@@ -220,21 +190,25 @@ export const PropertyContactForm = ({
             onChange={handleChange}
             required
             className="mt-1 h-24"
-            placeholder={getTranslatedText('property.messageAboutProperty')}
+            placeholder={t('property.messageAboutProperty')}
             disabled={isSubmitting}
           />
         </div>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button 
+          type="submit" 
+          disabled={isSubmitting} 
+          className="w-full"
+        >
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {getTranslatedText('common.sending')}
+              {t('common.sending')}
             </>
           ) : (
             <>
               <Send className="mr-2 h-4 w-4" />
-              {getTranslatedText('common.sendMessage')}
+              {t('common.sendMessage')}
             </>
           )}
         </Button>

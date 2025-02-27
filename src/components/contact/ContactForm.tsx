@@ -4,14 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
+import { Loader2, CheckCircle } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 export const ContactForm = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,6 +23,8 @@ export const ContactForm = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (isSubmitting || isSuccess) return;
+    
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -52,13 +57,23 @@ export const ContactForm = () => {
         description: 'Thank you for your message. We will get back to you soon.',
       });
       
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        message: ''
-      });
+      // Set success state
+      setIsSuccess(true);
+      
+      // Reset form after delay
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: ''
+        });
+        
+        // Reset success after longer delay
+        setTimeout(() => {
+          setIsSuccess(false);
+        }, 5000);
+      }, 500);
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -69,6 +84,18 @@ export const ContactForm = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (isSuccess) {
+    return (
+      <Alert className="max-w-xl mx-auto bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-900">
+        <CheckCircle className="h-5 w-5 text-green-500" />
+        <AlertTitle className="text-xl">Message Sent Successfully!</AlertTitle>
+        <AlertDescription className="text-base">
+          Thank you for contacting us. We'll get back to you as soon as possible.
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
@@ -82,6 +109,7 @@ export const ContactForm = () => {
             onChange={handleChange}
             required
             className="mt-1"
+            disabled={isSubmitting}
           />
         </div>
 
@@ -95,6 +123,7 @@ export const ContactForm = () => {
             onChange={handleChange}
             required
             className="mt-1"
+            disabled={isSubmitting}
           />
         </div>
 
@@ -107,6 +136,7 @@ export const ContactForm = () => {
             value={formData.phone}
             onChange={handleChange}
             className="mt-1"
+            disabled={isSubmitting}
           />
         </div>
 
@@ -119,12 +149,20 @@ export const ContactForm = () => {
             onChange={handleChange}
             required
             className="mt-1 h-32"
+            disabled={isSubmitting}
           />
         </div>
       </div>
 
       <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? t('common.loading') : 'Send Message'}
+        {isSubmitting ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            {t('common.loading')}
+          </>
+        ) : (
+          'Send Message'
+        )}
       </Button>
     </form>
   );
