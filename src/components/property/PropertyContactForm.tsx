@@ -1,16 +1,14 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { Card } from '@/components/ui/card';
 import { BorderBeam } from '@/components/ui/border-beam';
-import { Loader2, Send, CheckCircle } from 'lucide-react';
-import { Tables } from '@/integrations/supabase/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Loader2, CheckCircle } from 'lucide-react';
 
 interface PropertyContactFormProps {
   propertyId: string;
@@ -19,11 +17,11 @@ interface PropertyContactFormProps {
 }
 
 export const PropertyContactForm = ({ 
-  propertyId,
+  propertyId, 
   propertyName,
   enableBorderBeam = true
 }: PropertyContactFormProps) => {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -31,18 +29,8 @@ export const PropertyContactForm = ({
     name: '',
     email: '',
     phone: '',
-    message: ''
+    message: `I'm interested in ${propertyName}...`
   });
-
-  // Set initial message when property name changes
-  useEffect(() => {
-    if (!isSuccess) {
-      setFormData(prev => ({
-        ...prev,
-        message: `I'm interested in the property "${propertyName}". `
-      }));
-    }
-  }, [propertyName, isSuccess]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (isSubmitting || isSuccess) return;
@@ -59,11 +47,13 @@ export const PropertyContactForm = ({
     setIsSubmitting(true);
 
     try {
+      // Validate required fields
       if (!formData.name || !formData.email || !formData.message) {
-        throw new Error(t('common.requiredFields'));
+        throw new Error('Please fill out all required fields');
       }
 
-      const { error: leadError } = await supabase
+      // Insert into leads table
+      const { error: leadsError } = await supabase
         .from('leads')
         .insert({
           full_name: formData.name,
@@ -73,76 +63,56 @@ export const PropertyContactForm = ({
           inquiry_property_id: propertyId,
           inquiry_property_name: propertyName,
           status: 'new'
-        } as Tables<'leads'>);
+        });
 
-      if (leadError) throw leadError;
+      if (leadsError) throw leadsError;
 
+      // Insert into contact_submissions table
       const { error: contactError } = await supabase
         .from('contact_submissions')
         .insert({
           name: formData.name,
           email: formData.email,
           phone: formData.phone || null,
-          message: `[Property Inquiry: ${propertyName}] ${formData.message}`,
+          message: formData.message,
           status: 'new'
         });
 
       if (contactError) throw contactError;
 
       toast({
-        title: t('common.success'),
-        description: t('contact.messageSent'),
+        title: 'Message Sent',
+        description: 'Thank you for your interest. We will get back to you soon.',
       });
       
+      // Show success state
       setIsSuccess(true);
       
-      // Reset form after delay
+      // Reset form but don't close success state
       setTimeout(() => {
         setFormData({
           name: '',
           email: '',
           phone: '',
-          message: `I'm interested in the property "${propertyName}". `
+          message: `I'm interested in ${propertyName}...`
         });
-        // Reset success state after 5 seconds
-        setTimeout(() => {
-          setIsSuccess(false);
-        }, 5000);
       }, 500);
     } catch (error: any) {
       toast({
-        title: t('common.error'),
-        description: error.message || t('contact.errorSending'),
+        title: 'Error',
+        description: error.message || 'There was a problem sending your message',
         variant: 'destructive',
       });
-      console.error('Form submission error:', error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isSuccess) {
-    return (
-      <Card className="p-6 relative bg-green-50 dark:bg-green-900/20">
-        {enableBorderBeam && <BorderBeam delay={10} />}
-        <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
-          <div className="animate-bounce">
-            <CheckCircle className="h-16 w-16 text-green-500" />
-          </div>
-          <h2 className="text-2xl font-semibold">{t('common.success')}</h2>
-          <p className="text-lg">{t('contact.messageSent')}</p>
-        </div>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="p-6 relative">
-      {enableBorderBeam && <BorderBeam delay={10} />}
-      <h2 className="text-2xl font-semibold mb-4">{t('property.contactUs')}</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+  const FormContent = () => (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-4">
         <div>
-          <Label htmlFor="name">{t('common.name')} *</Label>
+          <Label htmlFor="name">Name *</Label>
           <Input
             id="name"
             name="name"
@@ -155,7 +125,7 @@ export const PropertyContactForm = ({
         </div>
 
         <div>
-          <Label htmlFor="email">{t('common.email')} *</Label>
+          <Label htmlFor="email">Email *</Label>
           <Input
             id="email"
             name="email"
@@ -169,7 +139,7 @@ export const PropertyContactForm = ({
         </div>
 
         <div>
-          <Label htmlFor="phone">{t('common.phone')} ({t('common.optional')})</Label>
+          <Label htmlFor="phone">Phone (optional)</Label>
           <Input
             id="phone"
             name="phone"
@@ -182,37 +152,73 @@ export const PropertyContactForm = ({
         </div>
 
         <div>
-          <Label htmlFor="message">{t('common.message')} *</Label>
+          <Label htmlFor="message">Message *</Label>
           <Textarea
             id="message"
             name="message"
             value={formData.message}
             onChange={handleChange}
             required
-            className="mt-1 h-24"
-            placeholder={t('property.messageAboutProperty')}
+            className="mt-1 h-32"
             disabled={isSubmitting}
           />
         </div>
+      </div>
 
-        <Button 
-          type="submit" 
-          disabled={isSubmitting} 
-          className="w-full"
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t('common.sending')}
-            </>
-          ) : (
-            <>
-              <Send className="mr-2 h-4 w-4" />
-              {t('common.sendMessage')}
-            </>
-          )}
-        </Button>
-      </form>
-    </Card>
+      <Button type="submit" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Sending...
+          </>
+        ) : (
+          'Send Message'
+        )}
+      </Button>
+    </form>
+  );
+
+  const SuccessContent = () => (
+    <div className="text-center py-8 space-y-4">
+      <div className="flex justify-center">
+        <CheckCircle className="h-16 w-16 text-green-500" />
+      </div>
+      <h3 className="text-xl font-bold">Message Sent Successfully!</h3>
+      <p className="text-muted-foreground">
+        Thank you for your interest in {propertyName}.
+        <br />
+        We'll get back to you as soon as possible.
+      </p>
+      <Button 
+        onClick={() => setIsSuccess(false)} 
+        variant="outline"
+        className="mt-4"
+      >
+        Send Another Message
+      </Button>
+    </div>
+  );
+
+  const content = (
+    <div className="space-y-6">
+      <h3 className="text-2xl font-bold">{t('property.contactUs')}</h3>
+      {isSuccess ? <SuccessContent /> : <FormContent />}
+    </div>
+  );
+
+  if (enableBorderBeam) {
+    return (
+      <BorderBeam>
+        <div className="p-6">
+          {content}
+        </div>
+      </BorderBeam>
+    );
+  }
+
+  return (
+    <div className="border rounded-lg p-6">
+      {content}
+    </div>
   );
 };

@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 
 type Language = 'en' | 'es';
@@ -47,7 +48,23 @@ const translations = {
     "pending": "Pending",
     "sold": "Sold",
     "cabin": "Cabin",
-    "ranch": "Ranch"
+    "ranch": "Ranch",
+    "property": {
+      "details": "Property Details",
+      "edit": "Edit Property",
+      "bedrooms": "Bedrooms",
+      "bathrooms": "Bathrooms",
+      "yearBuilt": "Year Built",
+      "area": "Total Area",
+      "heatedArea": "Heated Area",
+      "price": "Price",
+      "arvLabel": "After Repair Value",
+      "referenceNumber": "Reference Number",
+      "description": "Description",
+      "features": "Features",
+      "video": "Property Video",
+      "contactUs": "Contact Us About This Property"
+    }
   },
   es: {
     "welcome": "Bienvenidos a INMA 2.0",
@@ -87,7 +104,23 @@ const translations = {
     "pending": "Pendiente",
     "sold": "Vendido",
     "cabin": "Cabaña",
-    "ranch": "Rancho"
+    "ranch": "Rancho",
+    "property": {
+      "details": "Detalles de la Propiedad",
+      "edit": "Editar Propiedad",
+      "bedrooms": "Dormitorios",
+      "bathrooms": "Baños",
+      "yearBuilt": "Año de Construcción",
+      "area": "Área Total",
+      "heatedArea": "Área Calefaccionada",
+      "price": "Precio",
+      "arvLabel": "Valor Después de Reparación",
+      "referenceNumber": "Número de Referencia",
+      "description": "Descripción",
+      "features": "Características",
+      "video": "Video de la Propiedad",
+      "contactUs": "Contáctenos Sobre Esta Propiedad"
+    }
   }
 };
 
@@ -97,7 +130,18 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = React.useState<Language>('en');
 
   const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations.en] || key;
+    // Handle nested keys like 'property.details'
+    const parts = key.split('.');
+    if (parts.length === 1) {
+      return translations[language][key as keyof typeof translations.en] || key;
+    } else {
+      const [category, subKey] = parts;
+      const categoryObj = translations[language][category as keyof typeof translations.en];
+      if (categoryObj && typeof categoryObj === 'object') {
+        return (categoryObj as any)[subKey] || key;
+      }
+      return key;
+    }
   };
 
   return (
