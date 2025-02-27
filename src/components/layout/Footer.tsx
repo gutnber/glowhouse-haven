@@ -17,6 +17,7 @@ interface FooterSettings {
 export function Footer() {
   const [settings, setSettings] = useState<FooterSettings | null>(null)
   const [email, setEmail] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -49,13 +50,46 @@ export function Footer() {
       return
     }
 
-    // Here you would typically send this to your email service
-    // For now, we'll just show a success message
-    toast({
-      title: "Success",
-      description: "Thank you for subscribing!",
-    })
-    setEmail("")
+    setIsSubmitting(true)
+
+    try {
+      // Save the subscriber to the database
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .insert([{ email }])
+
+      if (error) {
+        if (error.code === '23505') {
+          // Unique violation - email already exists
+          toast({
+            title: "Already subscribed",
+            description: "This email is already subscribed to our newsletter.",
+          })
+        } else {
+          console.error('Error subscribing:', error)
+          toast({
+            title: "Error",
+            description: "Failed to subscribe. Please try again later.",
+            variant: "destructive",
+          })
+        }
+      } else {
+        toast({
+          title: "Success",
+          description: "Thank you for subscribing to our newsletter!",
+        })
+        setEmail("")
+      }
+    } catch (error) {
+      console.error('Error in subscribe function:', error)
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (!settings?.enabled) {
@@ -103,8 +137,11 @@ export function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="max-w-sm"
+                disabled={isSubmitting}
               />
-              <Button type="submit">Subscribe</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Subscribing..." : "Subscribe"}
+              </Button>
             </form>
           </div>
         </div>
