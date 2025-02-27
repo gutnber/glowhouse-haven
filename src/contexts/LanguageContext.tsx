@@ -9,7 +9,15 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-const translations = {
+// Define a nested structure for translations
+type TranslationValue = string | Record<string, string>;
+type TranslationsType = {
+  [lang in Language]: {
+    [key: string]: TranslationValue;
+  }
+};
+
+const translations: TranslationsType = {
   en: {
     "welcome": "Welcome to INMA 2.0",
     "subscribe": "Please subscribe to get the latest news and hottest deals",
@@ -133,12 +141,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     // Handle nested keys like 'property.details'
     const parts = key.split('.');
     if (parts.length === 1) {
-      return translations[language][key as keyof typeof translations.en] || key;
+      const value = translations[language][key];
+      return typeof value === 'string' ? value : key;
     } else {
       const [category, subKey] = parts;
-      const categoryObj = translations[language][category as keyof typeof translations.en];
-      if (categoryObj && typeof categoryObj === 'object') {
-        return (categoryObj as any)[subKey] || key;
+      const categoryObj = translations[language][category];
+      if (categoryObj && typeof categoryObj === 'object' && !Array.isArray(categoryObj)) {
+        const value = (categoryObj as Record<string, string>)[subKey];
+        return value || key;
       }
       return key;
     }

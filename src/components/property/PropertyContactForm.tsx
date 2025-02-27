@@ -208,11 +208,12 @@ export const PropertyContactForm = ({
 
   if (enableBorderBeam) {
     return (
-      <BorderBeam>
+      <div className="relative border rounded-lg overflow-hidden">
+        <BorderBeam />
         <div className="p-6">
           {content}
         </div>
-      </BorderBeam>
+      </div>
     );
   }
 
