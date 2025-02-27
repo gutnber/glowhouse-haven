@@ -23,6 +23,7 @@ import enTranslations from './locales/en.json';
 import esTranslations from './locales/es.json';
 import Contact from "./pages/Contact";
 import Communications from "./pages/Communications";
+import RootLayout from "./components/layout/RootLayout";
 
 function App() {
   useEffect(() => {
@@ -46,18 +47,20 @@ function App() {
       <LanguageProvider>
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/properties" element={<Properties />} />
-          <Route path="/properties/:id" element={<PropertyProfile />} />
-          <Route path="/properties/add" element={<AddProperty />} />
-          <Route path="/properties/:id/edit" element={<EditProperty />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/news/:id" element={<NewsPost />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/tools" element={<Tools />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/admin/communications" element={<Communications />} />
+          <Route element={<RootLayout />}>
+            <Route path="/" element={<Index />} />
+            <Route path="/properties" element={<Properties />} />
+            <Route path="/properties/:id" element={<PropertyProfile />} />
+            <Route path="/properties/add" element={<AddProperty />} />
+            <Route path="/properties/:id/edit" element={<EditProperty />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/news/:id" element={<NewsPost />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/tools" element={<Tools />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/admin/communications" element={<Communications />} />
+          </Route>
         </Routes>
       </LanguageProvider>
     </BrowserRouter>
