@@ -2,14 +2,47 @@
 import { Link } from "react-router-dom";
 import { Home, Building, Newspaper, Users, MailPlus, Inbox } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Logo() {
   const { isAdmin } = useIsAdmin();
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('app_settings')
+          .select('logo_url')
+          .single();
+        
+        if (error) {
+          console.error('Error fetching logo:', error);
+          return;
+        }
+        
+        setLogoUrl(data?.logo_url || null);
+      } catch (error) {
+        console.error('Error fetching logo:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchLogo();
+  }, []);
   
   return (
     <div className="flex items-center gap-4">
-      <Link to="/" className="text-xl font-bold text-primary">
-        Real Estate
+      <Link to="/" className="flex items-center text-xl font-bold text-primary">
+        {!isLoading && logoUrl ? (
+          <img src={logoUrl} alt="Company Logo" className="h-10 max-w-[150px] object-contain" />
+        ) : (
+          <span>Real Estate</span>
+        )}
       </Link>
       <nav className="hidden md:flex items-center gap-4">
         <Link to="/" className="flex items-center gap-1 hover:text-primary">
