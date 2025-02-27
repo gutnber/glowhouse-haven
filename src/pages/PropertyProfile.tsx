@@ -1,3 +1,4 @@
+
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -124,7 +125,29 @@ const PropertyProfile = () => {
 
       <PropertyImageGallery images={property.images || []} propertyId={property.id} propertyName={property.name} featureImageUrl={property.feature_image_url} />
 
-      <PropertyDetails bedrooms={property.bedrooms} bathrooms={property.bathrooms} buildYear={property.build_year} price={property.price} arv={property.arv} description={property.description} features={property.features} googleMapsUrl={property.google_maps_url} latitude={property.latitude} longitude={property.longitude} youtubeUrl={property.youtube_url} youtubeAutoplay={property.youtube_autoplay} youtubeMuted={property.youtube_muted} youtubeControls={property.youtube_controls} />
+      <PropertyDetails 
+        bedrooms={property.bedrooms} 
+        bathrooms={property.bathrooms} 
+        buildYear={property.build_year} 
+        price={property.price} 
+        arv={property.arv} 
+        description={property.description} 
+        features={property.features} 
+        googleMapsUrl={property.google_maps_url} 
+        latitude={property.latitude} 
+        longitude={property.longitude} 
+        youtubeUrl={property.youtube_url} 
+        youtubeAutoplay={property.youtube_autoplay} 
+        youtubeMuted={property.youtube_muted} 
+        youtubeControls={property.youtube_controls}
+        area={property.area}
+        heatedArea={property.heated_area}
+        referenceNumber={property.reference_number}
+        enableBorderBeam={property.enable_border_beam}
+        propertyType={property.property_type}
+        id={property.id}
+        name={property.name}
+      />
     </div>;
 };
 export default PropertyProfile;
