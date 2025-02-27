@@ -58,7 +58,7 @@ export const PropertyDetails = ({
   propertyType
 }: PropertyDetailsProps) => {
   const { isAdmin } = useIsAdmin();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -132,11 +132,11 @@ export const PropertyDetails = ({
           
           <div className="border rounded-lg p-4 flex flex-col">
             <span className="text-muted-foreground text-sm">{t('property.price')}</span>
-            <span className="text-3xl font-bold">{formatCurrency(price, language)}</span>
+            <span className="text-3xl font-bold">{formatCurrency(price)}</span>
             {arv && (
               <div className="mt-2">
                 <span className="text-muted-foreground text-sm">{t('property.arvLabel')}</span>
-                <span className="text-xl font-semibold ml-2">{formatCurrency(arv, language)}</span>
+                <span className="text-xl font-semibold ml-2">{formatCurrency(arv)}</span>
               </div>
             )}
           </div>
@@ -203,3 +203,4 @@ export const PropertyDetails = ({
     </div>
   );
 };
+

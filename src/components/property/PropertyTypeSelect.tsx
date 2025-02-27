@@ -1,3 +1,4 @@
+
 import { Building2, Home, Building } from "lucide-react"
 import {
   Select,
@@ -7,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useLanguage } from "@/contexts/LanguageContext"
+import { cn } from "@/lib/utils"
 
 const propertyTypes = [
   { value: "all", icon: Building2 },
@@ -22,14 +24,21 @@ const propertyTypes = [
 interface PropertyTypeSelectProps {
   value: string
   onValueChange: (value: string) => void
+  disabled?: boolean
+  className?: string
 }
 
-export function PropertyTypeSelect({ value, onValueChange }: PropertyTypeSelectProps) {
+export function PropertyTypeSelect({ 
+  value, 
+  onValueChange, 
+  disabled, 
+  className 
+}: PropertyTypeSelectProps) {
   const { t } = useLanguage()
 
   return (
-    <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-[200px] bg-white/10 text-white border-white/20">
+    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+      <SelectTrigger className={cn("w-[200px] bg-white/10 text-white border-white/20", className)}>
         <SelectValue placeholder={t('propertyType')} />
       </SelectTrigger>
       <SelectContent>
@@ -52,3 +61,4 @@ export function PropertyTypeSelect({ value, onValueChange }: PropertyTypeSelectP
     </Select>
   )
 }
+
