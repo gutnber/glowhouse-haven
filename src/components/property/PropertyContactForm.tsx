@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,7 +33,6 @@ export const PropertyContactForm = ({
     message: ''
   });
 
-  // Add translations for the form fields
   const translations = {
     en: {
       "common.name": "Name",
@@ -70,13 +68,11 @@ export const PropertyContactForm = ({
     }
   };
 
-  // Helper function to get translated text
   const getTranslatedText = (key: string) => {
     const { language } = useLanguage();
     return translations[language][key] || key;
   };
 
-  // Initialize the message with a template that includes the property name
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
@@ -85,21 +81,24 @@ export const PropertyContactForm = ({
   }, [propertyName]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (isSubmitting || isSuccess) return;
+    
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isSubmitting || isSuccess) return;
+    
     setIsSubmitting(true);
 
     try {
-      // Validate required fields
       if (!formData.name || !formData.email || !formData.message) {
         throw new Error(getTranslatedText('common.requiredFields'));
       }
 
-      // Insert the lead first
       const { error: leadError } = await supabase
         .from('leads')
         .insert({
@@ -114,7 +113,6 @@ export const PropertyContactForm = ({
 
       if (leadError) throw leadError;
 
-      // Also insert into contact_submissions
       const { error: contactError } = await supabase
         .from('contact_submissions')
         .insert({
@@ -127,16 +125,13 @@ export const PropertyContactForm = ({
 
       if (contactError) throw contactError;
 
-      // Show toast notification
       toast({
         title: getTranslatedText('common.success'),
         description: getTranslatedText('contact.messageSent'),
       });
       
-      // Show success animation immediately
       setIsSuccess(true);
       
-      // Reset form after 5 seconds
       setTimeout(() => {
         setFormData({
           name: '',
@@ -144,11 +139,6 @@ export const PropertyContactForm = ({
           phone: '',
           message: `I'm interested in the property "${propertyName}". `
         });
-        
-        // Keep the success state for 5 seconds before allowing new submissions
-        setTimeout(() => {
-          setIsSuccess(false);
-        }, 5000);
       }, 500);
     } catch (error: any) {
       setIsSubmitting(false);
@@ -158,8 +148,6 @@ export const PropertyContactForm = ({
         variant: 'destructive',
       });
       console.error('Form submission error:', error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -192,6 +180,7 @@ export const PropertyContactForm = ({
             onChange={handleChange}
             required
             className="mt-1"
+            disabled={isSubmitting}
           />
         </div>
 
@@ -205,6 +194,7 @@ export const PropertyContactForm = ({
             onChange={handleChange}
             required
             className="mt-1"
+            disabled={isSubmitting}
           />
         </div>
 
@@ -217,6 +207,7 @@ export const PropertyContactForm = ({
             value={formData.phone}
             onChange={handleChange}
             className="mt-1"
+            disabled={isSubmitting}
           />
         </div>
 
@@ -230,6 +221,7 @@ export const PropertyContactForm = ({
             required
             className="mt-1 h-24"
             placeholder={getTranslatedText('property.messageAboutProperty')}
+            disabled={isSubmitting}
           />
         </div>
 
