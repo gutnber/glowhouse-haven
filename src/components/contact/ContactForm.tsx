@@ -1,176 +1,131 @@
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { supabase } from "@/integrations/supabase/client"
-import { useToast } from "@/hooks/use-toast"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { 
-  Form, 
-  FormControl, 
-  FormDescription, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
-} from "@/components/ui/form"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/use-toast';
+import { useTranslation } from 'react-i18next';
+import { supabase } from '@/integrations/supabase/client';
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  phone: z.string().optional(),
-  message: z.string().min(10, { message: "Message must be at least 10 characters" })
-})
+export const ContactForm = () => {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
 
-type ContactFormValues = z.infer<typeof formSchema>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-export function ContactForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const { toast } = useToast()
-  
-  const form = useForm<ContactFormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      message: ""
-    }
-  })
-  
-  const onSubmit = async (data: ContactFormValues) => {
-    setIsSubmitting(true)
-    
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
     try {
+      // Validate required fields
+      if (!formData.name || !formData.email || !formData.message) {
+        throw new Error('Please fill out all required fields');
+      }
+
+      // Insert the contact submission
       const { error } = await supabase
         .from('contact_submissions')
-        .insert([data])
-      
-      if (error) {
-        console.error('Error submitting contact form:', error)
-        toast({
-          title: "Error",
-          description: "Failed to submit your message. Please try again later.",
-          variant: "destructive",
-        })
-      } else {
-        toast({
-          title: "Message sent",
-          description: "Thank you for contacting us! We'll get back to you soon.",
-        })
-        form.reset()
-        setIsSuccess(true)
-        // Reset success message after 5 seconds
-        setTimeout(() => setIsSuccess(false), 5000)
-      }
-    } catch (error) {
-      console.error('Error in contact form submission:', error)
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || null,
+          message: formData.message,
+          status: 'new'
+        });
+
+      if (error) throw error;
+
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      })
+        title: 'Message Sent',
+        description: 'Thank you for your message. We will get back to you soon.',
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: ''
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'There was a problem sending your message',
+        variant: 'destructive',
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
-  
+  };
+
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>Contact Us</CardTitle>
-        <CardDescription>
-          Fill out the form below and we'll get back to you as soon as possible.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {isSuccess ? (
-          <div className="text-center py-6">
-            <h3 className="text-xl font-medium text-green-600 mb-2">Thank you for your message!</h3>
-            <p className="text-gray-600">We'll respond to you as soon as possible.</p>
-            <Button 
-              className="mt-4" 
-              variant="outline" 
-              onClick={() => setIsSuccess(false)}
-            >
-              Send another message
-            </Button>
-          </div>
-        ) : (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your full name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="Your email address" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone (Optional)</FormLabel>
-                    <FormControl>
-                      <Input type="tel" placeholder="Your phone number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Message</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="What would you like to tell us?" 
-                        className="min-h-[120px]" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Sending..." : "Send Message"}
-              </Button>
-            </form>
-          </Form>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="name">Name *</Label>
+          <Input
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="mt-1"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="email">Email *</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="mt-1"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="phone">Phone (optional)</Label>
+          <Input
+            id="phone"
+            name="phone"
+            type="tel"
+            value={formData.phone}
+            onChange={handleChange}
+            className="mt-1"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="message">Message *</Label>
+          <Textarea
+            id="message"
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            required
+            className="mt-1 h-32"
+          />
+        </div>
+      </div>
+
+      <Button type="submit" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? t('common.loading') : 'Send Message'}
+      </Button>
+    </form>
+  );
+};
