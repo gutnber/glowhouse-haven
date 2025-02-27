@@ -7,20 +7,17 @@ import { Button } from "@/components/ui/button";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyImageGallery } from "@/components/property/PropertyImageGallery";
 import { PropertyDetails } from "@/components/property/PropertyDetails";
+import { PropertyContactForm } from "@/components/property/PropertyContactForm";
+import { PropertyMap } from "@/components/property/PropertyMap";
 import { House } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { useRef, useState } from "react";
+
 const PropertyProfile = () => {
-  const {
-    id
-  } = useParams();
-  const {
-    isAdmin
-  } = useIsAdmin();
-  const {
-    toast
-  } = useToast();
+  const { id } = useParams();
+  const { isAdmin } = useIsAdmin();
+  const { toast } = useToast();
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -28,27 +25,21 @@ const PropertyProfile = () => {
     x: 50,
     y: 50
   });
-  const {
-    data: property,
-    isLoading
-  } = useQuery({
+
+  const { data: property, isLoading } = useQuery({
     queryKey: ['property', id],
     queryFn: async () => {
       console.log('Fetching property with id:', id);
-      const {
-        data,
-        error
-      } = await supabase.from('properties').select('*').eq('id', id).single();
+      const { data, error } = await supabase.from('properties').select('*').eq('id', id).single();
       if (error) throw error;
       console.log('Fetched property:', data);
       return data as Tables<'properties'>;
     }
   });
+
   const updateImagePositionMutation = useMutation({
     mutationFn: async (position: string) => {
-      const {
-        error
-      } = await supabase.from('properties').update({
+      const { error } = await supabase.from('properties').update({
         feature_image_position: position
       }).eq('id', id);
       if (error) throw error;
@@ -67,11 +58,13 @@ const PropertyProfile = () => {
       });
     }
   });
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isAdmin) return;
     setIsDragging(true);
     e.preventDefault(); // Prevent image dragging
   };
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !containerRef.current || !isAdmin) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -86,6 +79,7 @@ const PropertyProfile = () => {
       y: clampedY
     });
   };
+
   const handleMouseUp = () => {
     if (!isDragging) return;
     setIsDragging(false);
@@ -94,11 +88,13 @@ const PropertyProfile = () => {
     const positionString = `${position.x}% ${position.y}%`;
     updateImagePositionMutation.mutate(positionString);
   };
+
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-[200px]">
         <p>Loading property...</p>
       </div>;
   }
+
   if (!property) {
     return <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
         <p className="text-xl">Property not found</p>
@@ -107,6 +103,7 @@ const PropertyProfile = () => {
         </Button>
       </div>;
   }
+
   return <div className="max-w-6xl mx-auto space-y-8 my-[84px]">
       <PropertyHeader id={property.id} name={property.name} address={property.address} />
 
@@ -125,29 +122,49 @@ const PropertyProfile = () => {
 
       <PropertyImageGallery images={property.images || []} propertyId={property.id} propertyName={property.name} featureImageUrl={property.feature_image_url} />
 
-      <PropertyDetails 
-        bedrooms={property.bedrooms} 
-        bathrooms={property.bathrooms} 
-        buildYear={property.build_year} 
-        price={property.price} 
-        arv={property.arv} 
-        description={property.description} 
-        features={property.features} 
-        googleMapsUrl={property.google_maps_url} 
-        latitude={property.latitude} 
-        longitude={property.longitude} 
-        youtubeUrl={property.youtube_url} 
-        youtubeAutoplay={property.youtube_autoplay} 
-        youtubeMuted={property.youtube_muted} 
-        youtubeControls={property.youtube_controls}
-        area={property.area}
-        heatedArea={property.heated_area}
-        referenceNumber={property.reference_number}
-        enableBorderBeam={property.enable_border_beam}
-        propertyType={property.property_type}
-        id={property.id}
-        name={property.name}
-      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <PropertyDetails 
+            bedrooms={property.bedrooms} 
+            bathrooms={property.bathrooms} 
+            buildYear={property.build_year} 
+            price={property.price} 
+            arv={property.arv} 
+            description={property.description} 
+            features={property.features} 
+            youtubeUrl={property.youtube_url} 
+            youtubeAutoplay={property.youtube_autoplay} 
+            youtubeMuted={property.youtube_muted} 
+            youtubeControls={property.youtube_controls}
+            area={property.area}
+            heatedArea={property.heated_area}
+            referenceNumber={property.reference_number}
+            enableBorderBeam={property.enable_border_beam}
+            propertyType={property.property_type}
+            id={property.id}
+            name={property.name}
+          />
+        </div>
+        
+        <div className="space-y-6">
+          {(property.latitude && property.longitude) || property.google_maps_url ? (
+            <div className="h-[300px] rounded-lg overflow-hidden border">
+              <PropertyMap 
+                latitude={property.latitude} 
+                longitude={property.longitude} 
+                googleMapsUrl={property.google_maps_url} 
+              />
+            </div>
+          ) : null}
+          
+          <PropertyContactForm 
+            propertyId={property.id} 
+            propertyName={property.name} 
+            enableBorderBeam={property.enable_border_beam} 
+          />
+        </div>
+      </div>
     </div>;
 };
+
 export default PropertyProfile;

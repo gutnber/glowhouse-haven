@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Edit } from 'lucide-react';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
-import { PropertyContactForm } from './PropertyContactForm';
 import { PropertyMap } from './PropertyMap';
 import { PropertyYouTubePlayer } from './PropertyYouTubePlayer';
 import { formatCurrency } from '@/lib/utils';
@@ -20,9 +19,9 @@ interface PropertyDetailsProps {
   arv: number | null;
   description: string | null;
   features: string[] | null;
-  googleMapsUrl: string | null;
-  latitude: number | null;
-  longitude: number | null;
+  googleMapsUrl?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   youtubeUrl: string | null;
   youtubeAutoplay: boolean | null;
   youtubeMuted: boolean | null;
@@ -44,9 +43,6 @@ export const PropertyDetails = ({
   arv,
   description,
   features,
-  googleMapsUrl,
-  latitude,
-  longitude,
   youtubeUrl,
   youtubeAutoplay,
   youtubeMuted,
@@ -61,146 +57,122 @@ export const PropertyDetails = ({
   const { t } = useLanguage();
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex items-center gap-4">
-            <h2 className="text-3xl font-bold">{t('property.details')}</h2>
-            {isAdmin && (
-              <Button variant="outline" size="sm" asChild>
-                <Link to={`/properties/edit/${id}`} className="flex items-center gap-2">
-                  <Edit className="h-4 w-4" />
-                  {t('property.edit')}
-                </Link>
-              </Button>
-            )}
-          </div>
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <div className="flex items-center gap-4">
+          <h2 className="text-3xl font-bold">{t('property.details')}</h2>
+          {isAdmin && (
+            <Button variant="outline" size="sm" asChild>
+              <Link to={`/properties/edit/${id}`} className="flex items-center gap-2">
+                <Edit className="h-4 w-4" />
+                {t('property.edit')}
+              </Link>
+            </Button>
+          )}
+        </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.bedrooms')}</span>
-              <span className="text-2xl font-bold">{bedrooms}</span>
-            </div>
-            
-            <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.bathrooms')}</span>
-              <span className="text-2xl font-bold">{bathrooms}</span>
-            </div>
-            
-            {buildYear && (
-              <div className="border rounded-lg p-4 flex flex-col">
-                <span className="text-muted-foreground text-sm">{t('property.yearBuilt')}</span>
-                <span className="text-2xl font-bold">{buildYear}</span>
-              </div>
-            )}
-            
-            {area && (
-              <div className="border rounded-lg p-4 flex flex-col">
-                <span className="text-muted-foreground text-sm">{t('property.area')} (sq ft)</span>
-                <span className="text-2xl font-bold">{area}</span>
-              </div>
-            )}
-            
-            {heatedArea && (
-              <div className="border rounded-lg p-4 flex flex-col">
-                <span className="text-muted-foreground text-sm">{t('property.heatedArea')} (sq ft)</span>
-                <span className="text-2xl font-bold">{heatedArea}</span>
-              </div>
-            )}
-            
-            {propertyType && (
-              <div className="border rounded-lg p-4 flex flex-col">
-                <span className="text-muted-foreground text-sm">{t('propertyType')}</span>
-                <span className="text-2xl font-bold capitalize">
-                  <PropertyTypeSelect 
-                    value={propertyType} 
-                    onValueChange={() => {}} 
-                    disabled={true} 
-                    className="p-0 font-bold opacity-100 pointer-events-none"
-                  />
-                </span>
-              </div>
-            )}
-            
-            {referenceNumber && (
-              <div className="border rounded-lg p-4 flex flex-col">
-                <span className="text-muted-foreground text-sm">{t('property.referenceNumber')}</span>
-                <span className="text-2xl font-bold">{referenceNumber}</span>
-              </div>
-            )}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="border rounded-lg p-4 flex flex-col">
+            <span className="text-muted-foreground text-sm">{t('property.bedrooms')}</span>
+            <span className="text-2xl font-bold">{bedrooms}</span>
           </div>
           
           <div className="border rounded-lg p-4 flex flex-col">
-            <span className="text-muted-foreground text-sm">{t('property.price')}</span>
-            <span className="text-3xl font-bold">{formatCurrency(price)}</span>
-            {arv && (
-              <div className="mt-2">
-                <span className="text-muted-foreground text-sm">{t('property.arvLabel')}</span>
-                <span className="text-xl font-semibold ml-2">{formatCurrency(arv)}</span>
-              </div>
-            )}
+            <span className="text-muted-foreground text-sm">{t('property.bathrooms')}</span>
+            <span className="text-2xl font-bold">{bathrooms}</span>
+          </div>
+          
+          {buildYear && (
+            <div className="border rounded-lg p-4 flex flex-col">
+              <span className="text-muted-foreground text-sm">{t('property.yearBuilt')}</span>
+              <span className="text-2xl font-bold">{buildYear}</span>
+            </div>
+          )}
+          
+          {area && (
+            <div className="border rounded-lg p-4 flex flex-col">
+              <span className="text-muted-foreground text-sm">{t('property.area')} (sq ft)</span>
+              <span className="text-2xl font-bold">{area}</span>
+            </div>
+          )}
+          
+          {heatedArea && (
+            <div className="border rounded-lg p-4 flex flex-col">
+              <span className="text-muted-foreground text-sm">{t('property.heatedArea')} (sq ft)</span>
+              <span className="text-2xl font-bold">{heatedArea}</span>
+            </div>
+          )}
+          
+          {propertyType && (
+            <div className="border rounded-lg p-4 flex flex-col">
+              <span className="text-muted-foreground text-sm">{t('propertyType')}</span>
+              <span className="text-2xl font-bold capitalize">
+                <PropertyTypeSelect 
+                  value={propertyType} 
+                  onValueChange={() => {}} 
+                  disabled={true} 
+                  className="p-0 font-bold opacity-100 pointer-events-none"
+                />
+              </span>
+            </div>
+          )}
+          
+          {referenceNumber && (
+            <div className="border rounded-lg p-4 flex flex-col">
+              <span className="text-muted-foreground text-sm">{t('property.referenceNumber')}</span>
+              <span className="text-2xl font-bold">{referenceNumber}</span>
+            </div>
+          )}
+        </div>
+        
+        <div className="border rounded-lg p-4 flex flex-col">
+          <span className="text-muted-foreground text-sm">{t('property.price')}</span>
+          <span className="text-3xl font-bold">{formatCurrency(price)}</span>
+          {arv && (
+            <div className="mt-2">
+              <span className="text-muted-foreground text-sm">{t('property.arvLabel')}</span>
+              <span className="text-xl font-semibold ml-2">{formatCurrency(arv)}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {description && (
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold">{t('property.description')}</h3>
+          <div className="prose prose-sm max-w-none dark:prose-invert">
+            {description.split('\n').map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
           </div>
         </div>
+      )}
 
-        {description && (
-          <div className="space-y-2">
-            <h3 className="text-xl font-semibold">{t('property.description')}</h3>
-            <div className="prose prose-sm max-w-none dark:prose-invert">
-              {description.split('\n').map((paragraph, i) => (
-                <p key={i}>{paragraph}</p>
-              ))}
-            </div>
-          </div>
-        )}
+      {features && features.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold">{t('property.features')}</h3>
+          <ul className="grid grid-cols-2 gap-2">
+            {features.map((feature, i) => (
+              <li key={i} className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-primary" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-        {features && features.length > 0 && (
-          <div className="space-y-2">
-            <h3 className="text-xl font-semibold">{t('property.features')}</h3>
-            <ul className="grid grid-cols-2 gap-2">
-              {features.map((feature, i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-primary" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {youtubeUrl && (
-          <div className="space-y-2">
-            <h3 className="text-xl font-semibold">{t('property.video')}</h3>
-            <PropertyYouTubePlayer 
-              youtubeUrl={youtubeUrl} 
-              autoplay={youtubeAutoplay} 
-              muted={youtubeMuted} 
-              controls={youtubeControls} 
-            />
-          </div>
-        )}
-      </div>
-      
-      <div className="space-y-6">
-        {(latitude && longitude) || googleMapsUrl ? (
-          <div className="space-y-2">
-            <h3 className="text-xl font-semibold">{t('property.location')}</h3>
-            <div className="h-[300px] rounded-lg overflow-hidden border">
-              <PropertyMap 
-                latitude={latitude} 
-                longitude={longitude} 
-                googleMapsUrl={googleMapsUrl} 
-              />
-            </div>
-          </div>
-        ) : null}
-        
-        <PropertyContactForm 
-          propertyId={id} 
-          propertyName={name} 
-          enableBorderBeam={enableBorderBeam} 
-        />
-      </div>
+      {youtubeUrl && (
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold">{t('property.video')}</h3>
+          <PropertyYouTubePlayer 
+            youtubeUrl={youtubeUrl} 
+            autoplay={youtubeAutoplay} 
+            muted={youtubeMuted} 
+            controls={youtubeControls} 
+          />
+        </div>
+      )}
     </div>
   );
 };
-
