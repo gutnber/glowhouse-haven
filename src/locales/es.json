@@ -1,0 +1,8 @@
+
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "success": "Éxito"
+  }
+}

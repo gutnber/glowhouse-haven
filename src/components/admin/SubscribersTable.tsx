@@ -1,136 +1,113 @@
 
 import { useState, useEffect } from "react"
-import { useToast } from "@/hooks/use-toast"
-import { supabase } from "@/integrations/supabase/client"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { Trash2 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
-interface Subscriber {
-  id: string
-  email: string
-  created_at: string
-}
+import { Loader2, Trash2 } from "lucide-react"
+import { supabase } from "@/integrations/supabase/client"
+import type { Subscriber } from "@/types/communications"
+import { useToast } from "@/hooks/use-toast"
 
 export function SubscribersTable() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [deleting, setDeleting] = useState<string | null>(null)
   const { toast } = useToast()
 
-  useEffect(() => {
-    fetchSubscribers()
-  }, [])
-
   const fetchSubscribers = async () => {
-    setIsLoading(true)
     try {
       const { data, error } = await supabase
-        .from('newsletter_subscribers')
-        .select('*')
-        .order('created_at', { ascending: false })
+        .from("newsletter_subscribers")
+        .select("*")
+        .order("created_at", { ascending: false })
 
-      if (error) {
-        console.error('Error fetching subscribers:', error)
-        toast({
-          title: "Error",
-          description: "Failed to load subscribers.",
-          variant: "destructive",
-        })
-      } else {
-        setSubscribers(data || [])
-      }
+      if (error) throw error
+      setSubscribers(data || [])
     } catch (error) {
-      console.error('Error in fetchSubscribers:', error)
+      console.error("Error fetching subscribers:", error)
+      toast({
+        title: "Error",
+        description: "Failed to load subscribers",
+        variant: "destructive",
+      })
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
   const handleDelete = async (id: string) => {
     try {
+      setDeleting(id)
       const { error } = await supabase
-        .from('newsletter_subscribers')
+        .from("newsletter_subscribers")
         .delete()
-        .eq('id', id)
+        .eq("id", id)
 
-      if (error) {
-        console.error('Error deleting subscriber:', error)
-        toast({
-          title: "Error",
-          description: "Failed to delete subscriber.",
-          variant: "destructive",
-        })
-      } else {
-        setSubscribers(subscribers.filter(sub => sub.id !== id))
-        toast({
-          title: "Success",
-          description: "Subscriber deleted successfully.",
-        })
-      }
+      if (error) throw error
+      
+      setSubscribers(prev => prev.filter(sub => sub.id !== id))
+      toast({
+        title: "Success",
+        description: "Subscriber deleted successfully",
+      })
     } catch (error) {
-      console.error('Error in handleDelete:', error)
+      console.error("Error deleting subscriber:", error)
+      toast({
+        title: "Error",
+        description: "Failed to delete subscriber",
+        variant: "destructive",
+      })
+    } finally {
+      setDeleting(null)
     }
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date)
+  useEffect(() => {
+    fetchSubscribers()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Newsletter Subscribers</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="text-center py-4">Loading subscribers...</div>
-        ) : subscribers.length === 0 ? (
-          <div className="text-center py-4">No subscribers found.</div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Email</TableHead>
-                <TableHead>Subscribed On</TableHead>
-                <TableHead className="w-[100px]">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {subscribers.map((subscriber) => (
-                <TableRow key={subscriber.id}>
-                  <TableCell>{subscriber.email}</TableCell>
-                  <TableCell>{formatDate(subscriber.created_at)}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(subscriber.id)}
-                      title="Delete subscriber"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </CardContent>
-    </Card>
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Email</TableHead>
+            <TableHead>Date Added</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {subscribers.map((subscriber) => (
+            <TableRow key={subscriber.id}>
+              <TableCell>{subscriber.email}</TableCell>
+              <TableCell>
+                {new Date(subscriber.created_at).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDelete(subscriber.id)}
+                  disabled={deleting === subscriber.id}
+                >
+                  {deleting === subscriber.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
