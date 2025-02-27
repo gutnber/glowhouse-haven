@@ -5,16 +5,28 @@ import { ContactSubmissionsTable } from "@/components/admin/ContactSubmissionsTa
 import { useAuthSession } from "@/hooks/useAuthSession"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Shield } from "lucide-react"
+import { Loader2, Shield } from "lucide-react"
 import { Navigate } from "react-router-dom"
 
 export default function Communications() {
   const session = useAuthSession()
-  const { isAdmin } = useIsAdmin()
+  const { isAdmin, isLoading } = useIsAdmin()
   const [activeTab, setActiveTab] = useState("contacts")
   
+  console.log('Communications page - Session:', !!session, 'Is admin:', isAdmin, 'Loading:', isLoading)
+  
+  // Show loading state while checking admin status
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+  
   // Redirect non-admin users
-  if (session && !isAdmin) {
+  if (!isLoading && (!session || !isAdmin)) {
+    console.log('Redirecting from Communications - Not admin or not logged in')
     return <Navigate to="/" replace />
   }
   

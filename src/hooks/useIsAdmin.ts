@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react"
 import { supabase } from "@/integrations/supabase/client"
 
@@ -8,10 +9,19 @@ export const useIsAdmin = () => {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
+        setIsLoading(true)
         const { data: { session } } = await supabase.auth.getSession()
-        setIsAdmin(session?.user?.email === 'help@ignishomes.com')
+        
+        if (session?.user?.email) {
+          console.log('Checking admin status for:', session.user.email)
+          setIsAdmin(session.user.email === 'help@ignishomes.com')
+        } else {
+          console.log('No user email found in session')
+          setIsAdmin(false)
+        }
       } catch (error) {
         console.error('Error checking admin status:', error)
+        setIsAdmin(false)
       } finally {
         setIsLoading(false)
       }
@@ -20,7 +30,12 @@ export const useIsAdmin = () => {
     checkAdminStatus()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAdmin(session?.user?.email === 'help@ignishomes.com')
+      if (session?.user?.email) {
+        console.log('Auth state changed, checking admin for:', session.user.email)
+        setIsAdmin(session.user.email === 'help@ignishomes.com')
+      } else {
+        setIsAdmin(false)
+      }
       setIsLoading(false)
     })
 
