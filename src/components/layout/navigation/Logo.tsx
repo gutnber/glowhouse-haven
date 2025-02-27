@@ -39,7 +39,11 @@ export function Logo() {
     <div className="flex items-center gap-4">
       <Link to="/" className="flex items-center text-xl font-bold text-primary">
         {!isLoading && logoUrl ? (
-          <img src={logoUrl} alt="Company Logo" className="h-10 max-w-[150px] object-contain" />
+          <img 
+            src={logoUrl} 
+            alt="Company Logo" 
+            className="h-[100px] max-w-[200px] object-contain" 
+          />
         ) : (
           <span>Real Estate</span>
         )}
