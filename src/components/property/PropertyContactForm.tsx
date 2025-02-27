@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -33,6 +33,14 @@ export const PropertyContactForm = ({
     message: ''
   });
 
+  // Initialize the message with a template that includes the property name
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      message: `I'm interested in the property "${propertyName}". `
+    }));
+  }, [propertyName]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -48,8 +56,8 @@ export const PropertyContactForm = ({
         throw new Error(t('common.requiredFields'));
       }
 
-      // Insert the lead
-      const { error } = await supabase
+      // Insert the lead first
+      const { error: leadError } = await supabase
         .from('leads')
         .insert({
           full_name: formData.name,
@@ -61,7 +69,20 @@ export const PropertyContactForm = ({
           status: 'new'
         } as Tables<'leads'>);
 
-      if (error) throw error;
+      if (leadError) throw leadError;
+
+      // Also insert into contact_submissions
+      const { error: contactError } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || null,
+          message: `[Property Inquiry: ${propertyName}] ${formData.message}`,
+          status: 'new'
+        });
+
+      if (contactError) throw contactError;
 
       toast({
         title: t('common.success'),
@@ -73,7 +94,7 @@ export const PropertyContactForm = ({
         name: '',
         email: '',
         phone: '',
-        message: ''
+        message: `I'm interested in the property "${propertyName}". `
       });
     } catch (error: any) {
       toast({
@@ -81,6 +102,7 @@ export const PropertyContactForm = ({
         description: error.message || t('contact.errorSending'),
         variant: 'destructive',
       });
+      console.error('Form submission error:', error);
     } finally {
       setIsSubmitting(false);
     }
