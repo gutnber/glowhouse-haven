@@ -9,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { BorderBeam } from '@/components/ui/border-beam';
-import { Loader2, Send } from 'lucide-react';
+import { Loader2, Send, CheckCircle } from 'lucide-react';
 import { Tables } from '@/integrations/supabase/types';
 
 interface PropertyContactFormProps {
@@ -26,12 +26,55 @@ export const PropertyContactForm = ({
   const { t } = useLanguage();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     message: ''
   });
+
+  // Add translations for the form fields
+  const translations = {
+    en: {
+      "common.name": "Name",
+      "common.email": "Email",
+      "common.phone": "Phone",
+      "common.optional": "Optional",
+      "common.message": "Message",
+      "common.sending": "Sending...",
+      "common.sendMessage": "Send Message",
+      "common.success": "Success",
+      "contact.messageSent": "Your message has been sent successfully!",
+      "contact.errorSending": "There was an error sending your message. Please try again.",
+      "common.error": "Error",
+      "common.requiredFields": "Please fill in all required fields.",
+      "property.contactUs": "Contact Us",
+      "property.messageAboutProperty": "Message about the property..."
+    },
+    es: {
+      "common.name": "Nombre",
+      "common.email": "Correo Electrónico",
+      "common.phone": "Teléfono",
+      "common.optional": "Opcional",
+      "common.message": "Mensaje",
+      "common.sending": "Enviando...",
+      "common.sendMessage": "Enviar Mensaje",
+      "common.success": "Éxito",
+      "contact.messageSent": "¡Tu mensaje ha sido enviado con éxito!",
+      "contact.errorSending": "Hubo un error al enviar tu mensaje. Por favor intenta de nuevo.",
+      "common.error": "Error",
+      "common.requiredFields": "Por favor complete todos los campos requeridos.",
+      "property.contactUs": "Contáctenos",
+      "property.messageAboutProperty": "Mensaje sobre la propiedad..."
+    }
+  };
+
+  // Helper function to get translated text
+  const getTranslatedText = (key: string) => {
+    const { language } = useLanguage();
+    return translations[language][key] || key;
+  };
 
   // Initialize the message with a template that includes the property name
   useEffect(() => {
@@ -53,7 +96,7 @@ export const PropertyContactForm = ({
     try {
       // Validate required fields
       if (!formData.name || !formData.email || !formData.message) {
-        throw new Error(t('common.requiredFields'));
+        throw new Error(getTranslatedText('common.requiredFields'));
       }
 
       // Insert the lead first
@@ -85,21 +128,30 @@ export const PropertyContactForm = ({
       if (contactError) throw contactError;
 
       toast({
-        title: t('common.success'),
-        description: t('contact.messageSent'),
+        title: getTranslatedText('common.success'),
+        description: getTranslatedText('contact.messageSent'),
       });
       
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        message: `I'm interested in the property "${propertyName}". `
-      });
+      // Show success animation
+      setIsSuccess(true);
+      
+      // Reset form after some time if user navigates back to this form
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: `I'm interested in the property "${propertyName}". `
+        });
+        // Reset success state after 5 seconds
+        setTimeout(() => {
+          setIsSuccess(false);
+        }, 5000);
+      }, 500);
     } catch (error: any) {
       toast({
-        title: t('common.error'),
-        description: error.message || t('contact.errorSending'),
+        title: getTranslatedText('common.error'),
+        description: error.message || getTranslatedText('contact.errorSending'),
         variant: 'destructive',
       });
       console.error('Form submission error:', error);
@@ -108,13 +160,26 @@ export const PropertyContactForm = ({
     }
   };
 
+  if (isSuccess) {
+    return (
+      <Card className="p-6 relative bg-green-50 dark:bg-green-900/20">
+        {enableBorderBeam && <BorderBeam delay={10} />}
+        <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
+          <CheckCircle className="h-16 w-16 text-green-500 animate-fade-in" />
+          <h2 className="text-2xl font-semibold">{getTranslatedText('common.success')}</h2>
+          <p className="text-lg">{getTranslatedText('contact.messageSent')}</p>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="p-6 relative">
       {enableBorderBeam && <BorderBeam delay={10} />}
-      <h2 className="text-2xl font-semibold mb-4">{t('property.contactUs')}</h2>
+      <h2 className="text-2xl font-semibold mb-4">{getTranslatedText('property.contactUs')}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="name">{t('common.name')} *</Label>
+          <Label htmlFor="name">{getTranslatedText('common.name')} *</Label>
           <Input
             id="name"
             name="name"
@@ -126,7 +191,7 @@ export const PropertyContactForm = ({
         </div>
 
         <div>
-          <Label htmlFor="email">{t('common.email')} *</Label>
+          <Label htmlFor="email">{getTranslatedText('common.email')} *</Label>
           <Input
             id="email"
             name="email"
@@ -139,7 +204,7 @@ export const PropertyContactForm = ({
         </div>
 
         <div>
-          <Label htmlFor="phone">{t('common.phone')} ({t('common.optional')})</Label>
+          <Label htmlFor="phone">{getTranslatedText('common.phone')} ({getTranslatedText('common.optional')})</Label>
           <Input
             id="phone"
             name="phone"
@@ -151,7 +216,7 @@ export const PropertyContactForm = ({
         </div>
 
         <div>
-          <Label htmlFor="message">{t('common.message')} *</Label>
+          <Label htmlFor="message">{getTranslatedText('common.message')} *</Label>
           <Textarea
             id="message"
             name="message"
@@ -159,7 +224,7 @@ export const PropertyContactForm = ({
             onChange={handleChange}
             required
             className="mt-1 h-24"
-            placeholder={t('property.messageAboutProperty')}
+            placeholder={getTranslatedText('property.messageAboutProperty')}
           />
         </div>
 
@@ -167,12 +232,12 @@ export const PropertyContactForm = ({
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t('common.sending')}
+              {getTranslatedText('common.sending')}
             </>
           ) : (
             <>
               <Send className="mr-2 h-4 w-4" />
-              {t('common.sendMessage')}
+              {getTranslatedText('common.sendMessage')}
             </>
           )}
         </Button>
