@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -167,7 +168,9 @@ export const PropertyContactForm = ({
       <Card className="p-6 relative bg-green-50 dark:bg-green-900/20">
         {enableBorderBeam && <BorderBeam delay={10} />}
         <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
-          <CheckCircle className="h-16 w-16 text-green-500 animate-pulse" />
+          <div className="animate-pulse">
+            <CheckCircle className="h-16 w-16 text-green-500" />
+          </div>
           <h2 className="text-2xl font-semibold">{getTranslatedText('common.success')}</h2>
           <p className="text-lg">{getTranslatedText('contact.messageSent')}</p>
         </div>
