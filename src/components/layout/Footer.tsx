@@ -42,7 +42,7 @@ export function Footer() {
       ...data,
       phone: "+52 664 484 2251",
       address: "Calle 10ma. esq. Sirak Baloyan 8779-206 Zona Centro, C.P. 22000, Tijuana, B.C.",
-      company: data.company || "INMA Real Estate",
+      company: data.company || "Inma Soluciones Inmobiliarias",
       logo_url: data.logo_url || "https://inma.pro/static/images/logo.svg"
     })
   }
