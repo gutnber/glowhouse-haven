@@ -37,7 +37,12 @@ export function Footer() {
       return
     }
 
-    setSettings(data)
+    // Merge default values with database settings
+    setSettings({
+      ...data,
+      phone: "+52 664 484 2251",
+      address: "Calle 10ma. esq. Sirak Baloyan 8779-206 Zona Centro, C.P. 22000, Tijuana, B.C.",
+    })
   }
 
   const handleSubscribe = async (e: React.FormEvent) => {
@@ -112,29 +117,30 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            {settings.logo_url && (
-              <img 
-                src={settings.logo_url} 
-                alt={settings.company || 'Company logo'} 
-                className="h-12 w-auto"
-              />
+            {(settings.logo_url || settings.company) && (
+              <div className="h-12">
+                {settings.logo_url ? (
+                  <img 
+                    src={settings.logo_url} 
+                    alt={settings.company || 'Company logo'} 
+                    className="h-full w-auto object-contain"
+                  />
+                ) : (
+                  <h3 className="text-lg font-semibold">{settings.company}</h3>
+                )}
+              </div>
             )}
-            <h3 className="text-lg font-semibold">{settings.company}</h3>
           </div>
 
           {/* Contact Info */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Contact Us</h3>
-            {settings.phone && (
-              <p className="text-sm">
-                Phone: <a href={`tel:${settings.phone}`} className="hover:text-primary">{settings.phone}</a>
-              </p>
-            )}
-            {settings.address && (
-              <p className="text-sm">
-                Address: {settings.address}
-              </p>
-            )}
+            <p className="text-sm">
+              Phone: <a href="tel:+526644842251" className="hover:text-primary">+52 664 484 2251</a>
+            </p>
+            <p className="text-sm">
+              Address: Calle 10ma. esq. Sirak Baloyan 8779-206 Zona Centro, C.P. 22000, Tijuana, B.C.
+            </p>
           </div>
 
           {/* Subscribe Form */}
