@@ -454,30 +454,6 @@ export type Database = {
           tags: string[] | null
           user_type: string | null
         }
-        Insert: {
-          contact_message?: string | null
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          inquiry_property_name?: string | null
-          last_contact?: string | null
-          phone?: string | null
-          tags?: string[] | null
-          user_type?: string | null
-        }
-        Update: {
-          contact_message?: string | null
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          inquiry_property_name?: string | null
-          last_contact?: string | null
-          phone?: string | null
-          tags?: string[] | null
-          user_type?: string | null
-        }
         Relationships: []
       }
       leads_export: {

@@ -10,6 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Loader2 } from "lucide-react"
 
 type AppRole = "admin" | "user"
 
@@ -17,15 +19,29 @@ interface UserRoleSelectProps {
   userId: string
   initialRole?: AppRole
   isMainAdmin?: boolean
+  onRoleUpdate?: () => Promise<void>
 }
 
-export const UserRoleSelect = ({ userId, initialRole = "user", isMainAdmin }: UserRoleSelectProps) => {
+export const UserRoleSelect = ({ 
+  userId, 
+  initialRole = "user", 
+  isMainAdmin,
+  onRoleUpdate 
+}: UserRoleSelectProps) => {
   const { toast } = useToast()
-  const [updatingUserId, setUpdatingUserId] = useState<string | null>(null)
+  const [selectedRole, setSelectedRole] = useState<AppRole>(initialRole)
+  const [currentRole, setCurrentRole] = useState<AppRole>(initialRole)
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [showApplyButton, setShowApplyButton] = useState(false)
 
-  const updateUserRole = async (newRole: AppRole) => {
-    console.log('Updating role for user:', userId, 'to:', newRole)
-    setUpdatingUserId(userId)
+  const updateUserRole = async () => {
+    if (selectedRole === currentRole) {
+      setShowApplyButton(false)
+      return
+    }
+
+    console.log('Updating role for user:', userId, 'to:', selectedRole)
+    setIsUpdating(true)
     try {
       // First, get all roles for this user
       const { data: existingRoles, error: fetchError } = await supabase
@@ -52,9 +68,18 @@ export const UserRoleSelect = ({ userId, initialRole = "user", isMainAdmin }: Us
       console.log('Inserting new role')
       const { error: insertError } = await supabase
         .from("user_roles")
-        .insert({ user_id: userId, role: newRole })
+        .insert({ user_id: userId, role: selectedRole })
 
       if (insertError) throw insertError
+
+      // Update local state
+      setCurrentRole(selectedRole)
+      setShowApplyButton(false)
+      
+      // Callback to refresh the parent component
+      if (onRoleUpdate) {
+        await onRoleUpdate()
+      }
 
       toast({
         title: "Success",
@@ -68,27 +93,48 @@ export const UserRoleSelect = ({ userId, initialRole = "user", isMainAdmin }: Us
         variant: "destructive",
       })
     } finally {
-      setUpdatingUserId(null)
+      setIsUpdating(false)
     }
   }
 
+  // If this is the main admin, just show a badge
   if (isMainAdmin) {
     return <Badge>Admin</Badge>
   }
 
   return (
-    <Select
-      disabled={updatingUserId === userId}
-      value={initialRole}
-      onValueChange={(value: AppRole) => updateUserRole(value)}
-    >
-      <SelectTrigger className="w-32">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="user">User</SelectItem>
-        <SelectItem value="admin">Admin</SelectItem>
-      </SelectContent>
-    </Select>
+    <div className="flex items-center gap-2">
+      <Select
+        disabled={isUpdating}
+        value={selectedRole}
+        onValueChange={(value: AppRole) => {
+          setSelectedRole(value)
+          setShowApplyButton(value !== currentRole)
+        }}
+      >
+        <SelectTrigger className="w-24">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="user">User</SelectItem>
+          <SelectItem value="admin">Admin</SelectItem>
+        </SelectContent>
+      </Select>
+
+      {showApplyButton && (
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={updateUserRole}
+          disabled={isUpdating}
+        >
+          {isUpdating ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            "Apply"
+          )}
+        </Button>
+      )}
+    </div>
   )
 }

@@ -99,6 +99,7 @@ export const UsersTable = ({ profiles, userRoles, onRefetch }: UsersTableProps) 
                     userId={profile.id}
                     initialRole={userRole?.role || "user"}
                     isMainAdmin={isMainAdmin}
+                    onRoleUpdate={onRefetch}
                   />
                 </TableCell>
                 <TableCell>
