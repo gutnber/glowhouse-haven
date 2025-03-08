@@ -30,7 +30,7 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
               ${currencySymbol}${property.price.toLocaleString()} ${property.currency || 'USD'}
             </span>
             ${property.price_per_sqm && property.area ? 
-              `<span class="bg-white/80 text-[#F97316] text-[8px] leading-none px-1 mt-0.5">
+              `<span class="bg-[#F97316] text-white text-[10px] leading-none px-1 mt-0.5">
                 ${currencySymbol}${property.price_per_sqm.toLocaleString()}/m²
               </span>` 
               : ''
