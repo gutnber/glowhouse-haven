@@ -52,17 +52,20 @@ export function useFooterSettings() {
     try {
       console.log('Saving footer settings:', settings);
       
+      // Use upsert to ensure the record exists or is created if it doesn't
       const { error } = await supabase
         .from('footer_settings')
-        .update(settings) // Update all fields directly from the settings object
-        .eq('id', settings.id)
+        .upsert(settings, { 
+          onConflict: 'id',
+          ignoreDuplicates: false 
+        })
 
       if (error) throw error
 
       console.log('Footer settings updated successfully');
       
-      // Update the original settings to match current settings
-      setOriginalSettings(JSON.parse(JSON.stringify(settings)))
+      // Fetch fresh data to ensure we have the latest
+      await fetchFooterSettings()
       
       setSaveSuccess(true)
       setTimeout(() => setSaveSuccess(false), 3000)
