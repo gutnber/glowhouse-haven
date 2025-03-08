@@ -1,8 +1,10 @@
+
 import { Link } from "react-router-dom";
 import { Building2, Bed, Bath, MapPin, Home, Ruler } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/utils";
 
 interface PropertyCardProps {
   property: {
@@ -40,7 +42,6 @@ export const PropertyCard = ({
   };
   
   const showLivingSpaceIcons = property.property_type !== 'vacantLand';
-  const currencySymbol = property.currency === "MXN" ? "MX$" : "$";
   
   // Format dimensions if available
   const dimensions = property.width && property.height 
@@ -58,12 +59,11 @@ export const PropertyCard = ({
           <div className="absolute bottom-4 right-4 flex flex-col items-end gap-1">
             {property.price_per_sqm && property.area && (
               <div className="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg transform transition-transform duration-300 group-hover:scale-110">
-                {currencySymbol}{property.price_per_sqm.toLocaleString()}/m²
+                {formatCurrency(property.price_per_sqm, property.currency)}/m²
               </div>
             )}
             <div className="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg transform transition-transform duration-300 group-hover:scale-110">
-              {currencySymbol}{property.price.toLocaleString()} 
-              <span className="ml-1 text-xs font-normal">{property.currency || "USD"}</span>
+              {formatCurrency(property.price, property.currency)}
             </div>
           </div>
           {isNewProperty(property.created_at) && <Badge className="absolute top-4 left-4 bg-white/90 text-orange-500 shadow-lg">
