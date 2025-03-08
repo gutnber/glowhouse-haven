@@ -37,6 +37,7 @@ export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
     resolver: zodResolver(propertyFormSchema),
     values: property ? {
       ...property,
+      // Handle potentially missing fields with default values
       currency: property.currency || "USD",
       price_per_sqm: property.price_per_sqm ?? null,
       youtube_autoplay: property.youtube_autoplay ?? false,
