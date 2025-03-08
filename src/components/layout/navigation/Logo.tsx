@@ -1,14 +1,16 @@
 
 import { Link } from "react-router-dom";
-import { Home, Building, Newspaper, Users, MailPlus, Inbox } from "lucide-react";
+import { Home, Building, Newspaper, MailPlus } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Logo() {
   const { isAdmin } = useIsAdmin();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useLanguage();
   
   useEffect(() => {
     const fetchLogo = async () => {
@@ -36,47 +38,37 @@ export function Logo() {
   }, []);
   
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-6">
       <Link to="/" className="flex items-center text-xl font-bold text-primary">
         {!isLoading && logoUrl ? (
           <img 
             src={logoUrl} 
             alt="Company Logo" 
-            className="h-[100px] max-w-[200px] object-contain" 
+            className="h-[70px] max-w-[180px] object-contain" 
           />
         ) : (
-          <span>Real Estate</span>
+          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+            Real Estate
+          </span>
         )}
       </Link>
-      <nav className="hidden md:flex items-center gap-4">
-        <Link to="/" className="flex items-center gap-1 hover:text-primary">
+      <nav className="hidden lg:flex items-center gap-6">
+        <Link to="/" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
           <Home className="h-4 w-4" />
-          <span>Home</span>
+          <span className="font-medium">{t('home')}</span>
         </Link>
-        <Link to="/properties" className="flex items-center gap-1 hover:text-primary">
+        <Link to="/properties" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
           <Building className="h-4 w-4" />
-          <span>Properties</span>
+          <span className="font-medium">{t('properties')}</span>
         </Link>
-        <Link to="/news" className="flex items-center gap-1 hover:text-primary">
+        <Link to="/news" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
           <Newspaper className="h-4 w-4" />
-          <span>News</span>
+          <span className="font-medium">{t('news')}</span>
         </Link>
-        <Link to="/contact" className="flex items-center gap-1 hover:text-primary">
+        <Link to="/contact" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
           <MailPlus className="h-4 w-4" />
-          <span>Contact</span>
+          <span className="font-medium">{t('contact')}</span>
         </Link>
-        {isAdmin && (
-          <Link to="/users" className="flex items-center gap-1 hover:text-primary">
-            <Users className="h-4 w-4" />
-            <span>Users</span>
-          </Link>
-        )}
-        {isAdmin && (
-          <Link to="/admin/communications" className="flex items-center gap-1 hover:text-primary">
-            <Inbox className="h-4 w-4" />
-            <span>Communications</span>
-          </Link>
-        )}
       </nav>
     </div>
   );

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench, Menu } from "lucide-react";
+import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -50,43 +50,47 @@ export const UserMenu = ({ session }: UserMenuProps) => {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button 
-            variant="ghost" 
+            variant="outline" 
             size="icon" 
-            className="hover:bg-primary/10 transition-colors relative z-50"
+            className="rounded-full border-2 border-primary/20 hover:bg-primary/10 transition-colors relative z-50"
           >
-            <Menu className="h-5 w-5" />
+            {session ? (
+              <User className="h-5 w-5 text-primary" />
+            ) : (
+              <Menu className="h-5 w-5 text-primary" />
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="w-56 bg-white/95 backdrop-blur-xl border border-border/50 shadow-lg rounded-lg overflow-hidden"
+          className="w-56 bg-white border border-gray-200 shadow-lg rounded-xl overflow-hidden mt-2"
           sideOffset={8}
         >
           <DropdownMenuItem asChild>
-            <Link to="/" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
-              <Home className="h-4 w-4 text-primary/80" />
+            <Link to="/" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
+              <Home className="h-4 w-4 text-primary" />
               <span className="font-medium">{t('home')}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to="/properties" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
-              <Building2 className="h-4 w-4 text-primary/80" />
+            <Link to="/properties" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
+              <Building2 className="h-4 w-4 text-primary" />
               <span className="font-medium">{t('properties')}</span>
             </Link>
           </DropdownMenuItem>
 
           {isAdmin && (
             <>
-              <DropdownMenuSeparator className="bg-border/30 my-1" />
+              <DropdownMenuSeparator className="bg-gray-200 my-1" />
               <DropdownMenuItem asChild>
-                <Link to="/users" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
-                  <Users className="h-4 w-4 text-primary/80" />
+                <Link to="/users" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
+                  <Users className="h-4 w-4 text-primary" />
                   <span className="font-medium">{t('users')}</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/tools" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
-                  <Wrench className="h-4 w-4 text-primary/80" />
+                <Link to="/tools" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
+                  <Wrench className="h-4 w-4 text-primary" />
                   <span className="font-medium">{t('tools')}</span>
                 </Link>
               </DropdownMenuItem>
@@ -95,29 +99,29 @@ export const UserMenu = ({ session }: UserMenuProps) => {
 
           {session && (
             <>
-              <DropdownMenuSeparator className="bg-border/30 my-1" />
+              <DropdownMenuSeparator className="bg-gray-200 my-1" />
               <DropdownMenuItem asChild>
-                <Link to="/settings" className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200">
-                  <Settings className="h-4 w-4 text-primary/80" />
+                <Link to="/settings" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
+                  <Settings className="h-4 w-4 text-primary" />
                   <span className="font-medium">{t('settings')}</span>
                 </Link>
               </DropdownMenuItem>
             </>
           )}
 
-          <DropdownMenuSeparator className="bg-border/30 my-1" />
+          <DropdownMenuSeparator className="bg-gray-200 my-1" />
           <DropdownMenuItem 
             onClick={session ? handleSignOut : () => setIsAuthDialogOpen(true)} 
-            className="flex items-center gap-2 px-4 py-2.5 hover:bg-primary/5 transition-colors duration-200 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200 cursor-pointer"
           >
             {session ? (
               <>
-                <LogOut className="h-4 w-4 text-primary/80" />
+                <LogOut className="h-4 w-4 text-primary" />
                 <span className="font-medium">{t('signOut')}</span>
               </>
             ) : (
               <>
-                <LogIn className="h-4 w-4 text-primary/80" />
+                <LogIn className="h-4 w-4 text-primary" />
                 <span className="font-medium">{t('signIn')}</span>
               </>
             )}

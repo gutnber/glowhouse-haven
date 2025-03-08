@@ -41,7 +41,10 @@ export default function RootLayout() {
   })
 
   return (
-    <div data-template={profile?.ui_template || "original"} className="min-h-screen flex flex-col pointer-events-auto">
+    <div 
+      data-template={profile?.ui_template || "original"} 
+      className="min-h-screen flex flex-col pointer-events-auto overflow-x-hidden"
+    >
       <TopNavigation session={session} />
       <main className="flex-1 pointer-events-auto pt-20">
         <Outlet />

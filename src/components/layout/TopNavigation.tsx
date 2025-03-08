@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Logo } from "./navigation/Logo";
 import { UserMenu } from "./navigation/UserMenu";
@@ -15,9 +16,7 @@ export function TopNavigation({
   session
 }: TopNavigationProps) {
   const [scrolled, setScrolled] = useState(false);
-  const {
-    isAdmin
-  } = useIsAdmin();
+  const { isAdmin } = useIsAdmin();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,25 +26,33 @@ export function TopNavigation({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return <nav className={`fixed top-0 left-0 right-0 z-50 ${scrolled ? 'bg-gradient-to-r from-gray-300/70 via-gray-100/70 to-gray-300/70 backdrop-blur-lg shadow-sm' : 'bg-gradient-to-r from-gray-300 via-gray-100 to-gray-300'}`}>
-      <div className="container mx-auto relative z-50 flex h-19 items-center justify-between px-4 my-0">
+  return (
+    <nav 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? 'bg-white/90 backdrop-blur-lg shadow-md' : 'bg-white/80'
+      }`}
+    >
+      <div className="container mx-auto relative z-50 flex h-20 items-center justify-between px-4">
         <Logo />
         <div className="flex items-center gap-4">
-          {isAdmin && <TooltipProvider>
+          {isAdmin && (
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center">
                     <Shield className="h-5 w-5 text-primary" />
                   </div>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="bg-white border border-gray-200 shadow-lg">
                   <p>Administrator Account</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>}
+            </TooltipProvider>
+          )}
           <LanguageToggle />
           <UserMenu session={session} />
         </div>
       </div>
-    </nav>;
+    </nav>
+  );
 }

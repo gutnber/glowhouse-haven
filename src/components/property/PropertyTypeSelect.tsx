@@ -36,19 +36,28 @@ export function PropertyTypeSelect({
 }: PropertyTypeSelectProps) {
   const { t } = useLanguage()
 
+  // Different styling based on context
+  const isInPropertyList = location.pathname === '/properties';
+  
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className={cn("w-[200px] bg-white/10 text-white border-white/20", className)}>
+      <SelectTrigger className={cn(
+        "w-[200px]", 
+        isInPropertyList 
+          ? "bg-white/10 text-white border-white/20" 
+          : "bg-white text-black border-gray-200",
+        className
+      )}>
         <SelectValue placeholder={t('propertyType')} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-white border border-gray-200">
         {propertyTypes.map((type) => {
           const Icon = type.icon
           return (
             <SelectItem 
               key={type.value} 
               value={type.value}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-black"
             >
               <div className="flex items-center gap-2">
                 <Icon className="h-4 w-4" />
@@ -61,4 +70,3 @@ export function PropertyTypeSelect({
     </Select>
   )
 }
-
