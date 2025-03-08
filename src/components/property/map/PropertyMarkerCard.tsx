@@ -7,6 +7,8 @@ interface PropertyMarkerCardProps {
     bathrooms: number;
     price: number;
     currency?: string;
+    price_per_sqm?: number;
+    area?: number;
     feature_image_url?: string;
   };
 }
@@ -23,10 +25,16 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
             alt="${property.name}" 
             class="w-full h-24 object-cover"
           />
-          <div class="absolute top-0 right-0">
+          <div class="absolute top-0 right-0 flex flex-col items-end">
             <span class="bg-[#F97316] text-white text-[10px] leading-none px-1">
               ${currencySymbol}${property.price.toLocaleString()} ${property.currency || 'USD'}
             </span>
+            ${property.price_per_sqm && property.area ? 
+              `<span class="bg-white/80 text-[#F97316] text-[8px] leading-none px-1 mt-0.5">
+                ${currencySymbol}${property.price_per_sqm.toLocaleString()}/m²
+              </span>` 
+              : ''
+            }
           </div>
         </div>` 
         : `<div class="w-full h-24 bg-[#1A1F2C] flex items-center justify-center">

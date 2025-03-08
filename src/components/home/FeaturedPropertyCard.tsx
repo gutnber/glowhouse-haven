@@ -1,3 +1,4 @@
+
 import { PropertyYouTubePlayer } from "@/components/property/PropertyYouTubePlayer"
 import { Tables } from "@/integrations/supabase/types"
 import { formatCurrency } from "@/lib/utils"
@@ -23,6 +24,7 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   
   const isVacantLand = property.property_type === 'vacantLand'
+  const currencySymbol = property.currency === "MXN" ? "MX$" : "$"
 
   // Load video settings from property when component mounts
   useEffect(() => {
@@ -160,9 +162,16 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
             </div>
             <div className="col-span-4 space-y-4">
               <h2 className="text-3xl font-bold text-white">{property.name}</h2>
-              <p className="text-2xl font-semibold text-orange-500">
-                {formatCurrency(property.price)}
-              </p>
+              <div className="space-y-1">
+                <p className="text-2xl font-semibold text-orange-500">
+                  {formatCurrency(property.price, property.currency)}
+                </p>
+                {property.price_per_sqm && property.area && (
+                  <p className="text-lg text-orange-400/80">
+                    {currencySymbol}{property.price_per_sqm.toLocaleString()}/m²
+                  </p>
+                )}
+              </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   {!isVacantLand && (
@@ -206,9 +215,16 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
         ) : (
           <div className="col-span-12 space-y-4">
             <h2 className="text-4xl font-bold text-white">{property.name}</h2>
-            <p className="text-2xl font-semibold text-orange-500">
-              {formatCurrency(property.price)}
-            </p>
+            <div className="space-y-1">
+              <p className="text-2xl font-semibold text-orange-500">
+                {formatCurrency(property.price, property.currency)}
+              </p>
+              {property.price_per_sqm && property.area && (
+                <p className="text-lg text-orange-400/80">
+                  {currencySymbol}{property.price_per_sqm.toLocaleString()}/m²
+                </p>
+              )}
+            </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2 flex-wrap">
                 {!isVacantLand && (
