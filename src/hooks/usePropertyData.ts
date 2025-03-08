@@ -5,6 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { propertyFormSchema, PropertyFormValues } from "@/schemas/propertyFormSchema"
+import { Tables } from "@/integrations/supabase/types"
+
+type PropertyType = Tables<"properties">
 
 export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
   const { toast } = useToast()
@@ -44,7 +47,7 @@ export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
       }
       
       console.log('Fetched property data:', data)
-      return data
+      return data as PropertyType
     },
     enabled: !!propertyId
   })

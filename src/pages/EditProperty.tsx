@@ -4,6 +4,9 @@ import { Loader2 } from "lucide-react"
 import { usePropertyData } from "@/hooks/usePropertyData"
 import { PropertyFormWrapper } from "@/components/property/PropertyFormWrapper"
 import { PropertyDeleteButton } from "@/components/property/PropertyDeleteButton"
+import { Tables } from "@/integrations/supabase/types"
+
+type PropertyType = Tables<"properties">
 
 const EditProperty = () => {
   const { id } = useParams() as { id: string }
