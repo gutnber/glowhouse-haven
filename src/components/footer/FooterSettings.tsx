@@ -31,6 +31,7 @@ export function FooterSettings() {
   }, [])
 
   const fetchFooterSettings = async () => {
+    console.log('Fetching footer settings for edit form...');
     const { data, error } = await supabase
       .from('footer_settings')
       .select('*')
@@ -41,6 +42,7 @@ export function FooterSettings() {
       return
     }
 
+    console.log('Footer settings for edit form fetched:', data);
     setSettings(data)
     setOriginalSettings(JSON.parse(JSON.stringify(data))) // Create a deep copy
   }
@@ -65,6 +67,7 @@ export function FooterSettings() {
     setSaveSuccess(false)
     
     try {
+      console.log('Saving footer settings:', settings);
       const { error } = await supabase
         .from('footer_settings')
         .update({
@@ -79,6 +82,8 @@ export function FooterSettings() {
 
       if (error) throw error
 
+      console.log('Footer settings updated successfully');
+      
       // Update the original settings to match current settings
       setOriginalSettings(JSON.parse(JSON.stringify(settings)))
       

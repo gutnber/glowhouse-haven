@@ -30,8 +30,16 @@ export function Footer() {
         event: 'UPDATE',
         schema: 'public',
         table: 'footer_settings'
-      }, () => {
-        // Trigger a refetch when settings are updated
+      }, (payload) => {
+        console.log('Footer settings updated:', payload);
+        // Directly update the settings with the new data
+        if (payload.new) {
+          setSettings(prev => ({
+            ...prev,
+            ...payload.new as FooterSettings
+          }));
+        }
+        // Also trigger a refetch to ensure we have the complete data
         setFetchTime(Date.now());
       })
       .subscribe();
@@ -39,15 +47,17 @@ export function Footer() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [fetchTime]);
+  }, []);
 
   const fetchFooterSettings = async () => {
+    console.log('Fetching footer settings...');
     const { data, error } = await supabase.from('footer_settings').select('*').single();
     if (error) {
       console.error('Error fetching footer settings:', error);
       return;
     }
 
+    console.log('Footer settings fetched:', data);
     // Merge default values with database settings
     setSettings({
       ...data,
