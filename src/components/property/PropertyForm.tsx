@@ -10,10 +10,11 @@ import { AdditionalDetailsFields } from "./form-sections/AdditionalDetailsFields
 import { DescriptionField } from "./form-sections/DescriptionField"
 import { ImagesField } from "./form-sections/ImagesField"
 import { YouTubeFields } from "./form-sections/YouTubeFields"
+import { PropertyFormValues } from "@/schemas/propertyFormSchema"
 
 interface PropertyFormProps {
-  form: UseFormReturn<any>
-  onSubmit: (values: any) => void
+  form: UseFormReturn<PropertyFormValues>
+  onSubmit: (values: PropertyFormValues) => void
   isSubmitting: boolean
 }
 
