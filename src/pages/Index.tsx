@@ -1,9 +1,11 @@
+
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import StarryBackground from "@/components/background/StarryBackground";
 import { WelcomeSection } from "@/components/home/WelcomeSection";
 import { NewsSection } from "@/components/home/NewsSection";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
+import { useQuery } from "@tanstack/react-query";
 
 const POSTS_PER_PAGE = 5;
 const INITIAL_VISIBLE_POSTS = 1;
@@ -13,6 +15,23 @@ const Index = () => {
   const [newsPosts, setNewsPosts] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPosts, setTotalPosts] = useState(0);
+
+  // Fetch app settings to determine if featured property should be shown
+  const { data: appSettings } = useQuery({
+    queryKey: ['app-settings'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('app_settings')
+        .select('*')
+        .single();
+      
+      if (error) {
+        console.error('Error fetching app settings:', error);
+        return { featured_property_enabled: false };
+      }
+      return data;
+    }
+  });
 
   useEffect(() => {
     const fetchData = async () => {
