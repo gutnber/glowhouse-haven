@@ -23,7 +23,8 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
               <Input 
                 type="number" 
                 {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                value={field.value ?? ''}
               />
             </FormControl>
             <FormDescription>Total area in square meters</FormDescription>
@@ -43,7 +44,8 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
                 <Input 
                   type="number" 
                   {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                  value={field.value ?? ''}
                 />
               </FormControl>
               <FormDescription>Heated/cooled living area in square meters</FormDescription>
@@ -63,7 +65,8 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
               <Input 
                 type="number" 
                 {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                value={field.value ?? ''}
               />
             </FormControl>
             <FormDescription>Width of the property in meters</FormDescription>
@@ -82,7 +85,8 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
               <Input 
                 type="number" 
                 {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                value={field.value ?? ''}
               />
             </FormControl>
             <FormDescription>Height/depth of the property in meters</FormDescription>
@@ -98,7 +102,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
           <FormItem className="col-span-2">
             <FormLabel>Reference Number</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} value={field.value ?? ''} />
             </FormControl>
             <FormDescription>Unique reference number for the property</FormDescription>
             <FormMessage />
