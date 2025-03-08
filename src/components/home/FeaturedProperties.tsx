@@ -14,6 +14,9 @@ export const FeaturedProperties = ({ properties }: FeaturedPropertiesProps) => {
   
   if (properties.length === 0) return null
 
+  // For debugging
+  console.log("Featured properties:", properties);
+  
   // Get the first property for hero display if available
   const featuredProperty = properties[0]
   const remainingProperties = properties.slice(1)

@@ -38,15 +38,20 @@ const Index = () => {
           setNewsPosts(newsData);
         }
 
-        // Fetch featured properties with price_per_sqm included
-        const { data: propertiesData } = await supabase
+        // Fetch featured properties with all required fields explicitly
+        const { data: propertiesData, error } = await supabase
           .from('properties')
-          .select('*')  // Make sure to select all fields including price_per_sqm and area
+          .select('id, name, description, price, currency, price_per_sqm, area, bedrooms, bathrooms, features, feature_image_url, property_type, status, created_at, location, youtube_url')
           .not('feature_image_url', 'is', null)
           .order('created_at', { ascending: false })
           .limit(3);
         
+        if (error) {
+          console.error('Error fetching properties:', error);
+        }
+        
         if (propertiesData) {
+          console.log('Fetched properties data:', propertiesData);
           setFeaturedProperties(propertiesData);
         }
       } catch (error) {
