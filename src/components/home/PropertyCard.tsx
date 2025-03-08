@@ -49,7 +49,7 @@ export const PropertyCard = ({
     : null;
   
   return <Link key={property.id} to={`/properties/${property.id}`}>
-      <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 bg-white/5 backdrop-blur-md border-white/10 group w-[320px]">
+      <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 bg-white border border-gray-200 group w-[320px]">
         <div className="relative">
           <AspectRatio ratio={4 / 3}>
             {property.feature_image_url ? <img src={property.feature_image_url} alt={property.name} className="object-cover w-full h-full transform transition-transform duration-500 group-hover:scale-110" /> : <div className="w-full h-full bg-orange-500/10 flex items-center justify-center">
@@ -74,10 +74,10 @@ export const PropertyCard = ({
             </Badge>}
         </div>
         <CardHeader className="p-6">
-          <h3 className="text-xl font-bold text-white group-hover:text-orange-500 transition-colors duration-300 line-clamp-1">
+          <h3 className="text-xl font-bold text-gray-800 group-hover:text-orange-500 transition-colors duration-300 line-clamp-1">
             {property.name}
           </h3>
-          <div className="flex items-start gap-2 text-white/70">
+          <div className="flex items-start gap-2 text-gray-600">
             <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
             <span className="text-sm line-clamp-2">{property.address}</span>
           </div>
@@ -85,17 +85,17 @@ export const PropertyCard = ({
         <CardContent className="px-6 pb-6">
           <div className="grid grid-cols-4 gap-2 text-sm">
             {showLivingSpaceIcons ? <>
-                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
+                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-100">
                   <Bed className="h-5 w-5 text-orange-500" />
-                  <span className="text-white/70">{property.bedrooms}</span>
+                  <span className="text-gray-700">{property.bedrooms}</span>
                 </div>
-                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
+                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-100">
                   <Bath className="h-5 w-5 text-orange-500" />
-                  <span className="text-white/70">{property.bathrooms}</span>
+                  <span className="text-gray-700">{property.bathrooms}</span>
                 </div>
-                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-white/5">
+                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-100">
                   <Home className="h-5 w-5 text-orange-500" />
-                  <span className="text-white/70">{property.build_year}</span>
+                  <span className="text-gray-700">{property.build_year}</span>
                 </div>
               </> :
           // Show land features for vacant land with orange-grey gradient backgrounds
@@ -106,14 +106,14 @@ export const PropertyCard = ({
                   <span className="text-center line-clamp-1 font-thin text-xs">{feature}</span>
                 </div>)}
             {dimensions ? (
-              <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/5 min-w-[70px]">
+              <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-gray-100 min-w-[70px]">
                 <Ruler className="h-5 w-5 text-orange-500" />
-                <span className="text-white/70 text-xs whitespace-nowrap">{dimensions}</span>
+                <span className="text-gray-700 text-xs whitespace-nowrap">{dimensions}</span>
               </div>
             ) : property.area && (
-              <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/5 min-w-[70px]">
+              <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-gray-100 min-w-[70px]">
                 <Ruler className="h-5 w-5 text-orange-500" />
-                <span className="text-white/70 text-xs whitespace-nowrap">{property.area}m²</span>
+                <span className="text-gray-700 text-xs whitespace-nowrap">{property.area}m²</span>
               </div>
             )}
           </div>
