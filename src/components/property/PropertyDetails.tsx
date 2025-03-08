@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Edit } from 'lucide-react';
@@ -138,10 +137,10 @@ export const PropertyDetails = ({
             </div>
           )}
           
-          {referenceNumber && (
+          {pricePerSqm && area && (
             <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.referenceNumber')}</span>
-              <span className="text-2xl font-bold">{referenceNumber}</span>
+              <span className="text-muted-foreground text-sm">{t('property.pricePerSqm')}</span>
+              <span className="text-2xl font-bold">{formatPriceWithCurrency(pricePerSqm, currency || undefined)}/m²</span>
             </div>
           )}
         </div>
@@ -150,10 +149,10 @@ export const PropertyDetails = ({
           <span className="text-muted-foreground text-sm">{t('property.price')}</span>
           <span className="text-3xl font-bold">{formatPriceWithCurrency(price, currency || undefined)}</span>
           
-          {pricePerSqm && area && (
+          {referenceNumber && (
             <div className="mt-2">
-              <span className="text-muted-foreground text-sm">{t('property.pricePerSqm') || 'Price per m²'}</span>
-              <span className="text-xl font-semibold ml-2">{formatPriceWithCurrency(pricePerSqm, currency || undefined)}/m²</span>
+              <span className="text-muted-foreground text-sm">{t('property.referenceNumber')}</span>
+              <span className="text-xl font-semibold ml-2">{referenceNumber}</span>
             </div>
           )}
           

@@ -2,6 +2,7 @@
 import { UseFormReturn } from "react-hook-form"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface AdditionalDetailsFieldsProps {
   form: UseFormReturn<any>
@@ -10,6 +11,7 @@ interface AdditionalDetailsFieldsProps {
 export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) => {
   const propertyType = form.watch('property_type')
   const showHeatedArea = propertyType !== 'vacantLand'
+  const { t } = useLanguage()
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
@@ -18,7 +20,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="area"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Total Area (m²)</FormLabel>
+            <FormLabel>{t('property.area')} (m²)</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -39,7 +41,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
           name="heated_area"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Heated Area (m²)</FormLabel>
+              <FormLabel>{t('property.heatedArea')} (m²)</FormLabel>
               <FormControl>
                 <Input 
                   type="number" 
@@ -97,10 +99,30 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
 
       <FormField
         control={form.control}
+        name="price_per_sqm"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('property.pricePerSqm')}</FormLabel>
+            <FormControl>
+              <Input 
+                type="number" 
+                {...field}
+                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                value={field.value ?? ''}
+              />
+            </FormControl>
+            <FormDescription>Price per square meter</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
         name="reference_number"
         render={({ field }) => (
-          <FormItem className="col-span-2">
-            <FormLabel>Reference Number</FormLabel>
+          <FormItem>
+            <FormLabel>{t('property.referenceNumber')}</FormLabel>
             <FormControl>
               <Input {...field} value={field.value ?? ''} />
             </FormControl>

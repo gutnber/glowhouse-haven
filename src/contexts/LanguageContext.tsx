@@ -66,12 +66,14 @@ const translations: TranslationsType = {
       "area": "Total Area",
       "heatedArea": "Heated Area",
       "price": "Price",
+      "pricePerSqm": "Price per m²",
       "arvLabel": "After Repair Value",
       "referenceNumber": "Reference Number",
       "description": "Description",
       "features": "Features",
       "video": "Property Video",
-      "contactUs": "Contact Us About This Property"
+      "contactUs": "Contact Us About This Property",
+      "dimensions": "Dimensions"
     }
   },
   es: {
@@ -122,12 +124,14 @@ const translations: TranslationsType = {
       "area": "Área Total",
       "heatedArea": "Área Calefaccionada",
       "price": "Precio",
+      "pricePerSqm": "Precio por m²",
       "arvLabel": "Valor Después de Reparación",
       "referenceNumber": "Número de Referencia",
       "description": "Descripción",
       "features": "Características",
       "video": "Video de la Propiedad",
-      "contactUs": "Contáctenos Sobre Esta Propiedad"
+      "contactUs": "Contáctenos Sobre Esta Propiedad",
+      "dimensions": "Dimensiones"
     }
   }
 };
