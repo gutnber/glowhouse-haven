@@ -119,6 +119,28 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
 
       <FormField
         control={form.control}
+        name="price_per_sqm"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Price per m²</FormLabel>
+            <FormControl>
+              <Input 
+                type="number" 
+                {...field}
+                onChange={(e) => {
+                  const value = e.target.value ? Number(e.target.value) : null;
+                  field.onChange(value);
+                }}
+              />
+            </FormControl>
+            <FormDescription>Price per square meter</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
         name="arv"
         render={({ field }) => (
           <FormItem>

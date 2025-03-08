@@ -28,6 +28,7 @@ const propertyFormSchema = z.object({
   bathrooms: z.number().min(0),
   build_year: z.number().min(1800).max(new Date().getFullYear()),
   price: z.number().min(0),
+  price_per_sqm: z.number().min(0).optional().nullable(),
   currency: z.string().default("USD"),
   arv: z.number().min(0).optional().nullable(),
   width: z.number().min(0).optional().nullable(),
@@ -82,6 +83,7 @@ const EditProperty = () => {
     values: property ? {
       ...property,
       currency: property.currency || "USD",
+      price_per_sqm: property.price_per_sqm ?? null,
       youtube_autoplay: property.youtube_autoplay ?? false,
       youtube_muted: property.youtube_muted ?? true,
       youtube_controls: property.youtube_controls ?? true,
@@ -101,6 +103,7 @@ const EditProperty = () => {
         .update({
           ...values,
           currency: values.currency || "USD",
+          price_per_sqm: values.price_per_sqm || null,
           google_maps_url: values.google_maps_url || null,
           youtube_url: values.youtube_url || null,
           youtube_autoplay: values.youtube_autoplay,

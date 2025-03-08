@@ -17,6 +17,7 @@ interface PropertyDetailsProps {
   buildYear: number | null;
   price: number;
   currency?: string | null;
+  pricePerSqm?: number | null;
   arv: number | null;
   description: string | null;
   features: string[] | null;
@@ -44,6 +45,7 @@ export const PropertyDetails = ({
   buildYear,
   price,
   currency = "USD",
+  pricePerSqm = null,
   arv,
   description,
   features,
@@ -147,6 +149,14 @@ export const PropertyDetails = ({
         <div className="border rounded-lg p-4 flex flex-col">
           <span className="text-muted-foreground text-sm">{t('property.price')}</span>
           <span className="text-3xl font-bold">{formatPriceWithCurrency(price, currency || undefined)}</span>
+          
+          {pricePerSqm && (
+            <div className="mt-2">
+              <span className="text-muted-foreground text-sm">{t('property.pricePerSqm') || 'Price per m²'}</span>
+              <span className="text-xl font-semibold ml-2">{formatPriceWithCurrency(pricePerSqm, currency || undefined)}/m²</span>
+            </div>
+          )}
+          
           {arv && (
             <div className="mt-2">
               <span className="text-muted-foreground text-sm">{t('property.arvLabel')}</span>

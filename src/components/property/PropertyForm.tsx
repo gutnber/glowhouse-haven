@@ -1,3 +1,4 @@
+
 import { UseFormReturn } from "react-hook-form"
 import { Loader2 } from "lucide-react"
 import { Form } from "@/components/ui/form"
@@ -19,6 +20,16 @@ interface PropertyFormProps {
 export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps) => {
   const location = useLocation()
   const isAddProperty = location.pathname === "/properties/add"
+  
+  // Calculate price per square meter when price or area changes
+  const price = form.watch('price')
+  const area = form.watch('area')
+  
+  // Auto-calculate price per sqm if there's both price and area, but only if price_per_sqm hasn't been set manually
+  if (price > 0 && area > 0 && !form.getValues('price_per_sqm')) {
+    const calculatedPricePerSqm = Math.round(price / area)
+    form.setValue('price_per_sqm', calculatedPricePerSqm)
+  }
 
   console.log('Form values:', form.getValues())
 
