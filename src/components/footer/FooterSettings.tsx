@@ -32,13 +32,20 @@ export function FooterSettings() {
 
   const fetchFooterSettings = async () => {
     console.log('Fetching footer settings for edit form...');
+    setIsLoading(true);
     const { data, error } = await supabase
       .from('footer_settings')
       .select('*')
       .single()
 
+    setIsLoading(false);
     if (error) {
       console.error('Error fetching footer settings:', error)
+      toast({
+        title: "Error",
+        description: "Failed to load footer settings",
+        variant: "destructive",
+      })
       return
     }
 
@@ -107,7 +114,13 @@ export function FooterSettings() {
   }
 
   if (!settings) {
-    return <div>Loading...</div>
+    return (
+      <Card>
+        <CardContent className="p-6 flex justify-center items-center min-h-[200px]">
+          <div className="animate-pulse">Loading footer settings...</div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

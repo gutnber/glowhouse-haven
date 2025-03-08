@@ -34,13 +34,11 @@ export function Footer() {
         console.log('Footer settings updated:', payload);
         // Directly update the settings with the new data
         if (payload.new) {
-          setSettings(prev => ({
+          setSettings(prev => prev ? {
             ...prev,
-            ...payload.new as FooterSettings
-          }));
+            ...(payload.new as FooterSettings)
+          } : payload.new as FooterSettings);
         }
-        // Also trigger a refetch to ensure we have the complete data
-        setFetchTime(Date.now());
       })
       .subscribe();
       
@@ -48,6 +46,11 @@ export function Footer() {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  // Add a separate effect to refetch when fetchTime changes
+  useEffect(() => {
+    fetchFooterSettings();
+  }, [fetchTime]);
 
   const fetchFooterSettings = async () => {
     console.log('Fetching footer settings...');
