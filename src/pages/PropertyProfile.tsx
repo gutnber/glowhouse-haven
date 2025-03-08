@@ -1,4 +1,3 @@
-
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,9 @@ import { House } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { useRef, useState } from "react";
+import { Footer } from "@/components/layout/Footer";
+import { TopNavigation } from "@/components/layout/TopNavigation";
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 const PropertyProfile = () => {
   const { id } = useParams();
@@ -25,6 +27,7 @@ const PropertyProfile = () => {
     x: 50,
     y: 50
   });
+  const session = useAuthSession();
 
   const { data: property, isLoading } = useQuery({
     queryKey: ['property', id],
@@ -104,67 +107,75 @@ const PropertyProfile = () => {
       </div>;
   }
 
-  return <div className="max-w-6xl mx-auto space-y-8 my-[84px]">
-      <PropertyHeader id={property.id} name={property.name} address={property.address} />
+  return (
+    <div className="flex flex-col min-h-screen">
+      <TopNavigation session={session} />
+      <main className="flex-1">
+        <div className="max-w-6xl mx-auto space-y-8 my-[84px]">
+          <PropertyHeader id={property.id} name={property.name} address={property.address} />
 
-      {property.feature_image_url ? <div ref={containerRef} className="relative" onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
-          <div className="w-full h-[300px] relative rounded-lg overflow-hidden">
-            <img ref={imageRef} src={property.feature_image_url} alt={`${property.name} banner`} className={`w-full h-full object-cover transition-all duration-200 ${isAdmin ? 'cursor-move' : ''}`} style={{
-          objectPosition: isDragging ? `${position.x}% ${position.y}%` : property.feature_image_position || '50% 50%'
-        }} onMouseDown={handleMouseDown} />
-          </div>
-          {isAdmin && <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-              {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
+          {property.feature_image_url ? <div ref={containerRef} className="relative" onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+              <div className="w-full h-[300px] relative rounded-lg overflow-hidden">
+                <img ref={imageRef} src={property.feature_image_url} alt={`${property.name} banner`} className={`w-full h-full object-cover transition-all duration-200 ${isAdmin ? 'cursor-move' : ''}`} style={{
+              objectPosition: isDragging ? `${position.x}% ${position.y}%` : property.feature_image_position || '50% 50%'
+            }} onMouseDown={handleMouseDown} />
+              </div>
+              {isAdmin && <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                  {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
+                </div>}
+            </div> : <div className="w-full h-[300px] bg-muted rounded-lg flex items-center justify-center">
+              <House className="h-24 w-24 text-muted-foreground" />
             </div>}
-        </div> : <div className="w-full h-[300px] bg-muted rounded-lg flex items-center justify-center">
-          <House className="h-24 w-24 text-muted-foreground" />
-        </div>}
 
-      <PropertyImageGallery images={property.images || []} propertyId={property.id} propertyName={property.name} featureImageUrl={property.feature_image_url} />
+          <PropertyImageGallery images={property.images || []} propertyId={property.id} propertyName={property.name} featureImageUrl={property.feature_image_url} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-6">
-          <PropertyDetails 
-            bedrooms={property.bedrooms} 
-            bathrooms={property.bathrooms} 
-            buildYear={property.build_year} 
-            price={property.price} 
-            arv={property.arv} 
-            description={property.description} 
-            features={property.features} 
-            youtubeUrl={property.youtube_url} 
-            youtubeAutoplay={property.youtube_autoplay} 
-            youtubeMuted={property.youtube_muted} 
-            youtubeControls={property.youtube_controls}
-            area={property.area}
-            heatedArea={property.heated_area}
-            referenceNumber={property.reference_number}
-            enableBorderBeam={property.enable_border_beam}
-            propertyType={property.property_type}
-            id={property.id}
-            name={property.name}
-          />
-        </div>
-        
-        <div className="space-y-6">
-          {(property.latitude && property.longitude) || property.google_maps_url ? (
-            <div className="h-[300px] rounded-lg overflow-hidden border">
-              <PropertyMap 
-                latitude={property.latitude} 
-                longitude={property.longitude} 
-                googleMapsUrl={property.google_maps_url} 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <PropertyDetails 
+                bedrooms={property.bedrooms} 
+                bathrooms={property.bathrooms} 
+                buildYear={property.build_year} 
+                price={property.price} 
+                arv={property.arv} 
+                description={property.description} 
+                features={property.features} 
+                youtubeUrl={property.youtube_url} 
+                youtubeAutoplay={property.youtube_autoplay} 
+                youtubeMuted={property.youtube_muted} 
+                youtubeControls={property.youtube_controls}
+                area={property.area}
+                heatedArea={property.heated_area}
+                referenceNumber={property.reference_number}
+                enableBorderBeam={property.enable_border_beam}
+                propertyType={property.property_type}
+                id={property.id}
+                name={property.name}
               />
             </div>
-          ) : null}
-          
-          <PropertyContactForm 
-            propertyId={property.id} 
-            propertyName={property.name} 
-            enableBorderBeam={property.enable_border_beam} 
-          />
+            
+            <div className="space-y-6">
+              {(property.latitude && property.longitude) || property.google_maps_url ? (
+                <div className="h-[300px] rounded-lg overflow-hidden border">
+                  <PropertyMap 
+                    latitude={property.latitude} 
+                    longitude={property.longitude} 
+                    googleMapsUrl={property.google_maps_url} 
+                  />
+                </div>
+              ) : null}
+              
+              <PropertyContactForm 
+                propertyId={property.id} 
+                propertyName={property.name} 
+                enableBorderBeam={property.enable_border_beam} 
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>;
+      </main>
+      <Footer />
+    </div>
+  );
 };
 
 export default PropertyProfile;

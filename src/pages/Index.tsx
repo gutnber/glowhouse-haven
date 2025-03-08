@@ -1,10 +1,12 @@
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import StarryBackground from "@/components/background/StarryBackground";
 import { WelcomeSection } from "@/components/home/WelcomeSection";
 import { NewsSection } from "@/components/home/NewsSection";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
+import { Footer } from "@/components/layout/Footer";
+import { TopNavigation } from "@/components/layout/TopNavigation";
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 const POSTS_PER_PAGE = 5;
 const INITIAL_VISIBLE_POSTS = 1;
@@ -14,6 +16,7 @@ const Index = () => {
   const [newsPosts, setNewsPosts] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPosts, setTotalPosts] = useState(0);
+  const session = useAuthSession();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,16 +91,20 @@ const Index = () => {
 
   const hasMorePosts = newsPosts.length < totalPosts;
 
-  return <div className="min-h-screen relative pointer-events-auto">
+  return (
+    <div className="min-h-screen flex flex-col relative">
+      <TopNavigation session={session} />
       <StarryBackground />
-      <div className="relative z-10 pointer-events-auto">
+      <div className="relative z-10 flex-1">
         <div className="container mx-auto px-4 pb-12 space-y-12 my-[71px]">
           <WelcomeSection />
           <NewsSection newsPosts={newsPosts} hasMorePosts={hasMorePosts} loadMorePosts={loadMorePosts} INITIAL_VISIBLE_POSTS={INITIAL_VISIBLE_POSTS} POSTS_PER_PAGE={POSTS_PER_PAGE} />
           <FeaturedProperties properties={featuredProperties} />
         </div>
       </div>
-    </div>;
+      <Footer />
+    </div>
+  );
 };
 
 export default Index;

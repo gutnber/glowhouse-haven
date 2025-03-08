@@ -36,8 +36,8 @@ export function Footer() {
     // Merge default values with database settings
     setSettings({
       ...data,
-      phone: "+52 664 484 2251",
-      address: "Calle 10ma. esq. Sirak Baloyan 8779-206 Zona Centro, C.P. 22000, Tijuana, B.C.",
+      phone: data.phone || "+52 664 484 2251",
+      address: data.address || "Calle 10ma. esq. Sirak Baloyan 8779-206 Zona Centro, C.P. 22000, Tijuana, B.C.",
       company: data.company || "Inma Soluciones Inmobiliarias",
       logo_url: data.logo_url || "https://inma.pro/static/images/logo.svg"
     });
@@ -114,11 +114,11 @@ export function Footer() {
             {settings.logo_url ? (
               <img 
                 src={settings.logo_url} 
-                alt={settings.company || "Company Logo"} 
+                alt={settings.company || "Inma Soluciones Inmobiliarias"} 
                 className="h-16 object-contain" 
               />
             ) : (
-              <h2 className="text-2xl font-bold text-primary">{settings.company}</h2>
+              <h2 className="text-2xl font-bold text-primary">Inma Soluciones Inmobiliarias</h2>
             )}
             <p className="text-gray-300 text-sm max-w-xs">
               We specialize in helping you find your dream property with professional service and local expertise.
@@ -203,7 +203,7 @@ export function Footer() {
         
         {/* Copyright */}
         <div className="text-center text-gray-400 text-sm mt-10 pt-6 border-t border-gray-800">
-          <p>© {new Date().getFullYear()} {settings.company}. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {settings.company || "Inma Soluciones Inmobiliarias"}. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -12,6 +12,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { PropertyTypeSelect } from "@/components/property/PropertyTypeSelect";
 import { Tables } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
+import { Footer } from "@/components/layout/Footer";
+import { TopNavigation } from "@/components/layout/TopNavigation";
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 const Properties = () => {
   const { isAdmin } = useIsAdmin();
@@ -19,6 +22,7 @@ const Properties = () => {
   const [propertyType, setPropertyType] = useState("all");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const session = useAuthSession();
   
   const { data: properties = [], isLoading } = useQuery({
     queryKey: ['properties', propertyType],
@@ -116,39 +120,41 @@ const Properties = () => {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
-      <div className="fixed inset-0 bg-black" />
-      
-      <div className="relative space-y-8 my-[48px]">
-        <div className="flex justify-between items-center px-4">
-          <div className="flex items-center gap-4">
-            <h1 className="text-4xl font-bold text-white">{t('properties')}</h1>
-            <PropertyTypeSelect value={propertyType} onValueChange={setPropertyType} />
+    <div className="flex flex-col min-h-screen">
+      <TopNavigation session={session} />
+      <main className="flex-1">
+        <div className="relative space-y-8 my-[48px]">
+          <div className="flex justify-between items-center px-4">
+            <div className="flex items-center gap-4">
+              <h1 className="text-4xl font-bold text-white">{t('properties')}</h1>
+              <PropertyTypeSelect value={propertyType} onValueChange={setPropertyType} />
+            </div>
+            {isAdmin && <Button asChild>
+                <Link to="/properties/add" className="flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  {t('addProperty')}
+                </Link>
+              </Button>}
           </div>
-          {isAdmin && <Button asChild>
-              <Link to="/properties/add" className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                {t('addProperty')}
-              </Link>
-            </Button>}
-        </div>
 
-        <div className="bg-[#1A1F2C] w-full">
-          <PropertiesMap properties={properties} />
-        </div>
+          <div className="bg-[#1A1F2C] w-full">
+            <PropertiesMap properties={properties} />
+          </div>
 
-        <div className="flex gap-6 flex-wrap justify-center px-4">
-          {properties?.map(property => <div key={property.id} className="relative">
-              <PropertyCard property={property} />
-              {isAdmin && <Button variant="ghost" size="icon" className="absolute top-2 right-2 bg-black/50 hover:bg-black/70" onClick={() => toggleFeatured.mutate({
-            propertyId: property.id,
-            isFeatured: !property.is_featured
-          })}>
-                  <Star className={`h-4 w-4 ${property.is_featured ? 'fill-yellow-500 text-yellow-500' : 'text-white'}`} />
-                </Button>}
-            </div>)}
+          <div className="flex gap-6 flex-wrap justify-center px-4">
+            {properties?.map(property => <div key={property.id} className="relative">
+                <PropertyCard property={property} />
+                {isAdmin && <Button variant="ghost" size="icon" className="absolute top-2 right-2 bg-black/50 hover:bg-black/70" onClick={() => toggleFeatured.mutate({
+              propertyId: property.id,
+              isFeatured: !property.is_featured
+            })}>
+                    <Star className={`h-4 w-4 ${property.is_featured ? 'fill-yellow-500 text-yellow-500' : 'text-white'}`} />
+                  </Button>}
+              </div>)}
+          </div>
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 };
