@@ -280,6 +280,7 @@ export type Database = {
           bedrooms: number
           build_year: number
           created_at: string
+          currency: string | null
           description: string | null
           enable_border_beam: boolean | null
           feature_image_position: string | null
@@ -287,6 +288,7 @@ export type Database = {
           features: string[] | null
           google_maps_url: string | null
           heated_area: number | null
+          height: number | null
           id: string
           images: string[] | null
           is_featured: boolean | null
@@ -295,10 +297,12 @@ export type Database = {
           mode: string | null
           name: string
           price: number
+          price_per_sqm: number | null
           property_type: string | null
           reference_number: string | null
           status: string | null
           updated_at: string
+          width: number | null
           youtube_autoplay: boolean | null
           youtube_controls: boolean | null
           youtube_muted: boolean | null
@@ -312,6 +316,7 @@ export type Database = {
           bedrooms: number
           build_year: number
           created_at?: string
+          currency?: string | null
           description?: string | null
           enable_border_beam?: boolean | null
           feature_image_position?: string | null
@@ -319,6 +324,7 @@ export type Database = {
           features?: string[] | null
           google_maps_url?: string | null
           heated_area?: number | null
+          height?: number | null
           id?: string
           images?: string[] | null
           is_featured?: boolean | null
@@ -327,10 +333,12 @@ export type Database = {
           mode?: string | null
           name: string
           price: number
+          price_per_sqm?: number | null
           property_type?: string | null
           reference_number?: string | null
           status?: string | null
           updated_at?: string
+          width?: number | null
           youtube_autoplay?: boolean | null
           youtube_controls?: boolean | null
           youtube_muted?: boolean | null
@@ -344,6 +352,7 @@ export type Database = {
           bedrooms?: number
           build_year?: number
           created_at?: string
+          currency?: string | null
           description?: string | null
           enable_border_beam?: boolean | null
           feature_image_position?: string | null
@@ -351,6 +360,7 @@ export type Database = {
           features?: string[] | null
           google_maps_url?: string | null
           heated_area?: number | null
+          height?: number | null
           id?: string
           images?: string[] | null
           is_featured?: boolean | null
@@ -359,10 +369,12 @@ export type Database = {
           mode?: string | null
           name?: string
           price?: number
+          price_per_sqm?: number | null
           property_type?: string | null
           reference_number?: string | null
           status?: string | null
           updated_at?: string
+          width?: number | null
           youtube_autoplay?: boolean | null
           youtube_controls?: boolean | null
           youtube_muted?: boolean | null
