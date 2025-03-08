@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import StarryBackground from "@/components/background/StarryBackground";
@@ -42,7 +41,6 @@ const Index = () => {
         const { data: propertiesData, error } = await supabase
           .from('properties')
           .select('id, name, description, price, currency, price_per_sqm, area, bedrooms, bathrooms, features, feature_image_url, property_type, status, created_at, youtube_url')
-          .not('feature_image_url', 'is', null)
           .order('created_at', { ascending: false })
           .limit(3);
         
