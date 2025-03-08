@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from 'react'
 
 const StarryBackground = () => {
@@ -18,15 +17,13 @@ const StarryBackground = () => {
     setCanvasSize()
     window.addEventListener('resize', setCanvasSize)
 
-    // Colors for the gradient animation
+    // Colors for the gradient animation - limited to black and orange only
     const colors = [
       { r: 255, g: 255, b: 255 }, // White
-      { r: 14, g: 165, b: 233 }, // Navy Blue
       { r: 254, g: 215, b: 170 }, // Light orange
       { r: 249, g: 115, b: 22 },  // Orange (primary)
       { r: 0, g: 0, b: 0 },       // Black
-      { r: 14, g: 165, b: 233 },  // Navy Blue again
-      { r: 249, g: 115, b: 22 },  // Orange (primary)
+      { r: 249, g: 115, b: 22 },  // Orange (primary) again
       { r: 254, g: 215, b: 170 }, // Light orange
       { r: 255, g: 255, b: 255 }, // Back to white
     ]
