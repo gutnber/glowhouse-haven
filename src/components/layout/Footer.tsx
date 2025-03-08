@@ -18,8 +18,7 @@ interface FooterSettings {
 
 export function Footer() {
   const [settings, setSettings] = useState<FooterSettings | null>(null);
-  const [fetchTime, setFetchTime] = useState(Date.now());
-
+  
   useEffect(() => {
     fetchFooterSettings();
     
@@ -27,13 +26,13 @@ export function Footer() {
     const channel = supabase
       .channel('footer_settings_changes')
       .on('postgres_changes', {
-        event: 'UPDATE',
+        event: '*', // Listen for all events (INSERT, UPDATE, DELETE)
         schema: 'public',
         table: 'footer_settings'
-      }, (payload) => {
-        console.log('Footer settings updated in real-time:', payload);
-        // Refresh the footer by triggering a new fetch
-        setFetchTime(Date.now());
+      }, () => {
+        console.log('Footer settings changed, refreshing data...');
+        // Refresh the footer by fetching new data
+        fetchFooterSettings();
       })
       .subscribe();
       
@@ -42,20 +41,20 @@ export function Footer() {
     };
   }, []);
 
-  // Add a separate effect to refetch when fetchTime changes
-  useEffect(() => {
-    fetchFooterSettings();
-  }, [fetchTime]);
-
   const fetchFooterSettings = async () => {
     console.log('Fetching footer settings...');
-    const { data, error } = await supabase.from('footer_settings').select('*').single();
+    const { data, error } = await supabase
+      .from('footer_settings')
+      .select('*')
+      .single();
+      
     if (error) {
       console.error('Error fetching footer settings:', error);
       return;
     }
 
     console.log('Footer settings fetched:', data);
+    
     // Only set the settings if we actually got data back
     if (data) {
       // Merge default values with database settings
