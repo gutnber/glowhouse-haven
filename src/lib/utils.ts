@@ -7,16 +7,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number | null, currency?: string): string {
-  if (amount === null) return '$0'
+  if (amount === null || amount === undefined) return currency === "MXN" ? "MX$0" : "$0"
   
   const currencySymbol = currency === "MXN" ? "MX$" : "$"
   const formattedAmount = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency === "MXN" ? "MXN" : "USD",
-    currencyDisplay: 'symbol'
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
   }).format(amount)
   
-  // Return the formatted amount, but replace the currency symbol from the formatter 
-  // with our custom one to be consistent across the application
-  return currencySymbol + formattedAmount.substring(formattedAmount.indexOf('$') + 1)
+  return `${currencySymbol}${formattedAmount}`
 }

@@ -26,15 +26,15 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
             class="w-full h-24 object-cover"
           />
           <div class="absolute top-0 right-0 flex flex-col items-end">
+            <span class="bg-[#F97316] text-white text-[10px] leading-none px-1">
+              ${formatCurrency(property.price, property.currency)}
+            </span>
             ${property.price_per_sqm && property.area ? 
-              `<span class="bg-[#F97316] text-white text-[10px] leading-none px-1">
+              `<span class="bg-[#F97316]/80 text-white text-[10px] leading-none px-1 mt-0.5">
                 ${formatCurrency(property.price_per_sqm, property.currency)}/m²
               </span>` 
               : ''
             }
-            <span class="bg-[#F97316] text-white text-[10px] leading-none px-1 mt-0.5">
-              ${formatCurrency(property.price, property.currency)}
-            </span>
           </div>
         </div>` 
         : `<div class="w-full h-24 bg-[#1A1F2C] flex items-center justify-center">

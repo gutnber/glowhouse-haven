@@ -46,6 +46,12 @@ serve(async (req) => {
 
     // Process the webhook based on type
     if (type === 'property') {
+      // Calculate price_per_sqm if area is provided
+      let price_per_sqm = null;
+      if (payload.price && payload.area && payload.area > 0) {
+        price_per_sqm = payload.price / payload.area;
+      }
+      
       const { error: propertyError } = await supabase
         .from('properties')
         .insert({
@@ -57,6 +63,9 @@ serve(async (req) => {
           features: payload.features || [],
           property_type: payload.property_type || 'other',
           status: payload.status || 'available',
+          area: payload.area || null,
+          price_per_sqm: price_per_sqm,
+          currency: payload.currency || 'USD',
           created_at: new Date().toISOString(),
         })
 

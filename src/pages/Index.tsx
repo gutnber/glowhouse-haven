@@ -4,13 +4,16 @@ import StarryBackground from "@/components/background/StarryBackground";
 import { WelcomeSection } from "@/components/home/WelcomeSection";
 import { NewsSection } from "@/components/home/NewsSection";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
+
 const POSTS_PER_PAGE = 5;
 const INITIAL_VISIBLE_POSTS = 1;
+
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([]);
   const [newsPosts, setNewsPosts] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPosts, setTotalPosts] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,13 +38,19 @@ const Index = () => {
           setNewsPosts(newsData);
         }
 
-        // Fetch featured properties
+        // Fetch featured properties with price_per_sqm and currency
         const {
           data: propertiesData
-        } = await supabase.from('properties').select('*').not('feature_image_url', 'is', null).order('created_at', {
-          ascending: false
-        }).limit(3);
+        } = await supabase.from('properties')
+          .select('*')
+          .not('feature_image_url', 'is', null)
+          .order('created_at', {
+            ascending: false
+          })
+          .limit(3);
+          
         if (propertiesData) {
+          console.log("Fetched properties:", propertiesData);
           setFeaturedProperties(propertiesData);
         }
       } catch (error) {
@@ -50,6 +59,7 @@ const Index = () => {
     };
     fetchData();
   }, []);
+
   const loadMorePosts = async () => {
     try {
       const nextPage = currentPage + 1;
@@ -66,7 +76,9 @@ const Index = () => {
       console.error('Error loading more posts:', error);
     }
   };
+
   const hasMorePosts = newsPosts.length < totalPosts;
+
   return <div className="min-h-screen relative pointer-events-auto">
       <StarryBackground />
       <div className="relative z-10 pointer-events-auto">
@@ -78,4 +90,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;

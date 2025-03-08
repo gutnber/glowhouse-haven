@@ -27,6 +27,22 @@ export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
         console.error('Error fetching property:', error)
         throw error
       }
+      
+      // If price_per_sqm is missing but we have price and area, calculate it
+      if (data && data.price && data.area && data.area > 0 && !data.price_per_sqm) {
+        data.price_per_sqm = data.price / data.area;
+        
+        // Update the property with the calculated price_per_sqm
+        const { error: updateError } = await supabase
+          .from('properties')
+          .update({ price_per_sqm: data.price_per_sqm })
+          .eq('id', propertyId)
+          
+        if (updateError) {
+          console.error('Error updating price_per_sqm:', updateError)
+        }
+      }
+      
       console.log('Fetched property data:', data)
       return data
     },
@@ -55,12 +71,19 @@ export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
   const updateMutation = useMutation({
     mutationFn: async (values: PropertyFormValues) => {
       console.log('Updating property with values:', values)
+      
+      // Calculate price_per_sqm if not provided but we have price and area
+      let price_per_sqm = values.price_per_sqm;
+      if (values.price && values.area && values.area > 0 && !values.price_per_sqm) {
+        price_per_sqm = values.price / values.area;
+      }
+      
       const { error } = await supabase
         .from('properties')
         .update({
           ...values,
           currency: values.currency || "USD",
-          price_per_sqm: values.price_per_sqm || null,
+          price_per_sqm: price_per_sqm,
           google_maps_url: values.google_maps_url || null,
           youtube_url: values.youtube_url || null,
           youtube_autoplay: values.youtube_autoplay,
