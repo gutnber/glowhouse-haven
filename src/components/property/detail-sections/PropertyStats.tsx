@@ -1,6 +1,7 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PropertyTypeSelect } from "../PropertyTypeSelect";
+import { formatCurrency } from "@/lib/utils";
 
 interface PropertyStatsProps {
   bedrooms: number;
@@ -29,12 +30,6 @@ export const PropertyStats = ({
 }: PropertyStatsProps) => {
   const { t } = useLanguage();
   
-  // Format price with currency
-  const formatPriceWithCurrency = (value: number, currencyCode: string = "USD") => {
-    const symbol = currencyCode === "MXN" ? "MX$" : "$";
-    return `${symbol}${value.toLocaleString()}`;
-  };
-
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="border rounded-lg p-4 flex flex-col">
@@ -92,7 +87,7 @@ export const PropertyStats = ({
       {pricePerSqm && area && (
         <div className="border rounded-lg p-4 flex flex-col">
           <span className="text-muted-foreground text-sm">{t('property.pricePerSqm')}</span>
-          <span className="text-2xl font-bold">{formatPriceWithCurrency(pricePerSqm, currency || undefined)}/m²</span>
+          <span className="text-2xl font-bold">{formatCurrency(pricePerSqm, currency || undefined)}/m²</span>
         </div>
       )}
     </div>
