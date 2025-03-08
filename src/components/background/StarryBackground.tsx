@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from 'react'
 
 const StarryBackground = () => {
@@ -17,48 +18,53 @@ const StarryBackground = () => {
     setCanvasSize()
     window.addEventListener('resize', setCanvasSize)
 
-    const stars: Array<{
-      x: number
-      y: number
-      z: number
-      radius: number
-      color: string
-    }> = []
+    // Colors for the gradient animation
+    const colors = [
+      { r: 255, g: 255, b: 255 }, // White
+      { r: 255, g: 247, b: 237 }, // Very light orange
+      { r: 254, g: 215, b: 170 }, // Light orange
+      { r: 249, g: 115, b: 22 },  // Orange (primary)
+      { r: 254, g: 215, b: 170 }, // Light orange
+      { r: 255, g: 247, b: 237 }, // Very light orange
+      { r: 255, g: 255, b: 255 }, // Back to white
+    ]
 
-    // Create more stars for a denser effect
-    for (let i = 0; i < 300; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        z: Math.random() * 1000,
-        radius: Math.random() * 2,
-        color: `rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2})`,
-      })
-    }
+    let colorIndex = 0
+    let nextColorIndex = 1
+    let colorTransitionProgress = 0
+    const colorTransitionSpeed = 0.003 // Lower for slower transitions
 
     let animationFrameId: number
+    
     const animate = () => {
-      ctx.fillStyle = 'rgba(24, 24, 27, 0.2)' // Darker, more sophisticated background
+      // Clear the canvas with a soft gradient background
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
+      
+      // Current color blend based on transition progress
+      const currentColor = colors[colorIndex]
+      const nextColor = colors[nextColorIndex]
+      
+      const r = Math.floor(currentColor.r + (nextColor.r - currentColor.r) * colorTransitionProgress)
+      const g = Math.floor(currentColor.g + (nextColor.g - currentColor.g) * colorTransitionProgress)
+      const b = Math.floor(currentColor.b + (nextColor.b - currentColor.b) * colorTransitionProgress)
+      
+      // Create gradient with the blended colors
+      gradient.addColorStop(0, `rgb(${r}, ${g}, ${b})`)
+      gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.7)`)
+      
+      ctx.fillStyle = gradient
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      stars.forEach((star) => {
-        star.z -= 0.5 // Slower movement for a more elegant effect
-        if (star.z <= 0) {
-          star.z = 1000
-          star.x = Math.random() * canvas.width
-          star.y = Math.random() * canvas.height
-        }
-
-        const x = (star.x - canvas.width / 2) * (1000 / star.z) + canvas.width / 2
-        const y = (star.y - canvas.height / 2) * (1000 / star.z) + canvas.height / 2
-        const radius = star.radius * (1000 / star.z)
-
-        ctx.beginPath()
-        ctx.arc(x, y, radius, 0, Math.PI * 2)
-        ctx.fillStyle = star.color
-        ctx.fill()
-      })
-
+      // Update color transition progress
+      colorTransitionProgress += colorTransitionSpeed
+      
+      // Move to next color when transition completes
+      if (colorTransitionProgress >= 1) {
+        colorTransitionProgress = 0
+        colorIndex = nextColorIndex
+        nextColorIndex = (nextColorIndex + 1) % colors.length
+      }
+      
       animationFrameId = requestAnimationFrame(animate)
     }
 
@@ -74,7 +80,7 @@ const StarryBackground = () => {
     <div className="fixed inset-0 -z-50">
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-orange-900/20 to-zinc-900 pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
       />
     </div>
   )
