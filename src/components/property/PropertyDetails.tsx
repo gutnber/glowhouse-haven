@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Edit } from 'lucide-react';
@@ -149,7 +150,7 @@ export const PropertyDetails = ({
           <span className="text-muted-foreground text-sm">{t('property.price')}</span>
           <span className="text-3xl font-bold">{formatPriceWithCurrency(price, currency || undefined)}</span>
           
-          {pricePerSqm && (
+          {pricePerSqm && area && (
             <div className="mt-2">
               <span className="text-muted-foreground text-sm">{t('property.pricePerSqm') || 'Price per m²'}</span>
               <span className="text-xl font-semibold ml-2">{formatPriceWithCurrency(pricePerSqm, currency || undefined)}/m²</span>
