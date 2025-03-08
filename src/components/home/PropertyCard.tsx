@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Building2, Bed, Bath, MapPin, Home, Ruler } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";

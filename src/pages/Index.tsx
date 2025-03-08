@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import StarryBackground from "@/components/background/StarryBackground";
@@ -50,8 +51,16 @@ const Index = () => {
           .limit(3);
           
         if (propertiesData) {
-          console.log("Fetched properties:", propertiesData);
-          setFeaturedProperties(propertiesData);
+          // Calculate price_per_sqm if not provided but area and price are available
+          const processedProperties = propertiesData.map(property => {
+            if (property.price && property.area && property.area > 0 && !property.price_per_sqm) {
+              property.price_per_sqm = property.price / property.area;
+            }
+            return property;
+          });
+          
+          console.log("Fetched properties:", processedProperties);
+          setFeaturedProperties(processedProperties);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
