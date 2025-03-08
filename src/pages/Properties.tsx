@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,43 +12,59 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { PropertyTypeSelect } from "@/components/property/PropertyTypeSelect";
 import { Tables } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
+
 const Properties = () => {
-  const {
-    isAdmin
-  } = useIsAdmin();
-  const {
-    t
-  } = useLanguage();
+  const { isAdmin } = useIsAdmin();
+  const { t } = useLanguage();
   const [propertyType, setPropertyType] = useState("all");
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const queryClient = useQueryClient();
-  const {
-    data: properties = [],
-    isLoading
-  } = useQuery({
+  
+  const { data: properties = [], isLoading } = useQuery({
     queryKey: ['properties', propertyType],
     queryFn: async () => {
       console.log('Fetching properties with type:', propertyType);
       let query = supabase.from('properties').select('*').order('created_at', {
         ascending: false
       });
+      
       if (propertyType !== 'all') {
         query = query.eq('property_type', propertyType);
       }
-      const {
-        data,
-        error
-      } = await query;
+      
+      const { data, error } = await query;
+      
       if (error) {
         console.error('Error fetching properties:', error);
         throw error;
       }
-      console.log('Fetched properties:', data);
-      return (data || []) as Tables<'properties'>[];
+      
+      // Process properties to ensure price_per_sqm is calculated if missing
+      const processedData = (data || []).map(property => {
+        let updatedProperty = { ...property };
+        
+        // Calculate price_per_sqm if missing but we have price and area
+        if (!updatedProperty.price_per_sqm && updatedProperty.price && updatedProperty.area && updatedProperty.area > 0) {
+          updatedProperty.price_per_sqm = updatedProperty.price / updatedProperty.area;
+          
+          // Update the database with the calculated value (don't wait for it)
+          supabase
+            .from('properties')
+            .update({ price_per_sqm: updatedProperty.price_per_sqm })
+            .eq('id', updatedProperty.id)
+            .then(({ error }) => {
+              if (error) console.error('Error updating price_per_sqm:', error);
+            });
+        }
+        
+        return updatedProperty;
+      });
+      
+      console.log('Processed properties:', processedData);
+      return processedData as Tables<'properties'>[];
     }
   });
+
   const toggleFeatured = useMutation({
     mutationFn: async ({
       propertyId,
@@ -64,11 +81,10 @@ const Properties = () => {
       }
 
       // Then update the selected property
-      const {
-        error
-      } = await supabase.from('properties').update({
+      const { error } = await supabase.from('properties').update({
         is_featured: isFeatured
       }).eq('id', propertyId);
+      
       if (error) throw error;
     },
     onSuccess: () => {
@@ -92,12 +108,15 @@ const Properties = () => {
       });
     }
   });
+
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-[200px]">
         <p>{t('loading')}</p>
       </div>;
   }
-  return <div className="relative min-h-screen overflow-x-hidden">
+
+  return (
+    <div className="relative min-h-screen overflow-x-hidden">
       <div className="fixed inset-0 bg-black" />
       
       <div className="relative space-y-8 my-[48px]">
@@ -130,6 +149,8 @@ const Properties = () => {
             </div>)}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Properties;
