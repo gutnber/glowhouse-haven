@@ -31,14 +31,9 @@ export function Footer() {
         schema: 'public',
         table: 'footer_settings'
       }, (payload) => {
-        console.log('Footer settings updated:', payload);
-        // Directly update the settings with the new data
-        if (payload.new) {
-          setSettings(prev => prev ? {
-            ...prev,
-            ...(payload.new as FooterSettings)
-          } : payload.new as FooterSettings);
-        }
+        console.log('Footer settings updated in real-time:', payload);
+        // Refresh the footer by triggering a new fetch
+        setFetchTime(Date.now());
       })
       .subscribe();
       
