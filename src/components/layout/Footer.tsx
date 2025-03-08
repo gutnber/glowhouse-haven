@@ -18,10 +18,28 @@ interface FooterSettings {
 
 export function Footer() {
   const [settings, setSettings] = useState<FooterSettings | null>(null);
+  const [fetchTime, setFetchTime] = useState(Date.now());
 
   useEffect(() => {
     fetchFooterSettings();
-  }, []);
+    
+    // Setup a real-time listener for footer_settings changes
+    const channel = supabase
+      .channel('footer_settings_changes')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'footer_settings'
+      }, () => {
+        // Trigger a refetch when settings are updated
+        setFetchTime(Date.now());
+      })
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchTime]);
 
   const fetchFooterSettings = async () => {
     const { data, error } = await supabase.from('footer_settings').select('*').single();

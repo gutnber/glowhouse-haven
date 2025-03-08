@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Check } from "lucide-react"
 
 interface FooterSettings {
   id: string
@@ -20,7 +21,9 @@ interface FooterSettings {
 
 export function FooterSettings() {
   const [settings, setSettings] = useState<FooterSettings | null>(null)
+  const [originalSettings, setOriginalSettings] = useState<FooterSettings | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -39,12 +42,28 @@ export function FooterSettings() {
     }
 
     setSettings(data)
+    setOriginalSettings(JSON.parse(JSON.stringify(data))) // Create a deep copy
+  }
+
+  const hasChanges = () => {
+    if (!settings || !originalSettings) return false
+    
+    return (
+      settings.phone !== originalSettings.phone ||
+      settings.address !== originalSettings.address ||
+      settings.company !== originalSettings.company ||
+      settings.logo_url !== originalSettings.logo_url ||
+      settings.subscribe_email !== originalSettings.subscribe_email ||
+      settings.enabled !== originalSettings.enabled
+    )
   }
 
   const handleSave = async () => {
     if (!settings) return
 
     setIsLoading(true)
+    setSaveSuccess(false)
+    
     try {
       const { error } = await supabase
         .from('footer_settings')
@@ -60,6 +79,12 @@ export function FooterSettings() {
 
       if (error) throw error
 
+      // Update the original settings to match current settings
+      setOriginalSettings(JSON.parse(JSON.stringify(settings)))
+      
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+      
       toast({
         title: "Success",
         description: "Footer settings updated successfully",
@@ -157,7 +182,16 @@ export function FooterSettings() {
           />
         </div>
 
-        <Button onClick={handleSave} disabled={isLoading}>
+        <Button 
+          onClick={handleSave} 
+          disabled={isLoading || !hasChanges()}
+          className="relative"
+        >
+          {saveSuccess && (
+            <div className="absolute inset-0 flex items-center justify-center bg-green-500 rounded-md">
+              <Check className="text-white h-5 w-5" />
+            </div>
+          )}
           {isLoading ? 'Saving...' : 'Save Changes'}
         </Button>
       </CardContent>
