@@ -1,4 +1,3 @@
-
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,11 +14,16 @@ import { useToast } from "@/hooks/use-toast";
 import { useRef, useState } from "react";
 import { TopNavigation } from "@/components/layout/TopNavigation";
 import { useAuthSession } from "@/hooks/useAuthSession";
-
 const PropertyProfile = () => {
-  const { id } = useParams();
-  const { isAdmin } = useIsAdmin();
-  const { toast } = useToast();
+  const {
+    id
+  } = useParams();
+  const {
+    isAdmin
+  } = useIsAdmin();
+  const {
+    toast
+  } = useToast();
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -28,21 +32,27 @@ const PropertyProfile = () => {
     y: 50
   });
   const session = useAuthSession();
-
-  const { data: property, isLoading } = useQuery({
+  const {
+    data: property,
+    isLoading
+  } = useQuery({
     queryKey: ['property', id],
     queryFn: async () => {
       console.log('Fetching property with id:', id);
-      const { data, error } = await supabase.from('properties').select('*').eq('id', id).single();
+      const {
+        data,
+        error
+      } = await supabase.from('properties').select('*').eq('id', id).single();
       if (error) throw error;
       console.log('Fetched property:', data);
       return data as Tables<'properties'>;
     }
   });
-
   const updateImagePositionMutation = useMutation({
     mutationFn: async (position: string) => {
-      const { error } = await supabase.from('properties').update({
+      const {
+        error
+      } = await supabase.from('properties').update({
         feature_image_position: position
       }).eq('id', id);
       if (error) throw error;
@@ -61,13 +71,11 @@ const PropertyProfile = () => {
       });
     }
   });
-
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isAdmin) return;
     setIsDragging(true);
     e.preventDefault(); // Prevent image dragging
   };
-
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !containerRef.current || !isAdmin) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -82,7 +90,6 @@ const PropertyProfile = () => {
       y: clampedY
     });
   };
-
   const handleMouseUp = () => {
     if (!isDragging) return;
     setIsDragging(false);
@@ -91,13 +98,11 @@ const PropertyProfile = () => {
     const positionString = `${position.x}% ${position.y}%`;
     updateImagePositionMutation.mutate(positionString);
   };
-
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-[200px]">
         <p>Loading property...</p>
       </div>;
   }
-
   if (!property) {
     return <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
         <p className="text-xl">Property not found</p>
@@ -106,11 +111,9 @@ const PropertyProfile = () => {
         </Button>
       </div>;
   }
-
-  return (
-    <div className="flex flex-col min-h-screen">
+  return <div className="flex flex-col min-h-screen">
       <TopNavigation session={session} />
-      <main className="flex-1">
+      <main className="flex-1 py-0 my-[8px]">
         <div className="max-w-6xl mx-auto space-y-8 my-[84px]">
           <PropertyHeader id={property.id} name={property.name} address={property.address} />
 
@@ -131,51 +134,20 @@ const PropertyProfile = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <PropertyDetails 
-                bedrooms={property.bedrooms} 
-                bathrooms={property.bathrooms} 
-                buildYear={property.build_year} 
-                price={property.price} 
-                arv={property.arv} 
-                description={property.description} 
-                features={property.features} 
-                youtubeUrl={property.youtube_url} 
-                youtubeAutoplay={property.youtube_autoplay} 
-                youtubeMuted={property.youtube_muted} 
-                youtubeControls={property.youtube_controls}
-                area={property.area}
-                heatedArea={property.heated_area}
-                referenceNumber={property.reference_number}
-                enableBorderBeam={property.enable_border_beam}
-                propertyType={property.property_type}
-                id={property.id}
-                name={property.name}
-              />
+              <PropertyDetails bedrooms={property.bedrooms} bathrooms={property.bathrooms} buildYear={property.build_year} price={property.price} arv={property.arv} description={property.description} features={property.features} youtubeUrl={property.youtube_url} youtubeAutoplay={property.youtube_autoplay} youtubeMuted={property.youtube_muted} youtubeControls={property.youtube_controls} area={property.area} heatedArea={property.heated_area} referenceNumber={property.reference_number} enableBorderBeam={property.enable_border_beam} propertyType={property.property_type} id={property.id} name={property.name} />
             </div>
             
             <div className="space-y-6">
-              {(property.latitude && property.longitude) || property.google_maps_url ? (
-                <div className="h-[300px] rounded-lg overflow-hidden border">
-                  <PropertyMap 
-                    latitude={property.latitude} 
-                    longitude={property.longitude} 
-                    googleMapsUrl={property.google_maps_url} 
-                  />
-                </div>
-              ) : null}
+              {property.latitude && property.longitude || property.google_maps_url ? <div className="h-[300px] rounded-lg overflow-hidden border">
+                  <PropertyMap latitude={property.latitude} longitude={property.longitude} googleMapsUrl={property.google_maps_url} />
+                </div> : null}
               
-              <PropertyContactForm 
-                propertyId={property.id} 
-                propertyName={property.name} 
-                enableBorderBeam={property.enable_border_beam} 
-              />
+              <PropertyContactForm propertyId={property.id} propertyName={property.name} enableBorderBeam={property.enable_border_beam} />
             </div>
           </div>
         </div>
       </main>
       {/* Removed Footer component from here */}
-    </div>
-  );
+    </div>;
 };
-
 export default PropertyProfile;
