@@ -1,12 +1,14 @@
+
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Edit } from 'lucide-react';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
-import { PropertyMap } from './PropertyMap';
-import { PropertyYouTubePlayer } from './PropertyYouTubePlayer';
-import { formatCurrency } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { PropertyTypeSelect } from './PropertyTypeSelect';
+import { PropertyStats } from './detail-sections/PropertyStats';
+import { PropertyPrice } from './detail-sections/PropertyPrice';
+import { PropertyDescription } from './detail-sections/PropertyDescription';
+import { PropertyFeatures } from './detail-sections/PropertyFeatures';
+import { PropertyYouTubePlayer } from './PropertyYouTubePlayer';
 
 interface PropertyDetailsProps {
   id: string;
@@ -57,17 +59,10 @@ export const PropertyDetails = ({
   height,
   heatedArea,
   referenceNumber,
-  enableBorderBeam,
   propertyType
 }: PropertyDetailsProps) => {
   const { isAdmin } = useIsAdmin();
   const { t } = useLanguage();
-  
-  // Format price with currency
-  const formatPriceWithCurrency = (value: number, currencyCode: string = "USD") => {
-    const symbol = currencyCode === "MXN" ? "MX$" : "$";
-    return `${symbol}${value.toLocaleString()}`;
-  };
 
   return (
     <div className="space-y-6">
@@ -84,111 +79,29 @@ export const PropertyDetails = ({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="border rounded-lg p-4 flex flex-col">
-            <span className="text-muted-foreground text-sm">{t('property.bedrooms')}</span>
-            <span className="text-2xl font-bold">{bedrooms}</span>
-          </div>
-          
-          <div className="border rounded-lg p-4 flex flex-col">
-            <span className="text-muted-foreground text-sm">{t('property.bathrooms')}</span>
-            <span className="text-2xl font-bold">{bathrooms}</span>
-          </div>
-          
-          {buildYear && (
-            <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.yearBuilt')}</span>
-              <span className="text-2xl font-bold">{buildYear}</span>
-            </div>
-          )}
-          
-          {area && (
-            <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.area')} (m²)</span>
-              <span className="text-2xl font-bold">{area}</span>
-            </div>
-          )}
-          
-          {width && height && (
-            <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.dimensions')}</span>
-              <span className="text-2xl font-bold">{width} × {height}m</span>
-            </div>
-          )}
-          
-          {heatedArea && (
-            <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.heatedArea')} (m²)</span>
-              <span className="text-2xl font-bold">{heatedArea}</span>
-            </div>
-          )}
-          
-          {propertyType && (
-            <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('propertyType')}</span>
-              <span className="text-2xl font-bold capitalize">
-                <PropertyTypeSelect 
-                  value={propertyType} 
-                  onValueChange={() => {}} 
-                  disabled={true} 
-                  className="p-0 font-bold opacity-100 pointer-events-none"
-                />
-              </span>
-            </div>
-          )}
-          
-          {pricePerSqm && area && (
-            <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.pricePerSqm')}</span>
-              <span className="text-2xl font-bold">{formatPriceWithCurrency(pricePerSqm, currency || undefined)}/m²</span>
-            </div>
-          )}
-        </div>
+        <PropertyStats 
+          bedrooms={bedrooms}
+          bathrooms={bathrooms}
+          buildYear={buildYear}
+          area={area}
+          width={width}
+          height={height}
+          heatedArea={heatedArea}
+          propertyType={propertyType}
+          pricePerSqm={pricePerSqm}
+          currency={currency}
+        />
         
-        <div className="border rounded-lg p-4 flex flex-col">
-          <span className="text-muted-foreground text-sm">{t('property.price')}</span>
-          <span className="text-3xl font-bold">{formatPriceWithCurrency(price, currency || undefined)}</span>
-          
-          {referenceNumber && (
-            <div className="mt-2">
-              <span className="text-muted-foreground text-sm">{t('property.referenceNumber')}</span>
-              <span className="text-xl font-semibold ml-2">{referenceNumber}</span>
-            </div>
-          )}
-          
-          {arv && (
-            <div className="mt-2">
-              <span className="text-muted-foreground text-sm">{t('property.arvLabel')}</span>
-              <span className="text-xl font-semibold ml-2">{formatPriceWithCurrency(arv, currency || undefined)}</span>
-            </div>
-          )}
-        </div>
+        <PropertyPrice 
+          price={price}
+          currency={currency}
+          referenceNumber={referenceNumber}
+          arv={arv}
+        />
       </div>
 
-      {description && (
-        <div className="space-y-2">
-          <h3 className="text-xl font-semibold">{t('property.description')}</h3>
-          <div className="prose prose-sm max-w-none dark:prose-invert">
-            {description.split('\n').map((paragraph, i) => (
-              <p key={i}>{paragraph}</p>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {features && features.length > 0 && (
-        <div className="space-y-2">
-          <h3 className="text-xl font-semibold">{t('property.features')}</h3>
-          <ul className="grid grid-cols-2 gap-2">
-            {features.map((feature, i) => (
-              <li key={i} className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-primary" />
-                {feature}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <PropertyDescription description={description} />
+      <PropertyFeatures features={features} />
 
       {youtubeUrl && (
         <div className="space-y-2">
