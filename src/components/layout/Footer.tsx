@@ -56,14 +56,17 @@ export function Footer() {
     }
 
     console.log('Footer settings fetched:', data);
-    // Merge default values with database settings
-    setSettings({
-      ...data,
-      phone: data.phone || "+52 664 484 2251",
-      address: data.address || "Calle 10ma. esq. Sirak Baloyan 8779-206 Zona Centro, C.P. 22000, Tijuana, B.C.",
-      company: data.company || "Inma Soluciones Inmobiliarias",
-      logo_url: data.logo_url || "https://inma.pro/static/images/logo.svg"
-    });
+    // Only set the settings if we actually got data back
+    if (data) {
+      // Merge default values with database settings
+      setSettings({
+        ...data,
+        phone: data.phone || "+52 664 484 2251",
+        address: data.address || "Calle 10ma. esq. Sirak Baloyan 8779-206 Zona Centro, C.P. 22000, Tijuana, B.C.",
+        company: data.company || "Inma Soluciones Inmobiliarias",
+        logo_url: data.logo_url || "https://inma.pro/static/images/logo.svg"
+      });
+    }
   };
 
   if (!settings?.enabled) {
