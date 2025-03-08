@@ -6,6 +6,7 @@ import { WelcomeSection } from "@/components/home/WelcomeSection";
 import { NewsSection } from "@/components/home/NewsSection";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { TopNavigation } from "@/components/layout/TopNavigation";
+import { Footer } from "@/components/layout/Footer";
 import { useAuthSession } from "@/hooks/useAuthSession";
 
 const POSTS_PER_PAGE = 5;
@@ -102,7 +103,7 @@ const Index = () => {
           <FeaturedProperties properties={featuredProperties} />
         </div>
       </div>
-      {/* Removed Footer component from here */}
+      <Footer />
     </div>
   );
 };
