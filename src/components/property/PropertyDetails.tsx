@@ -16,6 +16,7 @@ interface PropertyDetailsProps {
   bathrooms: number;
   buildYear: number | null;
   price: number;
+  currency?: string | null;
   arv: number | null;
   description: string | null;
   features: string[] | null;
@@ -27,6 +28,8 @@ interface PropertyDetailsProps {
   youtubeMuted: boolean | null;
   youtubeControls: boolean | null;
   area: number | null;
+  width?: number | null;
+  height?: number | null;
   heatedArea: number | null;
   referenceNumber: string | null;
   enableBorderBeam: boolean | null;
@@ -40,6 +43,7 @@ export const PropertyDetails = ({
   bathrooms,
   buildYear,
   price,
+  currency = "USD",
   arv,
   description,
   features,
@@ -48,6 +52,8 @@ export const PropertyDetails = ({
   youtubeMuted,
   youtubeControls,
   area,
+  width,
+  height,
   heatedArea,
   referenceNumber,
   enableBorderBeam,
@@ -55,6 +61,12 @@ export const PropertyDetails = ({
 }: PropertyDetailsProps) => {
   const { isAdmin } = useIsAdmin();
   const { t } = useLanguage();
+  
+  // Format price with currency
+  const formatPriceWithCurrency = (value: number, currencyCode: string = "USD") => {
+    const symbol = currencyCode === "MXN" ? "MX$" : "$";
+    return `${symbol}${value.toLocaleString()}`;
+  };
 
   return (
     <div className="space-y-6">
@@ -91,14 +103,21 @@ export const PropertyDetails = ({
           
           {area && (
             <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.area')} (sq ft)</span>
+              <span className="text-muted-foreground text-sm">{t('property.area')} (m²)</span>
               <span className="text-2xl font-bold">{area}</span>
+            </div>
+          )}
+          
+          {width && height && (
+            <div className="border rounded-lg p-4 flex flex-col">
+              <span className="text-muted-foreground text-sm">{t('property.dimensions')}</span>
+              <span className="text-2xl font-bold">{width} × {height}m</span>
             </div>
           )}
           
           {heatedArea && (
             <div className="border rounded-lg p-4 flex flex-col">
-              <span className="text-muted-foreground text-sm">{t('property.heatedArea')} (sq ft)</span>
+              <span className="text-muted-foreground text-sm">{t('property.heatedArea')} (m²)</span>
               <span className="text-2xl font-bold">{heatedArea}</span>
             </div>
           )}
@@ -127,11 +146,11 @@ export const PropertyDetails = ({
         
         <div className="border rounded-lg p-4 flex flex-col">
           <span className="text-muted-foreground text-sm">{t('property.price')}</span>
-          <span className="text-3xl font-bold">{formatCurrency(price)}</span>
+          <span className="text-3xl font-bold">{formatPriceWithCurrency(price, currency || undefined)}</span>
           {arv && (
             <div className="mt-2">
               <span className="text-muted-foreground text-sm">{t('property.arvLabel')}</span>
-              <span className="text-xl font-semibold ml-2">{formatCurrency(arv)}</span>
+              <span className="text-xl font-semibold ml-2">{formatPriceWithCurrency(arv, currency || undefined)}</span>
             </div>
           )}
         </div>

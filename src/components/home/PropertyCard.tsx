@@ -1,8 +1,10 @@
+
 import { Link } from "react-router-dom";
 import { Building2, Bed, Bath, MapPin, Home, Ruler } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
+
 interface PropertyCardProps {
   property: {
     id: string;
@@ -12,8 +14,11 @@ interface PropertyCardProps {
     bathrooms: number;
     build_year: number;
     price: number;
+    currency?: string;
     arv?: number;
     area?: number;
+    width?: number;
+    height?: number;
     heated_area?: number;
     reference_number?: string;
     feature_image_url?: string;
@@ -22,6 +27,7 @@ interface PropertyCardProps {
     created_at: string;
   };
 }
+
 export const PropertyCard = ({
   property
 }: PropertyCardProps) => {
@@ -32,7 +38,15 @@ export const PropertyCard = ({
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays <= 7;
   };
+  
   const showLivingSpaceIcons = property.property_type !== 'vacantLand';
+  const currencySymbol = property.currency === "MXN" ? "MX$" : "$";
+  
+  // Format dimensions if available
+  const dimensions = property.width && property.height 
+    ? `${property.width}×${property.height}m` 
+    : null;
+  
   return <Link key={property.id} to={`/properties/${property.id}`}>
       <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 bg-white/5 backdrop-blur-md border-white/10 group w-[320px]">
         <div className="relative">
@@ -42,7 +56,7 @@ export const PropertyCard = ({
               </div>}
           </AspectRatio>
           <div className="absolute bottom-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg transform transition-transform duration-300 group-hover:scale-110">
-            ${property.price.toLocaleString()}
+            {currencySymbol}{property.price.toLocaleString()}
           </div>
           {isNewProperty(property.created_at) && <Badge className="absolute top-4 left-4 bg-white/90 text-orange-500 shadow-lg">
               NEW
@@ -83,10 +97,17 @@ export const PropertyCard = ({
           }}>
                   <span className="text-center line-clamp-1 font-thin text-xs">{feature}</span>
                 </div>)}
-            {property.area && <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/5 min-w-[70px]">
+            {dimensions ? (
+              <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/5 min-w-[70px]">
+                <Ruler className="h-5 w-5 text-orange-500" />
+                <span className="text-white/70 text-xs whitespace-nowrap">{dimensions}</span>
+              </div>
+            ) : property.area && (
+              <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/5 min-w-[70px]">
                 <Ruler className="h-5 w-5 text-orange-500" />
                 <span className="text-white/70 text-xs whitespace-nowrap">{property.area}m²</span>
-              </div>}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

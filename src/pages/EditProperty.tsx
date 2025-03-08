@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from "react-router-dom"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
@@ -27,7 +28,10 @@ const propertyFormSchema = z.object({
   bathrooms: z.number().min(0),
   build_year: z.number().min(1800).max(new Date().getFullYear()),
   price: z.number().min(0),
+  currency: z.string().default("USD"),
   arv: z.number().min(0).optional().nullable(),
+  width: z.number().min(0).optional().nullable(),
+  height: z.number().min(0).optional().nullable(),
   description: z.string().optional().nullable(),
   features: z.array(z.string()).optional().nullable(),
   google_maps_url: z.string().optional().nullable(),
@@ -77,11 +81,14 @@ const EditProperty = () => {
     resolver: zodResolver(propertyFormSchema),
     values: property ? {
       ...property,
+      currency: property.currency || "USD",
       youtube_autoplay: property.youtube_autoplay ?? false,
       youtube_muted: property.youtube_muted ?? true,
       youtube_controls: property.youtube_controls ?? true,
       enable_border_beam: property.enable_border_beam ?? true,
       area: property.area ?? null,
+      width: property.width ?? null,
+      height: property.height ?? null,
       heated_area: property.heated_area ?? null,
     } : undefined,
   })
@@ -93,6 +100,7 @@ const EditProperty = () => {
         .from('properties')
         .update({
           ...values,
+          currency: values.currency || "USD",
           google_maps_url: values.google_maps_url || null,
           youtube_url: values.youtube_url || null,
           youtube_autoplay: values.youtube_autoplay,
@@ -100,6 +108,8 @@ const EditProperty = () => {
           youtube_controls: values.youtube_controls,
           enable_border_beam: values.enable_border_beam,
           area: values.area || null,
+          width: values.width || null,
+          height: values.height || null,
           heated_area: values.heated_area || null,
         })
         .eq('id', id)

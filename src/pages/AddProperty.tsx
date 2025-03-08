@@ -1,3 +1,4 @@
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
@@ -16,8 +17,11 @@ const propertyFormSchema = z.object({
   build_year: z.coerce.number().min(1800, "Build year must be 1800 or later").max(new Date().getFullYear(), "Build year cannot be in the future"),
   description: z.string().optional(),
   price: z.coerce.number().positive("Price must be greater than 0"),
+  currency: z.string().default("USD"),
   arv: z.coerce.number().positive("ARV must be greater than 0").optional(),
   area: z.coerce.number().positive("Area must be greater than 0").optional(),
+  width: z.coerce.number().positive("Width must be greater than 0").optional(),
+  height: z.coerce.number().positive("Height must be greater than 0").optional(),
   heated_area: z.coerce.number().positive("Heated area must be greater than 0").optional(),
   reference_number: z.string().optional(),
   features: z.string().transform(str => str ? str.split(',').map(s => s.trim()).filter(Boolean) : []),
@@ -41,8 +45,11 @@ const AddProperty = () => {
       build_year: new Date().getFullYear(),
       description: "",
       price: 0,
+      currency: "USD",
       arv: undefined,
       area: undefined,
+      width: undefined,
+      height: undefined,
       heated_area: undefined,
       reference_number: "",
       features: [],
@@ -66,8 +73,11 @@ const AddProperty = () => {
           build_year: values.build_year,
           description: values.description,
           price: values.price,
+          currency: values.currency,
           arv: values.arv,
           area: values.area,
+          width: values.width,
+          height: values.height,
           heated_area: values.heated_area,
           reference_number: values.reference_number,
           features: values.features,

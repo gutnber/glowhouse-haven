@@ -1,3 +1,4 @@
+
 import { UseFormReturn } from "react-hook-form"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -51,6 +52,44 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
           )}
         />
       )}
+
+      <FormField
+        control={form.control}
+        name="width"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Width (m)</FormLabel>
+            <FormControl>
+              <Input 
+                type="number" 
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+            </FormControl>
+            <FormDescription>Width of the property in meters</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="height"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Height/Depth (m)</FormLabel>
+            <FormControl>
+              <Input 
+                type="number" 
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+            </FormControl>
+            <FormDescription>Height/depth of the property in meters</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <FormField
         control={form.control}

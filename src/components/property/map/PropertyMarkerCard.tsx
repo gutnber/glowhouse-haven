@@ -1,3 +1,4 @@
+
 interface PropertyMarkerCardProps {
   property: {
     name: string;
@@ -5,11 +6,14 @@ interface PropertyMarkerCardProps {
     bedrooms: number;
     bathrooms: number;
     price: number;
+    currency?: string;
     feature_image_url?: string;
   };
 }
 
 export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
+  const currencySymbol = property.currency === "MXN" ? "MX$" : "$";
+  
   return `
     <div class="w-[150px] [&_*]:!m-0 [&_*]:!p-0 overflow-hidden rounded-lg">
       ${property.feature_image_url ? 
@@ -21,7 +25,7 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
           />
           <div class="absolute top-0 right-0">
             <span class="bg-[#F97316] text-white text-[10px] leading-none px-1">
-              $${property.price.toLocaleString()}
+              ${currencySymbol}${property.price.toLocaleString()}
             </span>
           </div>
         </div>` 
