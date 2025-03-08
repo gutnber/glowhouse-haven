@@ -25,7 +25,7 @@ export const PropertyMarkerCard = ({ property }: PropertyMarkerCardProps) => {
           />
           <div class="absolute top-0 right-0">
             <span class="bg-[#F97316] text-white text-[10px] leading-none px-1">
-              ${currencySymbol}${property.price.toLocaleString()}
+              ${currencySymbol}${property.price.toLocaleString()} ${property.currency || 'USD'}
             </span>
           </div>
         </div>` 

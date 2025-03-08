@@ -56,7 +56,8 @@ export const PropertyCard = ({
               </div>}
           </AspectRatio>
           <div className="absolute bottom-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg transform transition-transform duration-300 group-hover:scale-110">
-            {currencySymbol}{property.price.toLocaleString()}
+            {currencySymbol}{property.price.toLocaleString()} 
+            <span className="ml-1 text-xs font-normal">{property.currency || "USD"}</span>
           </div>
           {isNewProperty(property.created_at) && <Badge className="absolute top-4 left-4 bg-white/90 text-orange-500 shadow-lg">
               NEW
