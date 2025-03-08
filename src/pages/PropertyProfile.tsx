@@ -1,3 +1,4 @@
+
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +13,6 @@ import { House } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { useRef, useState } from "react";
-import { Footer } from "@/components/layout/Footer";
 import { TopNavigation } from "@/components/layout/TopNavigation";
 import { useAuthSession } from "@/hooks/useAuthSession";
 
@@ -173,7 +173,7 @@ const PropertyProfile = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      {/* Removed Footer component from here */}
     </div>
   );
 };

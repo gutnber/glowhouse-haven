@@ -1,6 +1,5 @@
 
 import { TopNavigation } from "@/components/layout/TopNavigation"
-import { Footer } from "@/components/layout/Footer"
 import { ContactForm } from "@/components/contact/ContactForm"
 import { useAuthSession } from "@/hooks/useAuthSession"
 
@@ -22,7 +21,7 @@ export default function Contact() {
         </div>
       </main>
       
-      <Footer />
+      {/* Removed Footer component from here */}
     </div>
   )
 }

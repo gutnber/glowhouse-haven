@@ -1,10 +1,10 @@
+
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import StarryBackground from "@/components/background/StarryBackground";
 import { WelcomeSection } from "@/components/home/WelcomeSection";
 import { NewsSection } from "@/components/home/NewsSection";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
-import { Footer } from "@/components/layout/Footer";
 import { TopNavigation } from "@/components/layout/TopNavigation";
 import { useAuthSession } from "@/hooks/useAuthSession";
 
@@ -102,7 +102,7 @@ const Index = () => {
           <FeaturedProperties properties={featuredProperties} />
         </div>
       </div>
-      <Footer />
+      {/* Removed Footer component from here */}
     </div>
   );
 };

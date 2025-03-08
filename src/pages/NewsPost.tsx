@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Star } from "lucide-react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Footer } from "@/components/layout/Footer"
 import { TopNavigation } from "@/components/layout/TopNavigation"
 import { useAuthSession } from "@/hooks/useAuthSession"
 
@@ -134,7 +133,7 @@ const NewsPost = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      {/* Removed Footer component from here */}
     </div>
   )
 }

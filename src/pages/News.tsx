@@ -6,7 +6,6 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { ArrowLeft } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { Footer } from "@/components/layout/Footer"
 import { TopNavigation } from "@/components/layout/TopNavigation"
 import { useAuthSession } from "@/hooks/useAuthSession"
 
@@ -78,7 +77,7 @@ export default function News() {
           </div>
         </div>
       </main>
-      <Footer />
+      {/* Removed Footer component from here */}
     </div>
   )
 }

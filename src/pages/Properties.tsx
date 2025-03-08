@@ -12,7 +12,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { PropertyTypeSelect } from "@/components/property/PropertyTypeSelect";
 import { Tables } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
-import { Footer } from "@/components/layout/Footer";
 import { TopNavigation } from "@/components/layout/TopNavigation";
 import { useAuthSession } from "@/hooks/useAuthSession";
 
@@ -154,7 +153,7 @@ const Properties = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      {/* Removed Footer component from here */}
     </div>
   );
 };
