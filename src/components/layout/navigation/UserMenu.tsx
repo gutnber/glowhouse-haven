@@ -69,13 +69,13 @@ export const UserMenu = ({ session }: UserMenuProps) => {
           <DropdownMenuItem asChild>
             <Link to="/" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
               <Home className="h-4 w-4 text-primary" />
-              <span className="font-medium">{t('home')}</span>
+              <span className="font-medium uppercase">{t('home')}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/properties" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
               <Building2 className="h-4 w-4 text-primary" />
-              <span className="font-medium">{t('properties')}</span>
+              <span className="font-medium uppercase">{t('properties')}</span>
             </Link>
           </DropdownMenuItem>
 
@@ -85,13 +85,13 @@ export const UserMenu = ({ session }: UserMenuProps) => {
               <DropdownMenuItem asChild>
                 <Link to="/users" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
                   <Users className="h-4 w-4 text-primary" />
-                  <span className="font-medium">{t('users')}</span>
+                  <span className="font-medium uppercase">{t('users')}</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link to="/tools" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
                   <Wrench className="h-4 w-4 text-primary" />
-                  <span className="font-medium">{t('tools')}</span>
+                  <span className="font-medium uppercase">{t('tools')}</span>
                 </Link>
               </DropdownMenuItem>
             </>
@@ -103,7 +103,7 @@ export const UserMenu = ({ session }: UserMenuProps) => {
               <DropdownMenuItem asChild>
                 <Link to="/settings" className="flex items-center gap-2 px-4 py-3 hover:bg-primary/5 transition-colors duration-200">
                   <Settings className="h-4 w-4 text-primary" />
-                  <span className="font-medium">{t('settings')}</span>
+                  <span className="font-medium uppercase">{t('settings')}</span>
                 </Link>
               </DropdownMenuItem>
             </>
@@ -117,12 +117,12 @@ export const UserMenu = ({ session }: UserMenuProps) => {
             {session ? (
               <>
                 <LogOut className="h-4 w-4 text-primary" />
-                <span className="font-medium">{t('signOut')}</span>
+                <span className="font-medium uppercase">{t('signOut')}</span>
               </>
             ) : (
               <>
                 <LogIn className="h-4 w-4 text-primary" />
-                <span className="font-medium">{t('signIn')}</span>
+                <span className="font-medium uppercase">{t('signIn')}</span>
               </>
             )}
           </DropdownMenuItem>
