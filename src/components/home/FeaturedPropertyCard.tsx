@@ -1,3 +1,4 @@
+
 import { PropertyYouTubePlayer } from "@/components/property/PropertyYouTubePlayer"
 import { Tables } from "@/integrations/supabase/types"
 import { formatCurrency } from "@/lib/utils"
@@ -17,9 +18,9 @@ interface FeaturedPropertyCardProps {
 export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) => {
   const { isAdmin } = useIsAdmin()
   const { toast } = useToast()
-  const [autoplay, setAutoplay] = useState<boolean>(false)
-  const [muted, setMuted] = useState<boolean>(true)
-  const [controls, setControls] = useState<boolean>(true)
+  const [autoplay, setAutoplay] = useState<boolean>(true)
+  const [muted, setMuted] = useState<boolean>(false)
+  const [controls, setControls] = useState<boolean>(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   
   const isVacantLand = property.property_type === 'vacantLand'
@@ -27,11 +28,35 @@ export const FeaturedPropertyCard = ({ property }: FeaturedPropertyCardProps) =>
 
   // Load video settings from property when component mounts
   useEffect(() => {
-    // Set initial states from property data or defaults
-    setAutoplay(property.youtube_autoplay ?? false)
-    setMuted(property.youtube_muted ?? true)
-    setControls(property.youtube_controls ?? true)
-  }, [property])
+    const saveInitialSettings = async () => {
+      try {
+        const { error } = await supabase
+          .from('properties')
+          .update({
+            youtube_autoplay: true,
+            youtube_muted: false,
+            youtube_controls: false
+          })
+          .eq('id', property.id)
+
+        if (error) throw error
+
+        console.log('Initial video settings saved successfully')
+      } catch (error) {
+        console.error('Error saving initial video settings:', error)
+      }
+    }
+
+    // Set initial states
+    setAutoplay(true)
+    setMuted(false)
+    setControls(false)
+    
+    // Save initial settings
+    if (isAdmin) {
+      saveInitialSettings()
+    }
+  }, [property.id, isAdmin])
 
   const updateVideoSettings = async () => {
     try {
