@@ -52,17 +52,9 @@ export function useFooterSettings() {
     try {
       console.log('Saving footer settings:', settings);
       
-      // Make sure we're updating all fields
       const { error } = await supabase
         .from('footer_settings')
-        .update({
-          phone: settings.phone,
-          address: settings.address,
-          company: settings.company,
-          logo_url: settings.logo_url,
-          subscribe_email: settings.subscribe_email,
-          enabled: settings.enabled
-        })
+        .update(settings) // Update all fields directly from the settings object
         .eq('id', settings.id)
 
       if (error) throw error

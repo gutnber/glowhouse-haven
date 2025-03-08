@@ -18,8 +18,10 @@ interface FooterSettings {
 
 export function Footer() {
   const [settings, setSettings] = useState<FooterSettings | null>(null);
+  const [updateTrigger, setUpdateTrigger] = useState(0);
   
   useEffect(() => {
+    // Fetch initial data
     fetchFooterSettings();
     
     // Setup a real-time listener for footer_settings changes
@@ -29,10 +31,10 @@ export function Footer() {
         event: '*', // Listen for all events (INSERT, UPDATE, DELETE)
         schema: 'public',
         table: 'footer_settings'
-      }, () => {
-        console.log('Footer settings changed, refreshing data...');
-        // Refresh the footer by fetching new data
-        fetchFooterSettings();
+      }, (payload) => {
+        console.log('Footer settings changed, payload:', payload);
+        // Force a refresh by incrementing the update trigger
+        setUpdateTrigger(prev => prev + 1);
       })
       .subscribe();
       
@@ -40,6 +42,14 @@ export function Footer() {
       supabase.removeChannel(channel);
     };
   }, []);
+  
+  // Re-fetch data when update trigger changes
+  useEffect(() => {
+    if (updateTrigger > 0) {
+      console.log('Update trigger fired, refreshing footer settings...');
+      fetchFooterSettings();
+    }
+  }, [updateTrigger]);
 
   const fetchFooterSettings = async () => {
     console.log('Fetching footer settings...');
