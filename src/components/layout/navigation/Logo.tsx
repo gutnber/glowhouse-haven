@@ -37,6 +37,10 @@ export function Logo() {
     fetchLogo();
   }, []);
   
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+  
   return (
     <div className="flex items-center gap-6">
       <Link to="/" className="flex items-center text-xl font-bold text-primary">
@@ -55,19 +59,19 @@ export function Logo() {
       <nav className="hidden lg:flex items-center gap-6">
         <Link to="/" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
           <Home className="h-4 w-4" />
-          <span className="font-medium uppercase">{t('home')}</span>
+          <span className="font-medium">{capitalizeFirstLetter(t('home'))}</span>
         </Link>
         <Link to="/properties" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
           <Building className="h-4 w-4" />
-          <span className="font-medium uppercase">{t('properties')}</span>
+          <span className="font-medium">{capitalizeFirstLetter(t('properties'))}</span>
         </Link>
         <Link to="/news" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
           <Newspaper className="h-4 w-4" />
-          <span className="font-medium uppercase">{t('news')}</span>
+          <span className="font-medium">{capitalizeFirstLetter(t('news'))}</span>
         </Link>
         <Link to="/contact" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
           <MailPlus className="h-4 w-4" />
-          <span className="font-medium uppercase">{t('contact')}</span>
+          <span className="font-medium">{capitalizeFirstLetter(t('contact'))}</span>
         </Link>
       </nav>
     </div>
