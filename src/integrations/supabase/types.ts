@@ -66,6 +66,39 @@ export type Database = {
         }
         Relationships: []
       }
+      email_notifications: {
+        Row: {
+          created_at: string | null
+          email_type: string
+          id: string
+          payload: Json
+          processed_at: string | null
+          recipient: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email_type: string
+          id?: string
+          payload: Json
+          processed_at?: string | null
+          recipient: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email_type?: string
+          id?: string
+          payload?: Json
+          processed_at?: string | null
+          recipient?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       footer_settings: {
         Row: {
           address: string | null
