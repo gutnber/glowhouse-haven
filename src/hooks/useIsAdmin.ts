@@ -14,7 +14,11 @@ export const useIsAdmin = () => {
         
         if (session?.user?.email) {
           console.log('Checking admin status for:', session.user.email)
-          setIsAdmin(session.user.email === 'help@ignishomes.com')
+          // Check against both admin emails
+          setIsAdmin(
+            session.user.email === 'help@ignishomes.com' || 
+            session.user.email === 'silvia@inma.mx'
+          )
         } else {
           console.log('No user email found in session')
           setIsAdmin(false)
@@ -32,7 +36,11 @@ export const useIsAdmin = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user?.email) {
         console.log('Auth state changed, checking admin for:', session.user.email)
-        setIsAdmin(session.user.email === 'help@ignishomes.com')
+        // Check against both admin emails on auth state change as well
+        setIsAdmin(
+          session.user.email === 'help@ignishomes.com' ||
+          session.user.email === 'silvia@inma.mx'
+        )
       } else {
         setIsAdmin(false)
       }
