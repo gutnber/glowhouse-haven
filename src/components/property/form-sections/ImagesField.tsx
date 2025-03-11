@@ -1,3 +1,4 @@
+
 import { UseFormReturn } from "react-hook-form"
 import { X, Upload, RefreshCw } from "lucide-react"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
@@ -20,19 +21,19 @@ export const ImagesField = ({ form }: ImagesFieldProps) => {
       name="images"
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="text-orange-500">{t('property.images', 'Property Images')}</FormLabel>
+          <FormLabel className="text-orange-500">{t('property.images')}</FormLabel>
           <FormControl>
             <div className="space-y-4">
               {replacingIndex !== null ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">{t('replaceImage', 'Replace Image')} #{replacingIndex + 1}</h3>
+                    <h3 className="text-lg font-semibold">{t('replaceImage')} #{replacingIndex + 1}</h3>
                     <Button 
                       type="button" 
                       variant="outline" 
                       onClick={() => setReplacingIndex(null)}
                     >
-                      {t('cancel', 'Cancel')}
+                      {t('cancel')}
                     </Button>
                   </div>
                   <PropertyImageUpload

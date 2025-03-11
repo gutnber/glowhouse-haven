@@ -1,7 +1,8 @@
+
 import { useEffect, useRef } from 'react';
 
 interface GradientBackgroundProps {
-  colors: Array<{ r: number; g: number; b: number }>;
+  colors: Array<{ r: number; g: number; b: number; a?: number }>;
   className?: string;
 }
 

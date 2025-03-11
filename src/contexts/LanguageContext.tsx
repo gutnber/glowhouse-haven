@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 
 type Language = 'en' | 'es';
@@ -112,7 +111,19 @@ const translations: TranslationsType = {
       "video": "Property Video",
       "contactUs": "Contact Us About This Property",
       "dimensions": "Dimensions",
-      "type": "Property Type"
+      "type": "Property Type",
+      "name": "Property Name",
+      "address": "Address",
+      "images": "Property Images",
+      "visualEffects": "Visual Effects",
+      "borderBeam": "Border Beam Effect",
+      "video": {
+        "settings": "Video Settings",
+        "url": "YouTube Video URL",
+        "autoplay": "Autoplay",
+        "muted": "Muted",
+        "controls": "Show Controls"
+      }
     }
   },
   es: {
@@ -154,7 +165,6 @@ const translations: TranslationsType = {
     "contact": "Contacto",
     "propertyManagement": "Gestión de Propiedades",
     "loading": "Cargando propiedades...",
-    "addProperty": "Agregar Propiedad",
     "addProperty": "Agregar Propiedad",
     "featuredProperties": "Propiedades Destacadas",
     "viewAllProperties": "Ver Todas las Propiedades",
@@ -216,12 +226,15 @@ const translations: TranslationsType = {
       "images": "Imágenes",
       "dragDropImages": "Arrastra y suelta tus imágenes aquí, o haz clic para seleccionar archivos",
       "selectFiles": "SELECCIONAR ARCHIVOS",
-      "youtubeVideo": "Agregar un video de YouTube para mostrar la propiedad",
-      "autoplay": "Reproducir automáticamente el video",
-      "muted": "Iniciar video sin sonido",
-      "controls": "Mostrar controles del reproductor de video",
       "visualEffects": "Efectos Visuales",
-      "borderBeam": "Habilitar efecto de borde animado en las tarjetas de propiedad"
+      "borderBeam": "Efecto de borde animado en las tarjetas de propiedad",
+      "video": {
+        "settings": "Configuración de Video",
+        "url": "URL de Video de YouTube",
+        "autoplay": "Reproducir automáticamente",
+        "muted": "Silenciado",
+        "controls": "Mostrar controles"
+      }
     }
   }
 };

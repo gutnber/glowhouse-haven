@@ -33,7 +33,7 @@ const EditProperty = () => {
   if (!property) {
     return (
       <div className="text-center py-8">
-        <p className="text-lg text-muted-foreground">{t('property.notFound', 'Property not found')}</p>
+        <p className="text-lg text-muted-foreground">{t('property.notFound')}</p>
       </div>
     )
   }

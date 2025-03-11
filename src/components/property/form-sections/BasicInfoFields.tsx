@@ -1,3 +1,4 @@
+
 import { UseFormReturn } from "react-hook-form"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -41,7 +42,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-orange-500">{t('property.name', 'Name')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.name')}</FormLabel>
             <FormControl>
               <Input {...field} />
             </FormControl>
@@ -55,7 +56,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         name="address"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-orange-500">{t('property.address', 'Address')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.address')}</FormLabel>
             <FormControl>
               <Input {...field} />
             </FormControl>

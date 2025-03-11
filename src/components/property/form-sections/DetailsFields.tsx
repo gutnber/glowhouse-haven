@@ -23,7 +23,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
             name="bedrooms"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-orange-500">{t('property.bedrooms', 'Bedrooms')}</FormLabel>
+                <FormLabel className="text-orange-500">{t('property.bedrooms')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -41,7 +41,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
             name="bathrooms"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-orange-500">{t('property.bathrooms', 'Bathrooms')}</FormLabel>
+                <FormLabel className="text-orange-500">{t('property.bathrooms')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -59,7 +59,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
             name="build_year"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-orange-500">{t('property.yearBuilt', 'Build Year')}</FormLabel>
+                <FormLabel className="text-orange-500">{t('property.yearBuilt')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -80,7 +80,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           name="price"
           render={({ field }) => (
             <FormItem className="col-span-1">
-              <FormLabel className="text-orange-500">{t('property.price', 'Price')}</FormLabel>
+              <FormLabel className="text-orange-500">{t('property.price')}</FormLabel>
               <FormControl>
                 <Input 
                   type="number" 
@@ -98,7 +98,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           name="currency"
           render={({ field }) => (
             <FormItem className="col-span-1">
-              <FormLabel className="text-orange-500">{t('currency', 'Currency')}</FormLabel>
+              <FormLabel className="text-orange-500">{t('currency')}</FormLabel>
               <Select 
                 onValueChange={field.onChange} 
                 defaultValue={field.value}
@@ -124,7 +124,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
         name="price_per_sqm"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-orange-500">{t('property.pricePerSqm', 'Price per m²')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.pricePerSqm')}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -146,7 +146,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
         name="arv"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-orange-500">{t('property.arvLabel', 'ARV (Optional)')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.arvLabel')}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -168,7 +168,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
         name="features"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-orange-500">{t('property.features', 'Features')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.features')}</FormLabel>
             <FormControl>
               <Input placeholder="Garage, Pool, etc. (comma-separated)" {...field} />
             </FormControl>
@@ -183,7 +183,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
         name="google_maps_url"
         render={({ field }) => (
           <FormItem className="col-span-2">
-            <FormLabel className="text-orange-500">{t('googleMapsUrl', 'Google Maps URL')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('googleMapsUrl')}</FormLabel>
             <FormControl>
               <Input 
                 type="url"

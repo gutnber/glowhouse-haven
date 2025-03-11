@@ -20,7 +20,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="area"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-orange-500">{t('property.area')} (m²)</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.area')}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -41,7 +41,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
           name="heated_area"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-orange-500">{t('property.heatedArea')} (m²)</FormLabel>
+              <FormLabel className="text-orange-500">{t('property.heatedArea')}</FormLabel>
               <FormControl>
                 <Input 
                   type="number" 
@@ -62,7 +62,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="width"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-orange-500">{t('property.dimensions', 'Width')} (m)</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.dimensions')}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -82,7 +82,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="height"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-orange-500">{t('property.dimensions', 'Height/Depth')} (m)</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.dimensions')}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
