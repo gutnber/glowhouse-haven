@@ -35,7 +35,8 @@ export const ContactForm = () => {
         throw new Error(language === 'es' ? 'Por favor complete todos los campos requeridos' : 'Please fill out all required fields');
       }
 
-      const { error } = await supabase
+      // Insert the form data into the contact_submissions table
+      const { data, error } = await supabase
         .from('contact_submissions')
         .insert({
           name: formData.name,
@@ -43,16 +44,19 @@ export const ContactForm = () => {
           phone: formData.phone || null,
           message: formData.message,
           status: 'new'
-        });
+        })
+        .select('*')
+        .single();
 
       if (error) throw error;
 
+      // Display toast notification
       toast({
         title: language === 'es' ? 'Mensaje Enviado' : 'Message Sent',
         description: language === 'es' ? 'Gracias por su mensaje. Nos pondremos en contacto pronto.' : 'Thank you for your message. We will get back to you soon.',
       });
 
-      // Show success state instead of just clearing the form
+      // Show success state
       setIsSuccess(true);
       
       // Reset form but don't hide success message
