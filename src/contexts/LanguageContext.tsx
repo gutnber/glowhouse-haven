@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 
 type Language = 'en' | 'es';
@@ -9,7 +10,7 @@ interface LanguageContextType {
 }
 
 // Define a nested structure for translations
-type TranslationValue = string | Record<string, string>;
+type TranslationValue = string | Record<string, string | Record<string, string>>;
 type TranslationsType = {
   [lang in Language]: {
     [key: string]: TranslationValue;
@@ -117,14 +118,17 @@ const translations: TranslationsType = {
       "images": "Property Images",
       "visualEffects": "Visual Effects",
       "borderBeam": "Border Beam Effect",
-      "video": {
-        "settings": "Video Settings",
-        "url": "YouTube Video URL",
-        "autoplay": "Autoplay",
-        "muted": "Muted",
-        "controls": "Show Controls"
-      }
-    }
+      "notFound": "Property not found"
+    },
+    "videoSettings": {
+      "settings": "Video Settings",
+      "url": "YouTube Video URL",
+      "autoplay": "Autoplay",
+      "muted": "Muted",
+      "controls": "Show Controls"
+    },
+    "replaceImage": "Replace Image",
+    "cancel": "Cancel"
   },
   es: {
     "mission": "Misión",
@@ -224,18 +228,19 @@ const translations: TranslationsType = {
       "name": "Nombre de la Propiedad",
       "address": "Dirección",
       "images": "Imágenes",
-      "dragDropImages": "Arrastra y suelta tus imágenes aquí, o haz clic para seleccionar archivos",
-      "selectFiles": "SELECCIONAR ARCHIVOS",
       "visualEffects": "Efectos Visuales",
       "borderBeam": "Efecto de borde animado en las tarjetas de propiedad",
-      "video": {
-        "settings": "Configuración de Video",
-        "url": "URL de Video de YouTube",
-        "autoplay": "Reproducir automáticamente",
-        "muted": "Silenciado",
-        "controls": "Mostrar controles"
-      }
-    }
+      "notFound": "Propiedad no encontrada"
+    },
+    "videoSettings": {
+      "settings": "Configuración de Video",
+      "url": "URL de Video de YouTube",
+      "autoplay": "Reproducir automáticamente",
+      "muted": "Silenciado",
+      "controls": "Mostrar controles"
+    },
+    "replaceImage": "Reemplazar Imagen",
+    "cancel": "Cancelar"
   }
 };
 
@@ -259,13 +264,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       const value = translations[language][key];
       return typeof value === 'string' ? value : key;
     } else {
-      const [category, subKey] = parts;
-      const categoryObj = translations[language][category];
-      if (categoryObj && typeof categoryObj === 'object' && !Array.isArray(categoryObj)) {
-        const value = (categoryObj as Record<string, string>)[subKey];
-        return value || key;
+      let currentObj: any = translations[language];
+      
+      // Navigate through the nested structure
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        if (currentObj && typeof currentObj === 'object' && part in currentObj) {
+          currentObj = currentObj[part];
+        } else {
+          return key; // Key path not found
+        }
       }
-      return key;
+      
+      return typeof currentObj === 'string' ? currentObj : key;
     }
   };
 

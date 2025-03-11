@@ -17,13 +17,13 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
   return (
     <div className="space-y-4">
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">{t('property.video.settings')}</h3>
+        <h3 className="text-lg font-semibold mb-4">{t('videoSettings.settings')}</h3>
         <FormField
           control={form.control}
           name="youtube_url"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-orange-500">{t('property.video.url')}</FormLabel>
+              <FormLabel className="text-orange-500">{t('videoSettings.url')}</FormLabel>
               <FormControl>
                 <Input 
                   type="url" 
@@ -45,7 +45,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base text-orange-500">{t('property.video.autoplay')}</FormLabel>
+                  <FormLabel className="text-base text-orange-500">{t('videoSettings.autoplay')}</FormLabel>
                   <FormDescription>
                     Automatically start playing the video
                   </FormDescription>
@@ -66,7 +66,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base text-orange-500">{t('property.video.muted')}</FormLabel>
+                  <FormLabel className="text-base text-orange-500">{t('videoSettings.muted')}</FormLabel>
                   <FormDescription>
                     Start video without sound
                   </FormDescription>
@@ -87,7 +87,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base text-orange-500">{t('property.video.controls')}</FormLabel>
+                  <FormLabel className="text-base text-orange-500">{t('videoSettings.controls')}</FormLabel>
                   <FormDescription>
                     Display video player controls
                   </FormDescription>
