@@ -1,4 +1,3 @@
-
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +8,8 @@ import { PropertyImageGallery } from "@/components/property/PropertyImageGallery
 import { PropertyDetails } from "@/components/property/PropertyDetails";
 import { PropertyContactForm } from "@/components/property/PropertyContactForm";
 import { PropertyMap } from "@/components/property/PropertyMap";
-import { House, Play, MessageCircle } from "lucide-react";
+import { WhatsAppButton } from "@/components/property/contact-form/WhatsAppButton";
+import { House, Play } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { useRef, useState } from "react";
@@ -227,19 +227,10 @@ const PropertyProfile = () => {
                 
                 {/* WhatsApp Contact Button - Moved from header */}
                 <div className="mt-4">
-                  <Button 
-                    onClick={() => {
-                      const message = `Hi! I'm interested in the property: ${property.name} at ${property.address}`;
-                      const encodedMessage = encodeURIComponent(message);
-                      const whatsappUrl = `https://wa.me/526461961667?text=${encodedMessage}`;
-                      window.open(whatsappUrl, '_blank');
-                    }} 
-                    variant="secondary"
-                    className="w-full flex items-center justify-center"
-                  >
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    {t('whatsapp')}
-                  </Button>
+                  <WhatsAppButton
+                    propertyName={property.name}
+                    propertyAddress={property.address || ''}
+                  />
                 </div>
               </div>
             </div>
