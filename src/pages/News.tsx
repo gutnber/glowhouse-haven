@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { TopNavigation } from "@/components/layout/TopNavigation"
 import { useAuthSession } from "@/hooks/useAuthSession"
 import { useLanguage } from "@/contexts/LanguageContext"
+import { LoadingAnimation } from "@/components/ui/loading-animation"
 
 const POSTS_PER_PAGE = 12
 
@@ -30,11 +30,7 @@ export default function News() {
   })
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px] bg-gradient-to-br from-gray-900 via-black to-orange-900">
-        <p className="text-white">Cargando...</p>
-      </div>
-    )
+    return <LoadingAnimation />
   }
 
   return (
