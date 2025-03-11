@@ -54,15 +54,16 @@ export function PropertyTypeSelect({
 }: PropertyTypeSelectProps) {
   const { t, language } = useLanguage();
 
+  const selectedType = propertyTypes.find(type => type.value === value);
+  const Icon = selectedType?.icon;
+
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger className="">
         <SelectValue placeholder={t('propertyType')}>
           {value && (
             <div className="flex items-center gap-2">
-              {propertyTypes.find(type => type.value === value)?.icon && (
-                <propertyTypes.find(type => type.value === value)?.icon className="h-4 w-4" />
-              )}
+              {Icon && <Icon className="h-4 w-4" />}
               <span>{t(value)}</span>
             </div>
           )}
