@@ -40,9 +40,13 @@ export const useContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (isSubmitting) return; // Prevent double submission
+    if (isSubmitting) {
+      console.log('Form already submitting, preventing double submission');
+      return;
+    }
     
     setIsSubmitting(true);
+    console.log('Starting form submission...');
 
     try {
       if (!formData.name || !formData.email || !formData.message) {
@@ -53,7 +57,7 @@ export const useContactForm = () => {
 
       console.log('Submitting contact form...', formData);
 
-      const { data, error: insertError } = await supabase
+      const { data: insertedData, error: insertError } = await supabase
         .from('contact_submissions')
         .insert([{
           name: formData.name,
@@ -67,18 +71,21 @@ export const useContactForm = () => {
 
       if (insertError) {
         console.error('Error inserting contact submission:', insertError);
-        throw insertError;
+        throw new Error(language === 'es' ? 
+          'Error al guardar el mensaje' : 
+          'Error saving the message');
       }
 
-      console.log('Contact submission successful:', data);
+      console.log('Contact submission successful:', insertedData);
 
       // Then try to send the email using the edge function
       const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
-        body: { record: data }
+        body: { record: insertedData }
       });
 
       if (emailError) {
         console.error('Error sending email notification:', emailError);
+        // Continue since the data was saved successfully
       }
 
       toast({
