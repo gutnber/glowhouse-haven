@@ -19,6 +19,19 @@ interface ContactSubmission {
   created_at: string;
 }
 
+// Store recently processed submission IDs to prevent duplicate sends
+const recentlyProcessed = new Map<string, number>();
+// Clean up old entries every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [id, timestamp] of recentlyProcessed.entries()) {
+    // Remove entries older than 10 minutes
+    if (now - timestamp > 10 * 60 * 1000) {
+      recentlyProcessed.delete(id);
+    }
+  }
+}, 5 * 60 * 1000);
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -52,7 +65,30 @@ serve(async (req) => {
       throw new Error("Missing required fields for email");
     }
 
-    console.log("Processing contact submission:", submission.id || "no-id");
+    // Check for duplicate submissions to prevent multiple emails
+    const submissionId = submission.id || `${submission.email}-${submission.created_at}`;
+    if (recentlyProcessed.has(submissionId)) {
+      console.log(`Skipping duplicate submission: ${submissionId}`);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: "Duplicate submission detected", 
+          skipped: true 
+        }),
+        {
+          status: 200,
+          headers: { 
+            "Content-Type": "application/json",
+            ...corsHeaders 
+          },
+        }
+      );
+    }
+    
+    // Mark this submission as processed
+    recentlyProcessed.set(submissionId, Date.now());
+
+    console.log("Processing contact submission:", submissionId);
 
     // Format the date for better readability
     const formattedDate = new Date(submission.created_at || new Date().toISOString()).toLocaleString('en-US', {

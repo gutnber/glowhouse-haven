@@ -102,56 +102,19 @@ export const usePropertyContactForm = ({ propertyId, propertyName }: UseProperty
 
       if (contactError) {
         console.error('Error inserting contact submission:', contactError);
-        // Try to continue with direct email sending even if DB insert fails
+        throw contactError;
       }
 
-      // 3. Try multiple approaches to ensure email is sent
-      const sendEmailPromises = [];
+      // 3. Only use one email sending method to prevent duplicates
+      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
+        body: { record: contactData },
+      });
       
-      // Method 1: Try directly calling the send-contact-email function with the form data
-      sendEmailPromises.push(
-        supabase.functions.invoke('send-contact-email', {
-          body: { 
-            payload: {
-              id: contactData?.id || 'direct-submission',
-              name: data.name,
-              email: data.email,
-              phone: data.phone || null,
-              message: `[Property Inquiry: ${propertyName}] ${data.message}`,
-              created_at: new Date().toISOString()
-            }
-          },
-        }).catch(err => {
-          console.error('Error calling email function directly with form data:', err);
-          return { error: err };
-        })
-      );
-      
-      // Method 2: If we have contact data from the DB insert, try with that
-      if (contactData) {
-        sendEmailPromises.push(
-          supabase.functions.invoke('send-contact-email', {
-            body: { record: contactData },
-          }).catch(err => {
-            console.error('Error calling email function with DB record:', err);
-            return { error: err };
-          })
-        );
+      if (emailError) {
+        console.error('Error sending email:', emailError);
+        // Continue anyway as the submission was recorded in the database
       }
-      
-      // Method 3: Try manually triggering the email queue processor
-      sendEmailPromises.push(
-        supabase.functions.invoke('process-email-queue', {}).catch(err => {
-          console.error('Error calling email queue processor:', err);
-          return { error: err };
-        })
-      );
-      
-      // Wait for all attempts and log results
-      const emailResults = await Promise.all(sendEmailPromises);
-      console.log('Email sending attempts results:', emailResults);
-      
-      // Even if email sending fails, show success to user since the submission was recorded
+
       toast({
         title: language === 'es' ? 'Mensaje Enviado' : 'Message Sent',
         description: language === 'es' ? 
