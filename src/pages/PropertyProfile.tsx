@@ -1,36 +1,24 @@
+
 import { useParams, Link } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
-import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyImageGallery } from "@/components/property/PropertyImageGallery";
 import { PropertyDetails } from "@/components/property/PropertyDetails";
-import { PropertyContactForm } from "@/components/property/PropertyContactForm";
 import { PropertyMap } from "@/components/property/PropertyMap";
-import { WhatsAppButton } from "@/components/property/contact-form/WhatsAppButton";
-import { House, Play } from "lucide-react";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { useToast } from "@/hooks/use-toast";
+import { House } from "lucide-react";
 import { useRef, useState } from "react";
 import { TopNavigation } from "@/components/layout/TopNavigation";
 import { useAuthSession } from "@/hooks/useAuthSession";
-import { PropertyYouTubePlayer } from "@/components/property/PropertyYouTubePlayer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PropertyProfileHeader } from "@/components/property/profile/PropertyProfileHeader";
+import { PropertyMainMedia } from "@/components/property/profile/PropertyMainMedia";
+import { PropertyContactSection } from "@/components/property/profile/PropertyContactSection";
 
 const PropertyProfile = () => {
   const { id } = useParams();
-  const { isAdmin } = useIsAdmin();
-  const { toast } = useToast();
   const { t } = useLanguage();
-  const imageRef = useRef<HTMLImageElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({
-    x: 50,
-    y: 50
-  });
-  const [showVideo, setShowVideo] = useState(false);
   const session = useAuthSession();
   
   const {
@@ -49,60 +37,6 @@ const PropertyProfile = () => {
       return data as Tables<'properties'>;
     }
   });
-  
-  const updateImagePositionMutation = useMutation({
-    mutationFn: async (position: string) => {
-      const {
-        error
-      } = await supabase.from('properties').update({
-        feature_image_position: position
-      }).eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Image position updated successfully"
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update image position",
-        variant: "destructive"
-      });
-    }
-  });
-  
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!isAdmin) return;
-    setIsDragging(true);
-    e.preventDefault(); // Prevent image dragging
-  };
-  
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !containerRef.current || !isAdmin) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width * 100;
-    const y = (e.clientY - rect.top) / rect.height * 100;
-
-    // Clamp values between 0 and 100
-    const clampedX = Math.max(0, Math.min(100, x));
-    const clampedY = Math.max(0, Math.min(100, y));
-    setPosition({
-      x: clampedX,
-      y: clampedY
-    });
-  };
-  
-  const handleMouseUp = () => {
-    if (!isDragging) return;
-    setIsDragging(false);
-
-    // Convert position to CSS object-position format
-    const positionString = `${position.x}% ${position.y}%`;
-    updateImagePositionMutation.mutate(positionString);
-  };
   
   if (isLoading) {
     return (
@@ -128,45 +62,11 @@ const PropertyProfile = () => {
       <TopNavigation session={session} />
       <main className="flex-1 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 pt-16">
         <div className="max-w-6xl mx-auto px-4">
-          <PropertyHeader id={property.id} name={property.name} address={property.address} />
+          {/* Header */}
+          <PropertyProfileHeader property={property} />
 
           {/* Media Section - Video or Feature Image */}
-          <div className="relative rounded-xl overflow-hidden border border-orange-500/30 shadow-xl">
-            {property.youtube_url ? (
-              <div className="aspect-video w-full">
-                <PropertyYouTubePlayer 
-                  youtubeUrl={property.youtube_url} 
-                  autoplay={property.youtube_autoplay} 
-                  muted={property.youtube_muted} 
-                  controls={property.youtube_controls} 
-                />
-              </div>
-            ) : property.feature_image_url ? (
-              <div ref={containerRef} className="relative" onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
-                <div className="w-full h-[500px] relative">
-                  <img 
-                    ref={imageRef} 
-                    src={property.feature_image_url} 
-                    alt={`${property.name} banner`} 
-                    className={`w-full h-full object-cover transition-all duration-200 ${isAdmin ? 'cursor-move' : ''}`} 
-                    style={{
-                      objectPosition: isDragging ? `${position.x}% ${position.y}%` : property.feature_image_position || '50% 50%'
-                    }} 
-                    onMouseDown={handleMouseDown} 
-                  />
-                </div>
-                {isAdmin && (
-                  <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                    {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="w-full h-[500px] bg-gradient-to-r from-orange-900/20 via-gray-800/30 to-orange-900/20 flex items-center justify-center">
-                <House className="h-32 w-32 text-orange-500/50" />
-              </div>
-            )}
-          </div>
+          <PropertyMainMedia property={property} />
 
           {/* Image Gallery */}
           <PropertyImageGallery 
@@ -218,21 +118,7 @@ const PropertyProfile = () => {
               ) : null}
               
               {/* Contact Form */}
-              <div className="bg-gradient-to-r from-orange-900 via-orange-800 to-orange-900 p-6 rounded-xl border border-orange-500/30 shadow-xl">
-                <PropertyContactForm 
-                  propertyId={property.id} 
-                  propertyName={property.name} 
-                  enableBorderBeam={property.enable_border_beam} 
-                />
-                
-                {/* WhatsApp Contact Button - Moved from header */}
-                <div className="mt-4">
-                  <WhatsAppButton
-                    propertyName={property.name}
-                    propertyAddress={property.address || ''}
-                  />
-                </div>
-              </div>
+              <PropertyContactSection property={property} />
             </div>
           </div>
         </div>
