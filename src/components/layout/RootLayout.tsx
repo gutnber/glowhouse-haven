@@ -5,8 +5,11 @@ import { Outlet } from "react-router-dom"
 import { TopNavigation } from "./TopNavigation"
 import { Footer } from "./Footer"
 import { useAuthSession } from "@/hooks/useAuthSession"
+import { LoadingScreen } from "@/components/ui/loading-screen"
+import { useState, useEffect } from "react"
 
 export default function RootLayout() {
+  const [loading, setLoading] = useState(true);
   const session = useAuthSession()
 
   const { data: profile } = useQuery({
@@ -40,13 +43,29 @@ export default function RootLayout() {
     retry: 1
   })
 
+  useEffect(() => {
+    // Remove loading screen immediately if no user session
+    if (!session?.user) {
+      setLoading(false);
+      return;
+    }
+
+    // Minimal loading time for authenticated users
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 300); // Further reduced from 500ms to 300ms
+    
+    return () => clearTimeout(timer);
+  }, [session]);
+
   return (
     <div 
       data-template={profile?.ui_template || "original"} 
-      className="min-h-screen flex flex-col pointer-events-auto overflow-x-hidden"
+      className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground"
     >
+      {loading && <LoadingScreen />}
       <TopNavigation session={session} />
-      <main className="flex-1 pointer-events-auto pt-20">
+      <main className="flex-1 pt-20">
         <Outlet />
       </main>
       <Footer />

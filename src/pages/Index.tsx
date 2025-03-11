@@ -2,17 +2,19 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import StarryBackground from "@/components/background/StarryBackground";
-import { WelcomeSection } from "@/components/home/WelcomeSection";
 import { NewsSection } from "@/components/home/NewsSection";
+import { NewsSlideshow } from "@/components/home/NewsSlideshow";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
+import { InfoSections } from "@/components/home/InfoSections";
 import { TopNavigation } from "@/components/layout/TopNavigation";
-import { Footer } from "@/components/layout/Footer";
 import { useAuthSession } from "@/hooks/useAuthSession";
+import { LoadingAnimation } from "@/components/ui/loading-animation";
 
 const POSTS_PER_PAGE = 5;
 const INITIAL_VISIBLE_POSTS = 1;
 
 const Index = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([]);
   const [newsPosts, setNewsPosts] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -20,6 +22,7 @@ const Index = () => {
   const session = useAuthSession();
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         // Fetch total count of news posts
@@ -68,6 +71,8 @@ const Index = () => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -92,18 +97,23 @@ const Index = () => {
 
   const hasMorePosts = newsPosts.length < totalPosts;
 
+  if (isLoading) {
+    return <LoadingAnimation />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col relative">
       <TopNavigation session={session} />
       <StarryBackground />
       <div className="relative z-10 flex-1">
         <div className="container mx-auto px-4 pb-12 space-y-12 my-[71px]">
-          <WelcomeSection />
+          <NewsSlideshow newsPosts={newsPosts} />
           <NewsSection newsPosts={newsPosts} hasMorePosts={hasMorePosts} loadMorePosts={loadMorePosts} INITIAL_VISIBLE_POSTS={INITIAL_VISIBLE_POSTS} POSTS_PER_PAGE={POSTS_PER_PAGE} />
           <FeaturedProperties properties={featuredProperties} />
+          <InfoSections />
         </div>
       </div>
-      <Footer />
+      {/* Footer is already included in RootLayout */}
     </div>
   );
 };

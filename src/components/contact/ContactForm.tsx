@@ -9,10 +9,12 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, CheckCircle } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export const ContactForm = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { language } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
@@ -23,8 +25,6 @@ export const ContactForm = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (isSubmitting || isSuccess) return;
-    
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -36,7 +36,7 @@ export const ContactForm = () => {
     try {
       // Validate required fields
       if (!formData.name || !formData.email || !formData.message) {
-        throw new Error('Please fill out all required fields');
+        throw new Error(language === 'es' ? 'Por favor complete todos los campos requeridos' : 'Please fill out all required fields');
       }
 
       // Insert the contact submission
@@ -53,8 +53,8 @@ export const ContactForm = () => {
       if (error) throw error;
 
       toast({
-        title: 'Message Sent',
-        description: 'Thank you for your message. We will get back to you soon.',
+        title: language === 'es' ? 'Mensaje Enviado' : 'Message Sent',
+        description: language === 'es' ? 'Gracias por su mensaje. Nos pondremos en contacto pronto.' : 'Thank you for your message. We will get back to you soon.',
       });
       
       // Set success state
@@ -85,36 +85,24 @@ export const ContactForm = () => {
     }
   };
 
-  if (isSuccess) {
-    return (
-      <Alert className="max-w-xl mx-auto bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-900">
-        <CheckCircle className="h-5 w-5 text-green-500" />
-        <AlertTitle className="text-xl">Message Sent Successfully!</AlertTitle>
-        <AlertDescription className="text-base">
-          Thank you for contacting us. We'll get back to you as soon as possible.
-        </AlertDescription>
-      </Alert>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
+  const FormContent = () => (
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-4">
         <div>
-          <Label htmlFor="name">Name *</Label>
+          <Label htmlFor="name" className="text-white font-medium">{language === 'es' ? 'Nombre *' : 'Name *'}</Label>
           <Input
             id="name"
             name="name"
             value={formData.name}
             onChange={handleChange}
             required
-            className="mt-1"
+            className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
             disabled={isSubmitting}
           />
         </div>
 
         <div>
-          <Label htmlFor="email">Email *</Label>
+          <Label htmlFor="email" className="text-white font-medium">{language === 'es' ? 'Correo Electrónico *' : 'Email *'}</Label>
           <Input
             id="email"
             name="email"
@@ -122,48 +110,73 @@ export const ContactForm = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="mt-1"
+            className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
             disabled={isSubmitting}
           />
         </div>
 
         <div>
-          <Label htmlFor="phone">Phone (optional)</Label>
+          <Label htmlFor="phone" className="text-white font-medium">{language === 'es' ? 'Teléfono (opcional)' : 'Phone (optional)'}</Label>
           <Input
             id="phone"
             name="phone"
             type="tel"
             value={formData.phone}
             onChange={handleChange}
-            className="mt-1"
+            className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
             disabled={isSubmitting}
           />
         </div>
 
         <div>
-          <Label htmlFor="message">Message *</Label>
+          <Label htmlFor="message" className="text-white font-medium">{language === 'es' ? 'Mensaje *' : 'Message *'}</Label>
           <Textarea
             id="message"
             name="message"
             value={formData.message}
             onChange={handleChange}
             required
-            className="mt-1 h-32"
+            className="mt-1 h-32 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
             disabled={isSubmitting}
           />
         </div>
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
+      <Button type="submit" disabled={isSubmitting} className="w-full bg-orange-600 hover:bg-orange-700 text-white">
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {t('common.loading')}
+            {language === 'es' ? 'Enviando...' : 'Sending...'}
           </>
         ) : (
-          'Send Message'
+          language === 'es' ? 'Enviar Mensaje' : 'Send Message'
         )}
       </Button>
     </form>
   );
+
+  const SuccessContent = () => (
+    <div className="text-center py-8 space-y-4">
+      <div className="flex justify-center">
+        <CheckCircle className="h-16 w-16 text-green-500" />
+      </div>
+      <h3 className="text-xl font-bold text-white">
+        {language === 'es' ? '¡Mensaje Enviado Exitosamente!' : 'Message Sent Successfully!'}
+      </h3>
+      <p className="text-orange-200">
+        {language === 'es' ? 'Gracias por contactarnos.' : 'Thank you for contacting us.'}
+        <br />
+        {language === 'es' ? 'Nos pondremos en contacto con usted lo antes posible.' : 'We\'ll get back to you as soon as possible.'}
+      </p>
+      <Button 
+        onClick={() => setIsSuccess(false)} 
+        variant="outline"
+        className="mt-4 border-orange-500/50 text-white hover:bg-orange-500/20"
+      >
+        {language === 'es' ? 'Enviar Otro Mensaje' : 'Send Another Message'}
+      </Button>
+    </div>
+  );
+
+  return isSuccess ? <SuccessContent /> : <FormContent />;
 };

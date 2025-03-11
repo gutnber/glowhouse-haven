@@ -15,8 +15,8 @@ export const FeaturedProperties = ({ properties }: FeaturedPropertiesProps) => {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto px-4">
-      <h2 className="text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-600">
-        {t('featuredProperties')}
+      <h2 className="text-4xl font-bold text-center text-white">
+        <span className="border-b-4 border-orange-500 pb-1">{t('featuredProperties')}</span>
       </h2>
       <div className="flex gap-8 justify-center flex-wrap">
         {properties.map((property) => (

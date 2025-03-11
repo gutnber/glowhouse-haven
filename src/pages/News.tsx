@@ -3,16 +3,19 @@ import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Star, ArrowRight } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { TopNavigation } from "@/components/layout/TopNavigation"
 import { useAuthSession } from "@/hooks/useAuthSession"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 const POSTS_PER_PAGE = 12
 
 export default function News() {
   const session = useAuthSession();
+  const { t } = useLanguage();
+  
   const { data: newsPosts, isLoading } = useQuery({
     queryKey: ['news_posts'],
     queryFn: async () => {
@@ -27,49 +30,63 @@ export default function News() {
   })
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-[400px]">Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-[400px] bg-gradient-to-br from-gray-900 via-black to-orange-900">
+        <p className="text-white">Cargando...</p>
+      </div>
+    )
   }
 
   return (
     <div className="flex flex-col min-h-screen">
       <TopNavigation session={session} />
-      <main className="flex-1">
-        <div className="container mx-auto p-6 space-y-6">
+      <main className="flex-1 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 pt-16">
+        <div className="max-w-7xl mx-auto p-6 space-y-8">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" asChild>
+            <Button variant="outline" asChild className="text-orange-500 border-orange-500/30 hover:bg-orange-500/20 hover:text-white">
               <Link to="/" className="flex items-center gap-2">
                 <ArrowLeft className="h-4 w-4" />
-                Back to Home
+                Volver al Inicio
               </Link>
             </Button>
-            <h1 className="text-3xl font-bold">News & Updates</h1>
+            <h1 className="text-3xl font-bold text-white flex items-center gap-2">
+              <Star className="h-6 w-6 text-orange-500" />
+              Noticias y Actualizaciones
+            </h1>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {newsPosts?.map((post) => (
-              <Link key={post.id} to={`/news/${post.id}`}>
-                <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 h-full">
+              <Link key={post.id} to={`/news/${post.id}`} className="block transition-all duration-300 hover:translate-y-[-4px]">
+                <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 bg-white/5 backdrop-blur-md border-white/10 group h-full">
                   {post.feature_image_url && (
-                    <AspectRatio ratio={16/9}>
-                      <img
-                        src={post.feature_image_url}
-                        alt={post.title}
-                        className="object-cover w-full h-full"
-                      />
-                    </AspectRatio>
+                    <div className="relative">
+                      <AspectRatio ratio={16/9}>
+                        <img
+                          src={post.feature_image_url}
+                          alt={post.title}
+                          className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </AspectRatio>
+                    </div>
                   )}
-                  <CardHeader>
-                    <CardTitle className="line-clamp-2">{post.title}</CardTitle>
-                    <CardDescription>
-                      {new Date(post.created_at).toLocaleDateString(undefined, {
+                  <CardHeader className="p-4">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-xl text-white group-hover:text-orange-500 transition-colors duration-300 line-clamp-2">
+                        {post.title}
+                      </CardTitle>
+                      <ArrowRight className="h-5 w-5 text-white/70 transform transition-all duration-300 group-hover:translate-x-2 group-hover:text-orange-500" />
+                    </div>
+                    <CardDescription className="text-orange-500/80 mt-2">
+                      {new Date(post.created_at).toLocaleDateString('es-ES', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
                       })}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground line-clamp-3">{post.content}</p>
+                  <CardContent className="px-4 pb-4">
+                    <p className="text-white/80 line-clamp-3">{post.content}</p>
                   </CardContent>
                 </Card>
               </Link>
@@ -77,7 +94,6 @@ export default function News() {
           </div>
         </div>
       </main>
-      {/* Removed Footer component from here */}
     </div>
   )
 }

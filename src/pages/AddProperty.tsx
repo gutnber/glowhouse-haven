@@ -6,12 +6,14 @@ import { useMutation } from "@tanstack/react-query"
 import { Building2 } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
+import { useLanguage } from "@/contexts/LanguageContext"
 import { PropertyForm } from "@/components/property/PropertyForm"
 import { propertyFormSchema, PropertyFormValues } from "@/schemas/propertyFormSchema"
 
 const AddProperty = () => {
   const { toast } = useToast()
   const navigate = useNavigate()
+  const { t } = useLanguage()
   
   const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertyFormSchema),
@@ -94,16 +96,22 @@ const AddProperty = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center gap-2">
-        <Building2 className="h-6 w-6" />
-        <h1 className="text-3xl font-bold">Add New Property</h1>
-      </div>
-      <PropertyForm 
-        form={form} 
-        onSubmit={onSubmit} 
-        isSubmitting={mutation.isPending} 
-      />
+    <div className="flex flex-col min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+      <main className="flex-1">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="flex items-center gap-2 mb-8">
+            <Building2 className="h-8 w-8 text-orange-500" />
+            <h1 className="text-4xl font-bold text-white">{t('addProperty')}</h1>
+          </div>
+          <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 rounded-xl border border-orange-500/30 shadow-xl">
+            <PropertyForm 
+              form={form} 
+              onSubmit={onSubmit} 
+              isSubmitting={mutation.isPending} 
+            />
+          </div>
+        </div>
+      </main>
     </div>
   )
 }

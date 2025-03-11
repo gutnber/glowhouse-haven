@@ -6,6 +6,7 @@ import { FooterQuickLinks } from "./footer/FooterQuickLinks";
 import { FooterContactInfo } from "./footer/FooterContactInfo";
 import { NewsletterForm } from "./footer/NewsletterForm";
 import { CopyrightSection } from "./footer/CopyrightSection";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FooterSettings {
   phone: string | null;
@@ -19,6 +20,7 @@ interface FooterSettings {
 export function Footer() {
   const [settings, setSettings] = useState<FooterSettings | null>(null);
   const [updateTrigger, setUpdateTrigger] = useState(0);
+  const { language } = useLanguage();
   
   useEffect(() => {
     // Fetch initial data
@@ -89,8 +91,8 @@ export function Footer() {
         {/* Newsletter signup form */}
         <div className="border-t border-gray-700 pt-8 mt-8">
           <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-xl font-semibold mb-4">Subscribe to Our Newsletter</h3>
-            <p className="text-gray-300 mb-6">Stay updated with our latest properties and real estate news</p>
+            <h3 className="text-xl font-semibold mb-4">{language === 'es' ? 'Suscríbete a Nuestro Boletín' : 'Subscribe to Our Newsletter'}</h3>
+            <p className="text-gray-300 mb-6">{language === 'es' ? 'Mantente actualizado con nuestras últimas propiedades y noticias inmobiliarias' : 'Stay updated with our latest properties and real estate news'}</p>
             <NewsletterForm placeholder={settings.subscribe_email} />
           </div>
         </div>

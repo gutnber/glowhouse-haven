@@ -31,25 +31,10 @@ export const NewsSection = ({
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-semibold text-white">{t('latestNews')}</h2>
-        <Button 
-          asChild
-          className="relative border border-white/20 bg-black text-white overflow-hidden [--duration:4s] before:absolute before:inset-0 before:-translate-x-full before:animate-[border-beam_var(--duration)_ease_infinite] before:bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent)] after:absolute after:inset-0 after:translate-x-full after:animate-[border-beam_var(--duration)_ease_infinite] after:bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent)]"
-        >
-          <Link to="/news" className="flex items-center gap-2">
-            {t('viewAllNews')}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </Button>
-      </div>
+      {/* Removed the heading and 'View all news' button */}
       
       <div className="space-y-4">
-        <div className="space-y-4">
-          {newsPosts.slice(0, INITIAL_VISIBLE_POSTS).map(post => (
-            <NewsCard key={post.id} post={post} />
-          ))}
-        </div>
+        {/* Removed the first news post display */}
         
         {newsPosts.length > INITIAL_VISIBLE_POSTS && (
           <Accordion type="single" collapsible className="w-full">
@@ -62,7 +47,7 @@ export const NewsSection = ({
               </AccordionTrigger>
               <AccordionContent className="pt-4 space-y-4">
                 <div className="space-y-4">
-                  {newsPosts.slice(INITIAL_VISIBLE_POSTS, INITIAL_VISIBLE_POSTS + POSTS_PER_PAGE).map(post => (
+                  {newsPosts.slice(0, POSTS_PER_PAGE).map(post => (
                     <NewsCard key={post.id} post={post} />
                   ))}
                 </div>

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface NewsletterFormProps {
   placeholder: string | null;
@@ -15,13 +16,14 @@ export function NewsletterForm({ placeholder }: NewsletterFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { toast } = useToast();
+  const { language } = useLanguage();
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
       toast({
-        title: "Error",
-        description: "Please enter your email address",
+        title: language === 'es' ? "Error" : "Error",
+        description: language === 'es' ? "Por favor ingrese su dirección de correo electrónico" : "Please enter your email address",
         variant: "destructive"
       });
       return;
@@ -36,21 +38,21 @@ export function NewsletterForm({ placeholder }: NewsletterFormProps) {
         if (error.code === '23505') {
           // Unique violation - email already exists
           toast({
-            title: "Already subscribed",
-            description: "This email is already subscribed to our newsletter."
+            title: language === 'es' ? "Ya suscrito" : "Already subscribed",
+            description: language === 'es' ? "Este correo electrónico ya está suscrito a nuestro boletín." : "This email is already subscribed to our newsletter."
           });
         } else {
           console.error('Error subscribing:', error);
           toast({
-            title: "Error",
-            description: "Failed to subscribe. Please try again later.",
+            title: language === 'es' ? "Error" : "Error",
+            description: language === 'es' ? "No se pudo suscribir. Por favor, inténtelo de nuevo más tarde." : "Failed to subscribe. Please try again later.",
             variant: "destructive"
           });
         }
       } else {
         toast({
-          title: "Success",
-          description: "Thank you for subscribing to our newsletter!"
+          title: language === 'es' ? "Éxito" : "Success",
+          description: language === 'es' ? "¡Gracias por suscribirse a nuestro boletín!" : "Thank you for subscribing to our newsletter!"
         });
 
         // Show success state
@@ -65,8 +67,8 @@ export function NewsletterForm({ placeholder }: NewsletterFormProps) {
     } catch (error) {
       console.error('Error in subscribe function:', error);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: language === 'es' ? "Error" : "Error",
+        description: language === 'es' ? "Ocurrió un error inesperado. Por favor, inténtelo de nuevo." : "An unexpected error occurred. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -79,7 +81,7 @@ export function NewsletterForm({ placeholder }: NewsletterFormProps) {
       <div className="relative flex-1">
         <Input 
           type="email" 
-          placeholder={placeholder || "Enter your email"} 
+          placeholder={placeholder || (language === 'es' ? "Ingrese su correo electrónico" : "Enter your email")} 
           value={email} 
           onChange={e => setEmail(e.target.value)} 
           className="bg-gray-800 border-gray-700 text-white pr-10"
@@ -96,8 +98,8 @@ export function NewsletterForm({ placeholder }: NewsletterFormProps) {
         ) : isSubmitting ? (
           <Loader2 className="h-5 w-5 animate-spin" />
         ) : (
-          <ArrowRight className="h-5 w-5" />
-        )}
+          <ArrowRight className="h-5 w-5 text-orange-500" />
+        ) }
       </Button>
     </form>
   );

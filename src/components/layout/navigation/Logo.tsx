@@ -51,25 +51,25 @@ export function Logo() {
             className="h-[70px] max-w-[180px] object-contain" 
           />
         ) : (
-          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
-            Real Estate
+          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-700">
+            
           </span>
         )}
       </Link>
       <nav className="hidden lg:flex items-center gap-6">
-        <Link to="/" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
+        <Link to="/" className="flex items-center gap-1.5 text-white/90 hover:text-orange-400 transition-colors duration-200">
           <Home className="h-4 w-4" />
           <span className="font-medium">{capitalizeFirstLetter(t('home'))}</span>
         </Link>
-        <Link to="/properties" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
+        <Link to="/properties" className="flex items-center gap-1.5 text-white/90 hover:text-orange-400 transition-colors duration-200">
           <Building className="h-4 w-4" />
           <span className="font-medium">{capitalizeFirstLetter(t('properties'))}</span>
         </Link>
-        <Link to="/news" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
+        <Link to="/news" className="flex items-center gap-1.5 text-white/90 hover:text-orange-400 transition-colors duration-200">
           <Newspaper className="h-4 w-4" />
           <span className="font-medium">{capitalizeFirstLetter(t('news'))}</span>
         </Link>
-        <Link to="/contact" className="flex items-center gap-1.5 text-gray-700 hover:text-primary transition-colors duration-200">
+        <Link to="/contact" className="flex items-center gap-1.5 text-white/90 hover:text-orange-400 transition-colors duration-200">
           <MailPlus className="h-4 w-4" />
           <span className="font-medium">{capitalizeFirstLetter(t('contact'))}</span>
         </Link>

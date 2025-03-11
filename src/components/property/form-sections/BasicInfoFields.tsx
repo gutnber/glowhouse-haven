@@ -41,7 +41,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Name</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.name', 'Name')}</FormLabel>
             <FormControl>
               <Input {...field} />
             </FormControl>
@@ -55,7 +55,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         name="address"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Address</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.address', 'Address')}</FormLabel>
             <FormControl>
               <Input {...field} />
             </FormControl>
@@ -69,7 +69,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         name="property_type"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('propertyType')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('propertyType')}</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
@@ -94,7 +94,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         name="mode"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('propertyMode')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('propertyMode')}</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
@@ -119,7 +119,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         name="status"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('propertyStatus')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('propertyStatus')}</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>

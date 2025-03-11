@@ -20,7 +20,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="area"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('property.area')} (m²)</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.area')} (m²)</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -41,7 +41,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
           name="heated_area"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('property.heatedArea')} (m²)</FormLabel>
+              <FormLabel className="text-orange-500">{t('property.heatedArea')} (m²)</FormLabel>
               <FormControl>
                 <Input 
                   type="number" 
@@ -62,7 +62,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="width"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Width (m)</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.dimensions', 'Width')} (m)</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -82,7 +82,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="height"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Height/Depth (m)</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.dimensions', 'Height/Depth')} (m)</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -102,7 +102,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="price_per_sqm"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('property.pricePerSqm')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.pricePerSqm')}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -122,7 +122,7 @@ export const AdditionalDetailsFields = ({ form }: AdditionalDetailsFieldsProps) 
         name="reference_number"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('property.referenceNumber')}</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.referenceNumber')}</FormLabel>
             <FormControl>
               <Input {...field} value={field.value ?? ''} />
             </FormControl>

@@ -3,6 +3,7 @@ import { UseFormReturn } from "react-hook-form"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface DetailsFieldsProps {
   form: UseFormReturn<any>
@@ -11,6 +12,7 @@ interface DetailsFieldsProps {
 export const DetailsFields = ({ form }: DetailsFieldsProps) => {
   const propertyType = form.watch('property_type')
   const isVacantLand = propertyType === 'vacantLand'
+  const { t } = useLanguage()
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
@@ -21,7 +23,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
             name="bedrooms"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bedrooms</FormLabel>
+                <FormLabel className="text-orange-500">{t('property.bedrooms', 'Bedrooms')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -39,7 +41,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
             name="bathrooms"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bathrooms</FormLabel>
+                <FormLabel className="text-orange-500">{t('property.bathrooms', 'Bathrooms')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -57,7 +59,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
             name="build_year"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Build Year</FormLabel>
+                <FormLabel className="text-orange-500">{t('property.yearBuilt', 'Build Year')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -78,7 +80,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           name="price"
           render={({ field }) => (
             <FormItem className="col-span-1">
-              <FormLabel>Price</FormLabel>
+              <FormLabel className="text-orange-500">{t('property.price', 'Price')}</FormLabel>
               <FormControl>
                 <Input 
                   type="number" 
@@ -96,7 +98,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           name="currency"
           render={({ field }) => (
             <FormItem className="col-span-1">
-              <FormLabel>Currency</FormLabel>
+              <FormLabel className="text-orange-500">{t('currency', 'Currency')}</FormLabel>
               <Select 
                 onValueChange={field.onChange} 
                 defaultValue={field.value}
@@ -122,7 +124,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
         name="price_per_sqm"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Price per m²</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.pricePerSqm', 'Price per m²')}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -144,7 +146,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
         name="arv"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>ARV (Optional)</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.arvLabel', 'ARV (Optional)')}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -166,7 +168,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
         name="features"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Features</FormLabel>
+            <FormLabel className="text-orange-500">{t('property.features', 'Features')}</FormLabel>
             <FormControl>
               <Input placeholder="Garage, Pool, etc. (comma-separated)" {...field} />
             </FormControl>
@@ -181,7 +183,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
         name="google_maps_url"
         render={({ field }) => (
           <FormItem className="col-span-2">
-            <FormLabel>Google Maps URL</FormLabel>
+            <FormLabel className="text-orange-500">{t('googleMapsUrl', 'Google Maps URL')}</FormLabel>
             <FormControl>
               <Input 
                 type="url"

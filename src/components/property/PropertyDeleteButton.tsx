@@ -57,7 +57,7 @@ export const PropertyDeleteButton = ({ propertyId }: PropertyDeleteButtonProps) 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">
+        <Button variant="destructive" className="bg-red-600 hover:bg-red-700 text-white border border-red-500/30">
           <Trash2 className="mr-2 h-4 w-4" />
           Delete Property
         </Button>
@@ -74,7 +74,7 @@ export const PropertyDeleteButton = ({ propertyId }: PropertyDeleteButtonProps) 
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => deleteMutation.mutate()}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="bg-red-600 text-white hover:bg-red-700"
           >
             {deleteMutation.isPending ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

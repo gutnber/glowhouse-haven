@@ -16,35 +16,13 @@ import NewsPost from "./pages/NewsPost";
 import Settings from "./pages/Settings";
 import Users from "./pages/Users";
 import Tools from "./pages/Tools";
-import { LanguageProvider } from './components/LanguageContext';
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import enTranslations from './locales/en.json';
-import esTranslations from './locales/es.json';
 import Contact from "./pages/Contact";
 import Communications from "./pages/Communications";
 import RootLayout from "./components/layout/RootLayout";
 
 function App() {
-  useEffect(() => {
-    i18n
-      .use(initReactI18next)
-      .init({
-        resources: {
-          en: { translation: enTranslations },
-          es: { translation: esTranslations },
-        },
-        lng: 'en',
-        fallbackLng: 'en',
-        interpolation: {
-          escapeValue: false,
-        },
-      });
-  }, []);
-  
   return (
     <BrowserRouter>
-      <LanguageProvider>
         <ScrollToTop />
         <Routes>
           <Route element={<RootLayout />}>
@@ -62,7 +40,6 @@ function App() {
             <Route path="/admin/communications" element={<Communications />} />
           </Route>
         </Routes>
-      </LanguageProvider>
     </BrowserRouter>
   );
 }

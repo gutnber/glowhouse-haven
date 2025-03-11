@@ -44,10 +44,16 @@ export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps
         <ImagesField form={form} />
         <YouTubeFields form={form} />
 
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isAddProperty ? "Add Property" : "Update Property"}
-        </Button>
+        <div className="flex justify-end">
+          <Button 
+            type="submit" 
+            disabled={isSubmitting} 
+            className="bg-orange-600 hover:bg-orange-700 text-white border border-orange-500/30"
+          >
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isAddProperty ? "Add Property" : "Update Property"}
+          </Button>
+        </div>
       </form>
     </Form>
   )

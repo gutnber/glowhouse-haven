@@ -9,17 +9,21 @@ import { PropertyImageGallery } from "@/components/property/PropertyImageGallery
 import { PropertyDetails } from "@/components/property/PropertyDetails";
 import { PropertyContactForm } from "@/components/property/PropertyContactForm";
 import { PropertyMap } from "@/components/property/PropertyMap";
-import { House } from "lucide-react";
+import { House, Play, MessageCircle } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { useRef, useState } from "react";
 import { TopNavigation } from "@/components/layout/TopNavigation";
 import { useAuthSession } from "@/hooks/useAuthSession";
+import { PropertyYouTubePlayer } from "@/components/property/PropertyYouTubePlayer";
+import { Footer } from "@/components/layout/Footer";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const PropertyProfile = () => {
   const { id } = useParams();
   const { isAdmin } = useIsAdmin();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -27,6 +31,7 @@ const PropertyProfile = () => {
     x: 50,
     y: 50
   });
+  const [showVideo, setShowVideo] = useState(false);
   const session = useAuthSession();
 
   const { data: property, isLoading } = useQuery({
@@ -93,15 +98,15 @@ const PropertyProfile = () => {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-[200px]">
-        <p>Loading property...</p>
+    return <div className="flex items-center justify-center min-h-[200px] bg-gradient-to-br from-gray-900 via-black to-orange-900">
+        <p className="text-white">Loading property...</p>
       </div>;
   }
 
   if (!property) {
-    return <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-        <p className="text-xl">Property not found</p>
-        <Button asChild>
+    return <div className="flex flex-col items-center justify-center min-h-[400px] space-y-0 bg-gradient-to-br from-gray-900 via-black to-orange-900">
+        <p className="text-xl text-white">Property not found</p>
+        <Button asChild className="bg-orange-600 hover:bg-orange-700">
           <Link to="/properties">Back to Properties</Link>
         </Button>
       </div>;
@@ -110,36 +115,71 @@ const PropertyProfile = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <TopNavigation session={session} />
-      <main className="flex-1">
-        <div className="max-w-6xl mx-auto space-y-8 my-[84px]">
+      <main className="flex-1 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 pt-16">
+        <div className="max-w-6xl mx-auto px-4">
           <PropertyHeader id={property.id} name={property.name} address={property.address} />
 
-          {property.feature_image_url ? <div ref={containerRef} className="relative" onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
-              <div className="w-full h-[300px] relative rounded-lg overflow-hidden">
-                <img ref={imageRef} src={property.feature_image_url} alt={`${property.name} banner`} className={`w-full h-full object-cover transition-all duration-200 ${isAdmin ? 'cursor-move' : ''}`} style={{
-              objectPosition: isDragging ? `${position.x}% ${position.y}%` : property.feature_image_position || '50% 50%'
-            }} onMouseDown={handleMouseDown} />
+          {/* Media Section - Video or Feature Image */}
+          <div className="relative rounded-xl overflow-hidden border border-orange-500/30 shadow-xl">
+            {property.youtube_url ? (
+              <div className="aspect-video w-full">
+                <PropertyYouTubePlayer 
+                  youtubeUrl={property.youtube_url} 
+                  autoplay={property.youtube_autoplay} 
+                  muted={property.youtube_muted} 
+                  controls={property.youtube_controls} 
+                />
               </div>
-              {isAdmin && <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                  {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
-                </div>}
-            </div> : <div className="w-full h-[300px] bg-muted rounded-lg flex items-center justify-center">
-              <House className="h-24 w-24 text-muted-foreground" />
-            </div>}
+            ) : property.feature_image_url ? (
+              <div ref={containerRef} className="relative" onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+                <div className="w-full h-[500px] relative">
+                  <img 
+                    ref={imageRef} 
+                    src={property.feature_image_url} 
+                    alt={`${property.name} banner`} 
+                    className={`w-full h-full object-cover transition-all duration-200 ${isAdmin ? 'cursor-move' : ''}`} 
+                    style={{
+                      objectPosition: isDragging ? `${position.x}% ${position.y}%` : property.feature_image_position || '50% 50%'
+                    }} 
+                    onMouseDown={handleMouseDown} 
+                  />
+                </div>
+                {isAdmin && (
+                  <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                    {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="w-full h-[500px] bg-gradient-to-r from-orange-900/20 via-gray-800/30 to-orange-900/20 flex items-center justify-center">
+                <House className="h-32 w-32 text-orange-500/50" />
+              </div>
+            )}
+          </div>
 
-          <PropertyImageGallery images={property.images || []} propertyId={property.id} propertyName={property.name} featureImageUrl={property.feature_image_url} />
+          {/* Image Gallery */}
+          <PropertyImageGallery 
+            images={property.images || []} 
+            propertyId={property.id} 
+            propertyName={property.name} 
+            featureImageUrl={property.feature_image_url} 
+          />
 
+          {/* Content Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
+            {/* Left Column - Property Details */}
+            <div className="space-y-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 rounded-xl border border-orange-500/30 shadow-xl">
               <PropertyDetails 
                 bedrooms={property.bedrooms} 
                 bathrooms={property.bathrooms} 
                 buildYear={property.build_year} 
                 price={property.price} 
+                currency={property.currency}
+                pricePerSqm={property.price_per_sqm}
                 arv={property.arv} 
                 description={property.description} 
                 features={property.features} 
-                youtubeUrl={property.youtube_url} 
+                youtubeUrl={null} /* Removing YouTube from details since it's at the top */
                 youtubeAutoplay={property.youtube_autoplay} 
                 youtubeMuted={property.youtube_muted} 
                 youtubeControls={property.youtube_controls}
@@ -153,9 +193,11 @@ const PropertyProfile = () => {
               />
             </div>
             
+            {/* Right Column - Map and Contact Form */}
             <div className="space-y-6">
+              {/* Map Section */}
               {(property.latitude && property.longitude) || property.google_maps_url ? (
-                <div className="h-[300px] rounded-lg overflow-hidden border">
+                <div className="rounded-xl overflow-hidden border border-orange-500/30 shadow-xl h-[500px]">
                   <PropertyMap 
                     latitude={property.latitude} 
                     longitude={property.longitude} 
@@ -164,16 +206,36 @@ const PropertyProfile = () => {
                 </div>
               ) : null}
               
-              <PropertyContactForm 
-                propertyId={property.id} 
-                propertyName={property.name} 
-                enableBorderBeam={property.enable_border_beam} 
-              />
+              {/* Contact Form */}
+              <div className="bg-gradient-to-r from-orange-900 via-orange-800 to-orange-900 p-6 rounded-xl border border-orange-500/30 shadow-xl">
+                <PropertyContactForm 
+                  propertyId={property.id} 
+                  propertyName={property.name} 
+                  enableBorderBeam={property.enable_border_beam} 
+                />
+                
+                {/* WhatsApp Contact Button - Moved from header */}
+                <div className="mt-4">
+                  <Button 
+                    onClick={() => {
+                      const message = `Hi! I'm interested in the property: ${property.name} at ${property.address}`;
+                      const encodedMessage = encodeURIComponent(message);
+                      const whatsappUrl = `https://wa.me/526461961667?text=${encodedMessage}`;
+                      window.open(whatsappUrl, '_blank');
+                    }} 
+                    variant="secondary"
+                    className="w-full flex items-center justify-center"
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    {t('whatsapp')}
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </main>
-      {/* Removed Footer component from here */}
+      {/* Footer is already included in RootLayout */}
     </div>
   );
 };

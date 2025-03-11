@@ -13,6 +13,7 @@ import { Tables } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
 import { TopNavigation } from "@/components/layout/TopNavigation";
 import { useAuthSession } from "@/hooks/useAuthSession";
+import { LoadingAnimation } from "@/components/ui/loading-animation";
 const Properties = () => {
   const {
     isAdmin
@@ -118,17 +119,15 @@ const Properties = () => {
     }
   });
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-[200px]">
-        <p>{t('loading')}</p>
-      </div>;
+    return <LoadingAnimation />;
   }
   return <div className="flex flex-col min-h-screen">
       <TopNavigation session={session} />
       <main className="flex-1">
-        <div className="relative space-y-8 mx-px my-[0px]">
+        <div className="relative space-y-8 mx-px my-[19px]">
           <div className="flex justify-between items-center px-4">
             <div className="flex items-center gap-4">
-              <h1 className="text-4xl font-bold text-slate-950">{t('properties')}</h1>
+              <h1 className="text-4xl font-bold text-white">{t('properties')}</h1>
               <PropertyTypeSelect value={propertyType} onValueChange={setPropertyType} />
             </div>
             {isAdmin && <Button asChild>

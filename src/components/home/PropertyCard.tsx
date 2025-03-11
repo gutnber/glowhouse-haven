@@ -43,6 +43,14 @@ export const PropertyCard = ({
   
   const showLivingSpaceIcons = property.property_type !== 'vacantLand';
   
+  // Determine if we should show specific property icons or features
+  const shouldShowBedrooms = property.bedrooms > 0;
+  const shouldShowBathrooms = property.bathrooms > 0;
+  const shouldShowBuildYear = property.build_year >= 1900;
+  
+  // If any of the main living space attributes are invalid, show features instead
+  const showFeatures = !shouldShowBedrooms || !shouldShowBathrooms || !shouldShowBuildYear;
+  
   // Format dimensions if available
   const dimensions = property.width && property.height 
     ? `${property.width}×${property.height}m` 
@@ -84,21 +92,27 @@ export const PropertyCard = ({
         </CardHeader>
         <CardContent className="px-6 pb-6">
           <div className="grid grid-cols-4 gap-2 text-sm">
-            {showLivingSpaceIcons ? <>
-                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-100">
-                  <Bed className="h-5 w-5 text-orange-500" />
-                  <span className="text-gray-700">{property.bedrooms}</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-100">
-                  <Bath className="h-5 w-5 text-orange-500" />
-                  <span className="text-gray-700">{property.bathrooms}</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-100">
-                  <Home className="h-5 w-5 text-orange-500" />
-                  <span className="text-gray-700">{property.build_year}</span>
-                </div>
+            {showLivingSpaceIcons && !showFeatures ? <>
+                {shouldShowBedrooms && (
+                  <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-100">
+                    <Bed className="h-5 w-5 text-orange-500" />
+                    <span className="text-gray-700">{property.bedrooms}</span>
+                  </div>
+                )}
+                {shouldShowBathrooms && (
+                  <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-100">
+                    <Bath className="h-5 w-5 text-orange-500" />
+                    <span className="text-gray-700">{property.bathrooms}</span>
+                  </div>
+                )}
+                {shouldShowBuildYear && (
+                  <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-100">
+                    <Home className="h-5 w-5 text-orange-500" />
+                    <span className="text-gray-700">{property.build_year}</span>
+                  </div>
+                )}
               </> :
-          // Show land features for vacant land with orange-grey gradient backgrounds
+          // Show features instead of living space icons when they're invalid or for vacant land
           property.features?.slice(0, 3).map((feature, index) => <div key={index} className="flex items-center justify-center p-2 rounded-lg text-xs font-medium text-white" style={{
             background: `linear-gradient(135deg, #F97316 0%, #8E9196 100%)`,
             minHeight: '52px'

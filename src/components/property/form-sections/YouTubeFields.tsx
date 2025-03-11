@@ -3,6 +3,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescripti
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Card } from "@/components/ui/card"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface YouTubeFieldsProps {
   form: UseFormReturn<any>
@@ -10,17 +11,18 @@ interface YouTubeFieldsProps {
 
 export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
   console.log('YouTube form values:', form.getValues())
+  const { t } = useLanguage()
   
   return (
     <div className="space-y-4">
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Video Settings</h3>
+        <h3 className="text-lg font-semibold mb-4">{t('property.video.settings', 'Video Settings')}</h3>
         <FormField
           control={form.control}
           name="youtube_url"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>YouTube Video URL (Optional)</FormLabel>
+              <FormLabel className="text-orange-500">{t('property.video.url', 'YouTube Video URL')} (Optional)</FormLabel>
               <FormControl>
                 <Input 
                   type="url" 
@@ -42,7 +44,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base">Autoplay</FormLabel>
+                  <FormLabel className="text-base text-orange-500">{t('property.video.autoplay', 'Autoplay')}</FormLabel>
                   <FormDescription>
                     Automatically start playing the video
                   </FormDescription>
@@ -63,7 +65,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base">Muted</FormLabel>
+                  <FormLabel className="text-base text-orange-500">{t('property.video.muted', 'Muted')}</FormLabel>
                   <FormDescription>
                     Start video without sound
                   </FormDescription>
@@ -84,7 +86,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base">Show Controls</FormLabel>
+                  <FormLabel className="text-base text-orange-500">{t('property.video.controls', 'Show Controls')}</FormLabel>
                   <FormDescription>
                     Display video player controls
                   </FormDescription>
@@ -102,7 +104,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Visual Effects</h3>
+        <h3 className="text-lg font-semibold mb-4">{t('property.visualEffects', 'Visual Effects')}</h3>
         <div className="grid gap-4">
           <FormField
             control={form.control}
@@ -110,7 +112,7 @@ export const YouTubeFields = ({ form }: YouTubeFieldsProps) => {
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base">Border Beam Effect</FormLabel>
+                  <FormLabel className="text-base text-orange-500">{t('property.borderBeam', 'Border Beam Effect')}</FormLabel>
                   <FormDescription>
                     Enable animated border effect on property cards
                   </FormDescription>

@@ -19,6 +19,25 @@ type TranslationsType = {
 
 const translations: TranslationsType = {
   en: {
+    "mission": "Mission",
+    "missionText": "Provide our clients with the peace of mind of doing business with a company that seeks the best benefit for them.",
+    "vision": "Vision",
+    "visionText": "Offer Real Estate services that positively impact the quality of life of our clients.",
+    "services": "INMA Real Estate Solutions offers 5 services",
+    "forOwners": "For owners:",
+    "propertyMarketingSale": "Marketing of properties for sale.",
+    "propertyMarketingRent": "Marketing of properties for rent.",
+    "propertyManagementRent": "Management of rental properties.",
+    "forBuyers": "For buyers:",
+    "propertyOfferSale": "Property offers for Sale.",
+    "propertyOfferRent": "Property offers for Rent.",
+    "benefits": "Benefits",
+    "personalizedAttention": "Personalized Attention",
+    "personalizedAttentionText": "We manage an exclusive property inventory to which we focus sales strategies designed for each particular case.",
+    "tranquility": "Peace of Mind",
+    "tranquilityText": "The Client will receive information in a clear and transparent way about how the property promotion and sale process will be.",
+    "documentation": "Documentation",
+    "documentationText": "We review that the property documentation is in order so that the sale can be carried out without delays.",
     "welcome": "Welcome to INMA 2.0",
     "subscribe": "Please subscribe to get the latest news and hottest deals",
     "latestNews": "Latest News",
@@ -34,6 +53,8 @@ const translations: TranslationsType = {
     "tools": "Tools",
     "signIn": "Sign In",
     "signOut": "Sign Out",
+    "news": "News",
+    "contact": "Contact",
     "propertyManagement": "Property Management",
     "loading": "Loading properties...",
     "addProperty": "Add Property",
@@ -57,6 +78,23 @@ const translations: TranslationsType = {
     "sold": "Sold",
     "cabin": "Cabin",
     "ranch": "Ranch",
+    "location": "Location",
+    "contactForm": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "message": "Message",
+      "sending": "Sending...",
+      "sendMessage": "Send Message",
+      "messageSent": "Message Sent",
+      "thankYou": "Thank you for your interest. We will get back to you soon.",
+      "sendAnother": "Send Another Message",
+      "messageSentSuccess": "Message Sent Successfully!",
+      "thankYouInterest": "Thank you for your interest in",
+      "getBackSoon": "We'll get back to you as soon as possible.",
+      "interestedInProperty": "I'm interested in {propertyName}. Please provide more information."
+    },
+    "whatsapp": "Contact via WhatsApp",
     "property": {
       "details": "Property Details",
       "edit": "Edit Property",
@@ -73,10 +111,30 @@ const translations: TranslationsType = {
       "features": "Features",
       "video": "Property Video",
       "contactUs": "Contact Us About This Property",
-      "dimensions": "Dimensions"
+      "dimensions": "Dimensions",
+      "type": "Property Type"
     }
   },
   es: {
+    "mission": "Misión",
+    "missionText": "Brindar a nuestros clientes la tranquilidad de hacer negocios con una empresa que busca el mejor beneficio para ellos.",
+    "vision": "Visión",
+    "visionText": "Ofrecer servicios inmobiliarios que impacten positivamente en la calidad de vida de nuestros clientes.",
+    "services": "INMA Soluciones Inmobiliarias ofrece 5 servicios",
+    "forOwners": "Para propietarios:",
+    "propertyMarketingSale": "Comercialización de propiedades para venta.",
+    "propertyMarketingRent": "Comercialización de propiedades para renta.",
+    "propertyManagementRent": "Administración de propiedades en renta.",
+    "forBuyers": "Para compradores:",
+    "propertyOfferSale": "Oferta de propiedades para Venta.",
+    "propertyOfferRent": "Oferta de propiedades para Renta.",
+    "benefits": "Beneficios",
+    "personalizedAttention": "Atención Personalizada",
+    "personalizedAttentionText": "Manejamos un inventario exclusivo de propiedades al que enfocamos estrategias de venta diseñadas para cada caso particular.",
+    "tranquility": "Tranquilidad",
+    "tranquilityText": "El Cliente recibirá información de manera clara y transparente sobre cómo será el proceso de promoción y venta de la propiedad.",
+    "documentation": "Documentación",
+    "documentationText": "Revisamos que la documentación de la propiedad esté en orden para que la venta pueda realizarse sin demoras.",
     "welcome": "Bienvenidos a INMA 2.0",
     "subscribe": "Suscríbase para recibir las últimas noticias y las mejores ofertas",
     "latestNews": "Últimas Noticias",
@@ -92,8 +150,11 @@ const translations: TranslationsType = {
     "tools": "Herramientas",
     "signIn": "Iniciar Sesión",
     "signOut": "Cerrar Sesión",
+    "news": "Noticias",
+    "contact": "Contacto",
     "propertyManagement": "Gestión de Propiedades",
     "loading": "Cargando propiedades...",
+    "addProperty": "Agregar Propiedad",
     "addProperty": "Agregar Propiedad",
     "featuredProperties": "Propiedades Destacadas",
     "viewAllProperties": "Ver Todas las Propiedades",
@@ -115,6 +176,23 @@ const translations: TranslationsType = {
     "sold": "Vendido",
     "cabin": "Cabaña",
     "ranch": "Rancho",
+    "location": "Ubicación",
+    "contactForm": {
+      "name": "Nombre",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono (opcional)",
+      "message": "Mensaje",
+      "sending": "Enviando...",
+      "sendMessage": "Enviar Mensaje",
+      "messageSent": "Mensaje Enviado",
+      "thankYou": "Gracias por su interés. Nos pondremos en contacto pronto.",
+      "sendAnother": "Enviar Otro Mensaje",
+      "messageSentSuccess": "¡Mensaje Enviado Exitosamente!",
+      "thankYouInterest": "Gracias por su interés en",
+      "getBackSoon": "Nos pondremos en contacto lo antes posible.",
+      "interestedInProperty": "Estoy interesado/a en {propertyName}. Por favor, proporcione más información."
+    },
+    "whatsapp": "Contactar por WhatsApp",
     "property": {
       "details": "Detalles de la Propiedad",
       "edit": "Editar Propiedad",
@@ -131,7 +209,19 @@ const translations: TranslationsType = {
       "features": "Características",
       "video": "Video de la Propiedad",
       "contactUs": "Contáctenos Sobre Esta Propiedad",
-      "dimensions": "Dimensiones"
+      "dimensions": "Dimensiones",
+      "type": "Tipo de Propiedad",
+      "name": "Nombre de la Propiedad",
+      "address": "Dirección",
+      "images": "Imágenes",
+      "dragDropImages": "Arrastra y suelta tus imágenes aquí, o haz clic para seleccionar archivos",
+      "selectFiles": "SELECCIONAR ARCHIVOS",
+      "youtubeVideo": "Agregar un video de YouTube para mostrar la propiedad",
+      "autoplay": "Reproducir automáticamente el video",
+      "muted": "Iniciar video sin sonido",
+      "controls": "Mostrar controles del reproductor de video",
+      "visualEffects": "Efectos Visuales",
+      "borderBeam": "Habilitar efecto de borde animado en las tarjetas de propiedad"
     }
   }
 };
@@ -139,7 +229,15 @@ const translations: TranslationsType = {
 const LanguageContext = React.createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = React.useState<Language>('en');
+  const [language, setLanguage] = React.useState<Language>(() => {
+    const savedLanguage = localStorage.getItem('preferred-language');
+    return (savedLanguage === 'en' || savedLanguage === 'es') ? savedLanguage : 'es';
+  });
+
+  const handleSetLanguage = (newLang: Language) => {
+    setLanguage(newLang);
+    localStorage.setItem('preferred-language', newLang);
+  };
 
   const t = (key: string): string => {
     // Handle nested keys like 'property.details'
@@ -159,7 +257,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -68,15 +68,7 @@ export const PropertyDetails = ({
     <div className="space-y-6">
       <div className="space-y-4">
         <div className="flex items-center gap-4">
-          <h2 className="text-3xl font-bold">{t('property.details')}</h2>
-          {isAdmin && (
-            <Button variant="outline" size="sm" asChild>
-              <Link to={`/properties/edit/${id}`} className="flex items-center gap-2">
-                <Edit className="h-4 w-4" />
-                {t('property.edit')}
-              </Link>
-            </Button>
-          )}
+          <h2 className="text-3xl font-bold text-white border-b border-orange-500/30 pb-2 pr-20">{t('property.details')}</h2>
         </div>
 
         <PropertyStats 
@@ -97,6 +89,7 @@ export const PropertyDetails = ({
           currency={currency}
           referenceNumber={referenceNumber}
           arv={arv}
+          pricePerSqm={pricePerSqm}
         />
       </div>
 
@@ -105,7 +98,7 @@ export const PropertyDetails = ({
 
       {youtubeUrl && (
         <div className="space-y-2">
-          <h3 className="text-xl font-semibold">{t('property.video')}</h3>
+          <h3 className="text-xl font-semibold text-white">{t('property.video')}</h3>
           <PropertyYouTubePlayer 
             youtubeUrl={youtubeUrl} 
             autoplay={youtubeAutoplay} 

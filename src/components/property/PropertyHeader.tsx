@@ -15,31 +15,23 @@ export const PropertyHeader = ({
   const {
     isAdmin
   } = useIsAdmin();
-  const handleWhatsAppClick = () => {
-    const message = `Hi! I'm interested in the property: ${name} at ${address}`;
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/526461961667?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
-  };
+  // WhatsApp functionality moved to PropertyProfile.tsx
+  // to be placed below the contact form
   return <div className="flex justify-between items-center">
-      <div className="space-y-1">
-        <Button variant="ghost" asChild className="-ml-4">
+      <div className="space-y-1 mt-2">
+        <Button variant="ghost" asChild className="-ml-4 text-white hover:text-white hover:bg-white/10">
           <Link to="/properties">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Properties
           </Link>
         </Button>
-        <h1 className="text-4xl font-bold my-[7px]">{name}</h1>
-        <div className="flex items-center gap-2 text-muted-foreground">
+        <h1 className="text-4xl font-bold my-[7px] text-white">{name}</h1>
+        <div className="flex items-center gap-2 text-white">
           <MapPin className="h-4 w-4" />
           {address}
         </div>
       </div>
       <div className="flex gap-2">
-        <Button onClick={handleWhatsAppClick} variant="secondary">
-          <MessageCircle className="mr-2 h-4 w-4" />
-          Contact via WhatsApp
-        </Button>
         {isAdmin && <Button asChild>
             <Link to={`/properties/${id}/edit`}>
               <Pencil className="mr-2 h-4 w-4" />
@@ -48,4 +40,4 @@ export const PropertyHeader = ({
           </Button>}
       </div>
     </div>;
-};
+}

@@ -12,10 +12,10 @@ export const PropertyFeatures = ({ features }: PropertyFeaturesProps) => {
   
   return (
     <div className="space-y-2">
-      <h3 className="text-xl font-semibold">{t('property.features')}</h3>
+      <h3 className="text-xl font-semibold text-white">{t('property.features')}</h3>
       <ul className="grid grid-cols-2 gap-2">
         {features.map((feature, i) => (
-          <li key={i} className="flex items-center gap-2">
+          <li key={i} className="flex items-center gap-2 text-white">
             <div className="h-2 w-2 rounded-full bg-primary" />
             {feature}
           </li>

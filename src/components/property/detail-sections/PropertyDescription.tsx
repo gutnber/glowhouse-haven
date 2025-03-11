@@ -12,10 +12,10 @@ export const PropertyDescription = ({ description }: PropertyDescriptionProps) =
   
   return (
     <div className="space-y-2">
-      <h3 className="text-xl font-semibold">{t('property.description')}</h3>
-      <div className="prose prose-sm max-w-none dark:prose-invert">
+      <h3 className="text-xl font-semibold text-white">{t('property.description')}</h3>
+      <div className="prose prose-sm max-w-none dark:prose-invert text-white">
         {description.split('\n').map((paragraph, i) => (
-          <p key={i}>{paragraph}</p>
+          <p key={i} className="text-white">{paragraph}</p>
         ))}
       </div>
     </div>
