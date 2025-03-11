@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -96,6 +97,20 @@ export default {
           '50%': { backgroundPosition: '100% 50%' },
           '100%': { backgroundPosition: '0% 50%' },
         },
+        "circle-fill": {
+          "0%": { 
+            fill: "#9CA3AF", // gray-400
+            transform: "scale(0.5)",
+          },
+          "50%": { 
+            fill: "#F59E0B", // amber-500
+            transform: "scale(1)",
+          },
+          "100%": { 
+            fill: "#F97316", // orange-500
+            transform: "scale(0.5)",
+          }
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
