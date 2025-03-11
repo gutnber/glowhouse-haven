@@ -33,8 +33,6 @@ export const PropertyContactForm = ({
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (isSubmitting || isSuccess) return;
-    
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };

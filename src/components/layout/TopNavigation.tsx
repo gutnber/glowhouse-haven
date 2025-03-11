@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Logo } from "./navigation/Logo";
 import { UserMenu } from "./navigation/UserMenu";
@@ -7,18 +6,22 @@ import { Session } from "@supabase/supabase-js";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Shield } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-
 interface TopNavigationProps {
   session: Session | null;
 }
-
 export function TopNavigation({
   session
 }: TopNavigationProps) {
   const [scrolled, setScrolled] = useState(false);
+<<<<<<< HEAD
   const [loaded, setLoaded] = useState(false);
   const { isAdmin } = useIsAdmin();
 
+=======
+  const {
+    isAdmin
+  } = useIsAdmin();
+>>>>>>> b37ce9c4b9db1b9a1e20c2d96b48ac09bf7e5a34
   useEffect(() => {
     // Set loaded to true after component mounts to trigger animation
     // Using a timeout to ensure this only happens once during initial load
@@ -36,6 +39,7 @@ export function TopNavigation({
       clearTimeout(timer);
     };
   }, []);
+<<<<<<< HEAD
 
   return (
     <nav 
@@ -45,10 +49,13 @@ export function TopNavigation({
       `}
     >
       <div className="container mx-auto relative z-50 flex h-16 items-center justify-between px-4 my-[16px] text-white">
+=======
+  return <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white/80'}`}>
+      <div className="container mx-auto relative z-50 flex h-16 items-center justify-between px-4 my-[16px]">
+>>>>>>> b37ce9c4b9db1b9a1e20c2d96b48ac09bf7e5a34
         <Logo />
         <div className="flex items-center gap-4">
-          {isAdmin && (
-            <TooltipProvider>
+          {isAdmin && <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center">
@@ -59,12 +66,10 @@ export function TopNavigation({
                   <p>Administrator Account</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>
-          )}
+            </TooltipProvider>}
           <LanguageToggle />
           <UserMenu session={session} />
         </div>
       </div>
-    </nav>
-  );
+    </nav>;
 }
