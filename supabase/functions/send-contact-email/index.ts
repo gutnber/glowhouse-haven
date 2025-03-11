@@ -32,19 +32,30 @@ serve(async (req) => {
     
     let submission: ContactSubmission;
     
-    // Handle both direct calls and database trigger format
+    // Handle all possible formats (direct submission, database trigger, email_notifications payload)
     if (body.record) {
       submission = body.record as ContactSubmission;
-    } else if (body.payload) {
+      console.log("Processing request from direct submission record format");
+    } else if (body.payload && typeof body.payload === 'object') {
       submission = body.payload as ContactSubmission;
+      console.log("Processing request from payload object format");
+    } else if (typeof body === 'object' && body.name && body.email) {
+      submission = body as ContactSubmission;
+      console.log("Processing direct submission format");
     } else {
-      throw new Error("Invalid request format - missing record or payload");
+      console.error("Invalid request format:", body);
+      throw new Error("Invalid request format - could not determine submission data structure");
     }
 
-    console.log("Processing contact submission:", submission.id);
+    if (!submission.name || !submission.email || !submission.message) {
+      console.error("Missing required fields in submission:", submission);
+      throw new Error("Missing required fields for email");
+    }
+
+    console.log("Processing contact submission:", submission.id || "no-id");
 
     // Format the date for better readability
-    const formattedDate = new Date(submission.created_at).toLocaleString('en-US', {
+    const formattedDate = new Date(submission.created_at || new Date().toISOString()).toLocaleString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -52,7 +63,7 @@ serve(async (req) => {
       minute: '2-digit'
     });
 
-    console.log("Sending email via Resend...");
+    console.log("Sending email via Resend to henrygutierrezbaja@gmail.com");
     // Send the email using Resend
     const { data, error } = await resend.emails.send({
       from: "INMA Real Estate <onboarding@resend.dev>",

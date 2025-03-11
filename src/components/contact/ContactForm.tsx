@@ -57,20 +57,32 @@ export const ContactForm = () => {
 
       console.log('Contact submission successful:', data);
 
-      // Check if we need to manually trigger email processing due to missing trigger
-      try {
-        // Try to directly call the send-contact-email function
-        const functionResponse = await supabase.functions.invoke('send-contact-email', {
+      // Try multiple approaches to ensure email is sent
+      const sendEmailPromises = [];
+      
+      // 1. Try directly calling the send-contact-email function
+      sendEmailPromises.push(
+        supabase.functions.invoke('send-contact-email', {
           body: { record: data },
-        });
-        
-        console.log('Manual email function response:', functionResponse);
-      } catch (functionError) {
-        console.error('Error calling email function directly:', functionError);
-        // Continue execution even if this fails - the database trigger should still work
-      }
-
-      // Display toast notification
+        }).catch(err => {
+          console.error('Error calling email function directly:', err);
+          return { error: err };
+        })
+      );
+      
+      // 2. Try manually triggering the email queue processor
+      sendEmailPromises.push(
+        supabase.functions.invoke('process-email-queue', {}).catch(err => {
+          console.error('Error calling email queue processor:', err);
+          return { error: err };
+        })
+      );
+      
+      // Wait for all attempts and log results
+      const emailResults = await Promise.all(sendEmailPromises);
+      console.log('Email sending attempts results:', emailResults);
+      
+      // Even if email sending fails, show success to user since the submission was recorded
       toast({
         title: language === 'es' ? 'Mensaje Enviado' : 'Message Sent',
         description: language === 'es' ? 'Gracias por su mensaje. Nos pondremos en contacto pronto.' : 'Thank you for your message. We will get back to you soon.',
