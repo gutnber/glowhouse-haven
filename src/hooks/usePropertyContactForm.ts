@@ -131,7 +131,9 @@ export const usePropertyContactForm = ({ propertyId, propertyName }: UseProperty
       console.error('Form submission error:', error);
       toast({
         title: 'Error',
-        description: error.message || 'There was a problem sending your message',
+        description: error.message || (language === 'es' ? 
+          'Hubo un problema al enviar su mensaje' : 
+          'There was a problem sending your message'),
         variant: 'destructive',
       });
     } finally {

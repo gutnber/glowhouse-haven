@@ -55,7 +55,7 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
 
       <div>
         <Label htmlFor="phone" className="text-white font-medium">
-          {t('contactForm.phone')} ({t('common.optional')})
+          {t('contactForm.phone')}
         </Label>
         <Input
           id="phone"

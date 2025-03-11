@@ -3,7 +3,8 @@
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
-    "success": "Success"
+    "success": "Success",
+    "optional": "optional"
   },
   "allProperties": "All",
   "singleFamily": "Single Family",
@@ -27,7 +28,7 @@
   "contactForm": {
     "name": "Name",
     "email": "Email",
-    "phone": "Phone",
+    "phone": "Phone (optional)",
     "message": "Message",
     "sending": "Sending...",
     "sendMessage": "Send Message",
@@ -39,5 +40,6 @@
   },
   "property": {
     "contactUs": "Contact Us"
-  }
+  },
+  "contact": "Get in Touch"
 }

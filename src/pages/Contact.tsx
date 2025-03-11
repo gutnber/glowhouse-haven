@@ -15,7 +15,7 @@ export default function Contact() {
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="bg-gradient-to-r from-orange-900 via-orange-800 to-orange-900 p-8 rounded-xl border border-orange-500/30 shadow-xl">
             <h1 className="text-3xl font-bold mb-6 text-center text-white border-b border-orange-500/30 pb-4">
-              {language === 'es' ? 'Contáctenos' : 'Get in Touch'}
+              {t('contact')}
             </h1>
             <p className="text-center text-orange-200 mb-8">
               {language === 'es' 

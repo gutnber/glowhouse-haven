@@ -3,7 +3,8 @@
   "common": {
     "loading": "Cargando...",
     "error": "Ocurrió un error",
-    "success": "Éxito"
+    "success": "Éxito",
+    "optional": "opcional"
   },
   "allProperties": "Todo",
   "singleFamily": "Unifamiliar",
@@ -27,7 +28,7 @@
   "contactForm": {
     "name": "Nombre",
     "email": "Correo Electrónico",
-    "phone": "Teléfono",
+    "phone": "Teléfono (opcional)",
     "message": "Mensaje",
     "sending": "Enviando...",
     "sendMessage": "Enviar Mensaje",
@@ -39,5 +40,6 @@
   },
   "property": {
     "contactUs": "Contáctenos"
-  }
+  },
+  "contact": "Contáctenos"
 }
