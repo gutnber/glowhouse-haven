@@ -41,7 +41,7 @@ export function LoadingAnimation() {
             style={{ animationDelay: '2.0s' }}
           />
         </svg>
-        <div className="mt-4 text-xl font-semibold text-primary animate-pulse">Cargando...</div>
+        <div className="mt-4 text-xl font-semibold text-primary">Cargando...</div>
       </div>
     </div>
   );
