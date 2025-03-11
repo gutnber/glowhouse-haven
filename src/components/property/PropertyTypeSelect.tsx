@@ -1,4 +1,3 @@
-
 import { Building2, Home, Building } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -6,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const propertyTypes = [
   {
-    value: "all",
+    value: "allProperties",
     icon: Building2
   }, 
   {

@@ -1,11 +1,10 @@
-
 {
   "common": {
     "loading": "Cargando...",
     "error": "Ocurrió un error",
     "success": "Éxito"
   },
-  "all": "Todo",
+  "allProperties": "Todo",
   "singleFamily": "Unifamiliar",
   "townhouse": "Casa Adosada",
   "vacantLand": "Terreno",

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,7 +18,7 @@ import { LoadingAnimation } from "@/components/ui/loading-animation";
 const Properties = () => {
   const { isAdmin } = useIsAdmin();
   const { t } = useLanguage();
-  const [propertyType, setPropertyType] = useState("all");
+  const [propertyType, setPropertyType] = useState("allProperties");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const session = useAuthSession();
@@ -33,7 +32,7 @@ const Properties = () => {
       console.log('Fetching properties with type:', propertyType);
       let query = supabase.from('properties').select('*').order('created_at', { ascending: false });
       
-      if (propertyType !== 'all') {
+      if (propertyType !== 'allProperties') {
         query = query.eq('property_type', propertyType);
       }
       
