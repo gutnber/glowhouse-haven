@@ -7,12 +7,13 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
 
 export const ContactForm = () => {
   const { toast } = useToast();
   const { language } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -51,6 +52,10 @@ export const ContactForm = () => {
         description: language === 'es' ? 'Gracias por su mensaje. Nos pondremos en contacto pronto.' : 'Thank you for your message. We will get back to you soon.',
       });
 
+      // Show success state instead of just clearing the form
+      setIsSuccess(true);
+      
+      // Reset form but don't hide success message
       setFormData({
         name: '',
         email: '',
@@ -67,6 +72,31 @@ export const ContactForm = () => {
       setIsSubmitting(false);
     }
   };
+
+  // If success, show success message
+  if (isSuccess) {
+    return (
+      <div className="text-center py-8 space-y-4">
+        <div className="flex justify-center">
+          <CheckCircle className="h-16 w-16 text-green-500" />
+        </div>
+        <h3 className="text-xl font-bold text-white">
+          {language === 'es' ? 'Mensaje Enviado Exitosamente!' : 'Message Sent Successfully!'}
+        </h3>
+        <p className="text-orange-200">
+          {language === 'es' 
+            ? 'Gracias por contactarnos. Nos pondremos en contacto con usted lo antes posible.'
+            : 'Thank you for contacting us. We will get back to you as soon as possible.'}
+        </p>
+        <Button 
+          onClick={() => setIsSuccess(false)} 
+          className="mt-4 bg-orange-600 hover:bg-orange-700 text-white"
+        >
+          {language === 'es' ? 'Enviar otro mensaje' : 'Send another message'}
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
