@@ -39,6 +39,9 @@ export const useContactForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isSubmitting) return; // Prevent double submission
+    
     setIsSubmitting(true);
 
     try {
@@ -50,42 +53,34 @@ export const useContactForm = () => {
 
       console.log('Submitting contact form...', formData);
 
-      // First insert into the contact_submissions table
-      const { data, error } = await supabase
+      const { data, error: insertError } = await supabase
         .from('contact_submissions')
-        .insert({
+        .insert([{
           name: formData.name,
           email: formData.email,
           phone: formData.phone || null,
           message: formData.message,
           status: 'new'
-        })
-        .select('*')
+        }])
+        .select()
         .single();
 
-      if (error) {
-        console.error('Error inserting contact submission:', error);
-        throw error;
+      if (insertError) {
+        console.error('Error inserting contact submission:', insertError);
+        throw insertError;
       }
 
       console.log('Contact submission successful:', data);
 
       // Then try to send the email using the edge function
-      try {
-        const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
-          body: { record: data },
-        });
-        
-        if (emailError) {
-          console.error('Error sending email notification via edge function:', emailError);
-          // We continue anyway as the submission was already recorded in the database
-        }
-      } catch (emailSendError) {
-        console.error('Exception when calling email edge function:', emailSendError);
-        // We continue anyway as the submission was already recorded in the database
+      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
+        body: { record: data }
+      });
+
+      if (emailError) {
+        console.error('Error sending email notification:', emailError);
       }
-      
-      // Show success message regardless of email send status since data was saved
+
       toast({
         title: language === 'es' ? 'Mensaje Enviado' : 'Message Sent',
         description: language === 'es' ? 
@@ -101,7 +96,7 @@ export const useContactForm = () => {
         title: 'Error',
         description: error.message || (language === 'es' ? 
           'Hubo un problema al enviar su mensaje' : 
-          'There was a problem sending your mensaje'),
+          'There was a problem sending your message'),
         variant: 'destructive',
       });
     } finally {
