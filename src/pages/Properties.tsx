@@ -24,6 +24,9 @@ const Properties = () => {
   const queryClient = useQueryClient();
   const session = useAuthSession();
 
+  // For debugging
+  console.log('Current propertyType state:', propertyType);
+
   const { data: properties = [], isLoading } = useQuery({
     queryKey: ['properties', propertyType],
     queryFn: async () => {
@@ -110,7 +113,13 @@ const Properties = () => {
           <div className="flex justify-between items-center px-4">
             <div className="flex items-center gap-4">
               <h1 className="text-4xl font-bold text-white">{t('properties')}</h1>
-              <PropertyTypeSelect value={propertyType} onValueChange={setPropertyType} />
+              <PropertyTypeSelect 
+                value={propertyType} 
+                onValueChange={(value) => {
+                  console.log('Property type changed to:', value);
+                  setPropertyType(value);
+                }} 
+              />
             </div>
             {isAdmin && (
               <Button asChild>
@@ -148,7 +157,6 @@ const Properties = () => {
           </div>
         </div>
       </main>
-      {/* Removed Footer component from here */}
     </div>
   );
 };

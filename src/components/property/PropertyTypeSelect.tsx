@@ -53,6 +53,11 @@ export function PropertyTypeSelect({
   className
 }: PropertyTypeSelectProps) {
   const { t, language } = useLanguage();
+  
+  // For debugging
+  console.log('Current language:', language);
+  console.log('Selected value:', value);
+  console.log('Translation for selected value:', t(value));
 
   const selectedType = propertyTypes.find(type => type.value === value);
   const Icon = selectedType?.icon;
