@@ -12,5 +12,6 @@
   "condo": "Condominio",
   "apartment": "Departamento",
   "multifamily": "Multi-Familiar",
-  "commercial": "Comercial"
+  "commercial": "Comercial",
+  "propertyType": "Tipo de Propiedad"
 }
