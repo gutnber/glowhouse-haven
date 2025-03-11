@@ -59,7 +59,7 @@ export function PropertyTypeSelect({
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className="">
+      <SelectTrigger className={cn("", className)}>
         <SelectValue placeholder={t('propertyType')}>
           {value && (
             <div className="flex items-center gap-2">
@@ -71,11 +71,11 @@ export function PropertyTypeSelect({
       </SelectTrigger>
       <SelectContent className="bg-white border border-gray-200">
         {propertyTypes.map(type => {
-          const Icon = type.icon;
+          const TypeIcon = type.icon;
           return (
             <SelectItem key={type.value} value={type.value} className="flex items-center gap-2 text-black">
               <div className="flex items-center gap-2">
-                <Icon className="h-4 w-4" />
+                <TypeIcon className="h-4 w-4" />
                 <span>{t(type.value)}</span>
               </div>
             </SelectItem>

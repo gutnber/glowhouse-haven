@@ -5,5 +5,13 @@
     "error": "An error occurred",
     "success": "Success"
   },
-  "all": "All"
+  "all": "All",
+  "singleFamily": "Single Family",
+  "townhouse": "Townhouse",
+  "vacantLand": "Vacant Land",
+  "condo": "Condo",
+  "apartment": "Apartment",
+  "multifamily": "Multi-Family",
+  "commercial": "Commercial",
+  "propertyType": "Property Type"
 }
