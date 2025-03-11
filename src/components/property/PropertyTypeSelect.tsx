@@ -52,12 +52,21 @@ export function PropertyTypeSelect({
   disabled,
   className
 }: PropertyTypeSelectProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger className="">
-        <SelectValue placeholder={t('propertyType')} />
+        <SelectValue placeholder={t('propertyType')}>
+          {value && (
+            <div className="flex items-center gap-2">
+              {propertyTypes.find(type => type.value === value)?.icon && (
+                <propertyTypes.find(type => type.value === value)?.icon className="h-4 w-4" />
+              )}
+              <span>{t(value)}</span>
+            </div>
+          )}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent className="bg-white border border-gray-200">
         {propertyTypes.map(type => {
