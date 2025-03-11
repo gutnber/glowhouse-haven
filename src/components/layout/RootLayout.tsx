@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Outlet, useLocation } from "react-router-dom"
@@ -7,7 +8,7 @@ import { useAuthSession } from "@/hooks/useAuthSession"
 import { LoadingScreen } from "@/components/ui/loading-screen"
 import { useState, useEffect } from "react"
 
-const MINIMUM_LOADING_TIME = 2400; // Match the animation duration (2.4s)
+const MINIMUM_LOADING_TIME = 5000; // 5 seconds for initial load/refresh
 
 export default function RootLayout() {
   const [loading, setLoading] = useState(true);
