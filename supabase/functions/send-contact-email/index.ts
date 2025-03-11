@@ -1,193 +1,154 @@
 
+// Follow Deno API reference: https://deno.land/api@v1.35.0?s=Deno.Kv
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface ContactSubmission {
-  id: string;
-  name: string;
-  email: string;
-  phone: string | null;
-  message: string;
-  created_at: string;
-}
+// Create a Supabase client with the service role key
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+);
 
-// Store recently processed submission IDs to prevent duplicate sends
-const recentlyProcessed = new Map<string, number>();
-// Clean up old entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [id, timestamp] of recentlyProcessed.entries()) {
-    // Remove entries older than 10 minutes
-    if (now - timestamp > 10 * 60 * 1000) {
-      recentlyProcessed.delete(id);
-    }
-  }
-}, 5 * 60 * 1000);
+const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') || '';
+const NOTIFICATION_EMAIL = 'help@ignishomes.com';
 
 serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+  // Handle CORS
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
-    console.log("Processing contact email request");
-    
-    // Parse the request body
-    let body;
-    try {
-      body = await req.json();
-      console.log("Request body:", JSON.stringify(body));
-    } catch (parseError) {
-      console.error("Error parsing request body:", parseError);
-      throw new Error("Invalid JSON in request body");
-    }
-    
-    let submission: ContactSubmission;
-    
-    // Handle all possible formats (direct submission, database trigger, email_notifications payload)
-    if (body.record) {
-      submission = body.record as ContactSubmission;
-      console.log("Processing request from direct submission record format");
-    } else if (body.payload && typeof body.payload === 'object') {
-      submission = body.payload as ContactSubmission;
-      console.log("Processing request from payload object format");
-    } else if (typeof body === 'object' && body.name && body.email) {
-      submission = body as ContactSubmission;
-      console.log("Processing direct submission format");
-    } else {
-      console.error("Invalid request format:", body);
-      throw new Error("Invalid request format - could not determine submission data structure");
-    }
+    // Get the request body
+    const payload = await req.json();
+    const record = payload.record;
 
-    // Validate required fields
-    if (!submission.name || !submission.email || !submission.message) {
-      console.error("Missing required fields in submission:", submission);
-      throw new Error("Missing required fields for email");
-    }
+    console.log('Received contact submission', record);
 
-    // Check for duplicate submissions to prevent multiple emails
-    const submissionId = submission.id || `${submission.email}-${submission.created_at}`;
-    if (recentlyProcessed.has(submissionId)) {
-      console.log(`Skipping duplicate submission: ${submissionId}`);
+    if (!record || !record.email || !record.name) {
+      console.error('Invalid contact submission data', record);
       return new Response(
         JSON.stringify({ 
           success: false, 
-          message: "Duplicate submission detected", 
-          skipped: true 
+          error: 'Invalid contact submission data' 
         }),
-        {
-          status: 200,
+        { 
+          status: 400, 
           headers: { 
-            "Content-Type": "application/json",
-            ...corsHeaders 
-          },
+            'Content-Type': 'application/json',
+            ...corsHeaders
+          } 
         }
       );
     }
-    
-    // Mark this submission as processed
-    recentlyProcessed.set(submissionId, Date.now());
 
-    console.log("Processing contact submission:", submissionId);
+    // Format message
+    const contactMessage = {
+      from: 'Notifications <notifications@ignishomes.com>',
+      to: NOTIFICATION_EMAIL,
+      subject: `New Contact Form Submission - ${record.name}`,
+      html: `
+        <h1>New Contact Form Submission</h1>
+        <p><strong>Name:</strong> ${record.name}</p>
+        <p><strong>Email:</strong> ${record.email}</p>
+        <p><strong>Phone:</strong> ${record.phone || 'Not provided'}</p>
+        <p><strong>Message:</strong></p>
+        <p>${record.message}</p>
+        <p><strong>Submitted at:</strong> ${new Date(record.created_at).toLocaleString()}</p>
+      `,
+    };
 
-    // Format the date for better readability
-    const formattedDate = new Date(submission.created_at || new Date().toISOString()).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    console.log('Sending email to:', NOTIFICATION_EMAIL);
 
-    // Try to send the email notification
-    console.log("Sending email via Resend to henrygutierrezbaja@gmail.com");
-    try {
-      const { data, error } = await resend.emails.send({
-        from: "INMA Real Estate <onboarding@resend.dev>",
-        to: ["henrygutierrezbaja@gmail.com"],
-        subject: `New Contact Form Submission from ${submission.name}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-            <h1 style="color: #E65100; border-bottom: 2px solid #FFB74D; padding-bottom: 10px;">New Contact Form Submission</h1>
-            
-            <div style="margin: 20px 0;">
-              <p><strong>Name:</strong> ${submission.name}</p>
-              <p><strong>Email:</strong> <a href="mailto:${submission.email}">${submission.email}</a></p>
-              <p><strong>Phone:</strong> ${submission.phone || 'Not provided'}</p>
-              <p><strong>Submitted on:</strong> ${formattedDate}</p>
-            </div>
-            
-            <div style="background-color: #FFF3E0; padding: 15px; border-radius: 5px; margin-top: 20px;">
-              <h2 style="color: #E65100; margin-top: 0;">Message:</h2>
-              <p style="white-space: pre-line;">${submission.message}</p>
-            </div>
-            
-            <div style="margin-top: 30px; font-size: 12px; color: #757575; border-top: 1px solid #e0e0e0; padding-top: 15px;">
-              <p>This is an automated notification from your INMA Real Estate website.</p>
-            </div>
-          </div>
-        `,
-      });
+    // Send email using Resend
+    if (RESEND_API_KEY) {
+      try {
+        const response = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+          },
+          body: JSON.stringify(contactMessage),
+        });
 
-      if (error) {
-        console.error("Error sending email:", error);
-        throw new Error(error.message);
+        const result = await response.json();
+        console.log('Email send result:', result);
+
+        if (!response.ok) {
+          throw new Error(`Resend API error: ${result.message || response.statusText}`);
+        }
+
+        // Update the contact submission status
+        const { error: updateError } = await supabase
+          .from('contact_submissions')
+          .update({ status: 'notified' })
+          .eq('id', record.id);
+
+        if (updateError) {
+          console.error('Error updating contact submission status:', updateError);
+        }
+
+        return new Response(
+          JSON.stringify({ success: true, message: 'Email sent successfully' }),
+          { 
+            status: 200, 
+            headers: { 
+              'Content-Type': 'application/json',
+              ...corsHeaders
+            } 
+          }
+        );
+      } catch (error) {
+        console.error('Error sending email:', error);
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: error.message || 'Error sending email' 
+          }),
+          { 
+            status: 500, 
+            headers: { 
+              'Content-Type': 'application/json',
+              ...corsHeaders
+            } 
+          }
+        );
       }
-
-      console.log("Email sent successfully:", data);
-      
-      return new Response(
-        JSON.stringify({ success: true, message: "Email notification sent" }),
-        {
-          status: 200,
-          headers: { 
-            "Content-Type": "application/json",
-            ...corsHeaders 
-          },
-        }
-      );
-    } catch (emailError) {
-      console.error("Error sending email:", emailError);
-      
-      // Return error but with 200 status since we still want to acknowledge receipt
+    } else {
+      console.warn('RESEND_API_KEY not configured. Email not sent.');
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: "Email sending failed, but submission was recorded",
-          details: emailError.message || "Unknown email error"
+          warning: 'Email service not configured' 
         }),
-        {
-          status: 200,
+        { 
+          status: 200,  // Still return 200 as the form submission itself was successful
           headers: { 
-            "Content-Type": "application/json",
-            ...corsHeaders 
-          },
+            'Content-Type': 'application/json',
+            ...corsHeaders
+          } 
         }
       );
     }
   } catch (error) {
-    console.error("Function error:", error.message);
-    
+    console.error('Function error:', error);
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message || "An unknown error occurred" 
+        error: error.message || 'Internal server error' 
       }),
-      {
-        status: 500,
+      { 
+        status: 500, 
         headers: { 
-          "Content-Type": "application/json",
-          ...corsHeaders 
-        },
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        } 
       }
     );
   }
