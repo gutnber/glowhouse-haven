@@ -101,7 +101,7 @@ export const useContactForm = () => {
         title: 'Error',
         description: error.message || (language === 'es' ? 
           'Hubo un problema al enviar su mensaje' : 
-          'There was a problem sending your message'),
+          'There was a problem sending your mensaje'),
         variant: 'destructive',
       });
     } finally {
