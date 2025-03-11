@@ -35,6 +35,8 @@ export const ContactForm = () => {
         throw new Error(language === 'es' ? 'Por favor complete todos los campos requeridos' : 'Please fill out all required fields');
       }
 
+      console.log('Submitting contact form...', formData);
+
       // Insert the form data into the contact_submissions table
       const { data, error } = await supabase
         .from('contact_submissions')
@@ -48,7 +50,25 @@ export const ContactForm = () => {
         .select('*')
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error inserting contact submission:', error);
+        throw error;
+      }
+
+      console.log('Contact submission successful:', data);
+
+      // Check if we need to manually trigger email processing due to missing trigger
+      try {
+        // Try to directly call the send-contact-email function
+        const functionResponse = await supabase.functions.invoke('send-contact-email', {
+          body: { record: data },
+        });
+        
+        console.log('Manual email function response:', functionResponse);
+      } catch (functionError) {
+        console.error('Error calling email function directly:', functionError);
+        // Continue execution even if this fails - the database trigger should still work
+      }
 
       // Display toast notification
       toast({
@@ -67,6 +87,7 @@ export const ContactForm = () => {
         message: ''
       });
     } catch (error: any) {
+      console.error('Form submission error:', error);
       toast({
         title: 'Error',
         description: error.message || 'There was a problem sending your message',

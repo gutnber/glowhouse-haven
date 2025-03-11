@@ -26,8 +26,20 @@ serve(async (req) => {
   }
 
   try {
-    const { record } = await req.json();
-    const submission = record as ContactSubmission;
+    console.log("Processing contact email request");
+    const body = await req.json();
+    console.log("Request body:", JSON.stringify(body));
+    
+    let submission: ContactSubmission;
+    
+    // Handle both direct calls and database trigger format
+    if (body.record) {
+      submission = body.record as ContactSubmission;
+    } else if (body.payload) {
+      submission = body.payload as ContactSubmission;
+    } else {
+      throw new Error("Invalid request format - missing record or payload");
+    }
 
     console.log("Processing contact submission:", submission.id);
 
@@ -40,6 +52,7 @@ serve(async (req) => {
       minute: '2-digit'
     });
 
+    console.log("Sending email via Resend...");
     // Send the email using Resend
     const { data, error } = await resend.emails.send({
       from: "INMA Real Estate <onboarding@resend.dev>",
