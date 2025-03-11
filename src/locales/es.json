@@ -1,3 +1,4 @@
+
 {
   "common": {
     "loading": "Cargando...",
@@ -12,5 +13,15 @@
   "apartment": "Departamento",
   "multifamily": "Multi-Familiar",
   "commercial": "Comercial",
-  "propertyType": "Tipo de Propiedad"
+  "propertyType": "Tipo de Propiedad",
+  "admin": {
+    "role": "Administrador",
+    "roleDescription": "Puede administrar todos los aspectos del sitio",
+    "users": "Gestión de Usuarios"
+  },
+  "user": {
+    "role": "Usuario",
+    "roleDescription": "Usuario regular con acceso limitado"
+  },
+  "properties": "Propiedades"
 }

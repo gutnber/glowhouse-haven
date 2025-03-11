@@ -26,7 +26,7 @@ const Users = () => {
     enabled: isAdmin,
   })
 
-  const { data: userRoles, isLoading: isRolesLoading } = useQuery({
+  const { data: userRoles, isLoading: isRolesLoading, refetch: refetchRoles } = useQuery({
     queryKey: ["user-roles"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -45,7 +45,7 @@ const Users = () => {
 
   const refetchProfiles = async () => {
     await refetchProfilesOriginal()
-    return
+    await refetchRoles()
   }
 
   if (isAdminLoading || isProfilesLoading || isRolesLoading) {

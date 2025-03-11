@@ -12,15 +12,35 @@ export const useIsAdmin = () => {
         setIsLoading(true)
         const { data: { session } } = await supabase.auth.getSession()
         
-        if (session?.user?.email) {
-          console.log('Checking admin status for:', session.user.email)
-          // Check against both admin emails
-          setIsAdmin(
-            session.user.email === 'help@ignishomes.com' || 
-            session.user.email === 'silvia@inma.mx'
-          )
+        if (session?.user?.id) {
+          console.log('Checking admin status for user ID:', session.user.id)
+          
+          // First check if it's one of the hardcoded admin emails for backward compatibility
+          if (session.user.email === 'help@ignishomes.com' || session.user.email === 'silvia@inma.mx') {
+            console.log('User has hardcoded admin email')
+            setIsAdmin(true)
+            setIsLoading(false)
+            return
+          }
+          
+          // Check for admin role in the database
+          const { data: roleData, error: roleError } = await supabase
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", session.user.id)
+            .eq("role", "admin")
+            .single()
+          
+          if (roleError && roleError.code !== 'PGRST116') {
+            // PGRST116 is the "no rows returned" error which is expected if user is not an admin
+            console.error('Error checking role:', roleError)
+            setIsAdmin(false)
+          } else {
+            console.log('Role data:', roleData)
+            setIsAdmin(!!roleData)
+          }
         } else {
-          console.log('No user email found in session')
+          console.log('No user ID found in session')
           setIsAdmin(false)
         }
       } catch (error) {
@@ -34,17 +54,38 @@ export const useIsAdmin = () => {
     checkAdminStatus()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user?.email) {
-        console.log('Auth state changed, checking admin for:', session.user.email)
-        // Check against both admin emails on auth state change as well
-        setIsAdmin(
-          session.user.email === 'help@ignishomes.com' ||
-          session.user.email === 'silvia@inma.mx'
-        )
+      if (session?.user?.id) {
+        console.log('Auth state changed, checking admin for user ID:', session.user.id)
+        
+        // First check if it's one of the hardcoded admin emails for backward compatibility
+        if (session.user.email === 'help@ignishomes.com' || session.user.email === 'silvia@inma.mx') {
+          console.log('User has hardcoded admin email')
+          setIsAdmin(true)
+          setIsLoading(false)
+          return
+        }
+        
+        // Check for admin role in database
+        supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .eq("role", "admin")
+          .single()
+          .then(({ data, error }) => {
+            if (error && error.code !== 'PGRST116') {
+              console.error('Error checking role on auth change:', error)
+              setIsAdmin(false)
+            } else {
+              console.log('Role data on auth change:', data)
+              setIsAdmin(!!data)
+            }
+            setIsLoading(false)
+          })
       } else {
         setIsAdmin(false)
+        setIsLoading(false)
       }
-      setIsLoading(false)
     })
 
     return () => subscription.unsubscribe()

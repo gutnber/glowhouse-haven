@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
@@ -75,7 +74,7 @@ export const UsersTable = ({ profiles, userRoles, onRefetch }: UsersTableProps) 
             const userRole = userRoles.find(
               (role) => role.user_id === profile.id
             )
-            const isMainAdmin = profile.email === "help@ignishomes.com"
+            const isMainAdmin = profile.email === "help@ignishomes.com" || profile.email === "silvia@inma.mx"
 
             return (
               <TableRow key={profile.id}>
