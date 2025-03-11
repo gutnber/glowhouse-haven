@@ -9,11 +9,27 @@ import { BorderBeam } from '@/components/ui/border-beam';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, CheckCircle } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 interface PropertyContactFormProps {
   propertyId: string;
   propertyName: string;
   enableBorderBeam?: boolean | null;
+}
+
+interface FormValues {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
 }
 
 export const PropertyContactForm = ({ 
@@ -25,41 +41,39 @@ export const PropertyContactForm = ({
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: t('contactForm.interestedInProperty').replace('{propertyName}', propertyName)
+  
+  const defaultMessage = t('contactForm.interestedInProperty').replace('{propertyName}', propertyName);
+  
+  const form = useForm<FormValues>({
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      message: defaultMessage
+    }
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSubmit = async (data: FormValues) => {
     if (isSubmitting || isSuccess) return;
     
     setIsSubmitting(true);
 
     try {
       // Validate required fields
-      if (!formData.name || !formData.email || !formData.message) {
+      if (!data.name || !data.email || !data.message) {
         throw new Error(language === 'es' ? 
           'Por favor complete todos los campos requeridos' : 
           'Please fill out all required fields');
       }
 
-      console.log('Submitting property inquiry form...', formData);
+      console.log('Submitting property inquiry form...', data);
 
       // Create submission data object that will be used across multiple operations
       const submissionData = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || null,
-        message: formData.message,
+        name: data.name,
+        email: data.email,
+        phone: data.phone || null,
+        message: data.message,
         property_id: propertyId,
         property_name: propertyName,
         created_at: new Date().toISOString()
@@ -69,10 +83,10 @@ export const PropertyContactForm = ({
       const { error: leadsError } = await supabase
         .from('leads')
         .insert({
-          full_name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          contact_message: formData.message,
+          full_name: data.name,
+          email: data.email,
+          phone: data.phone || null,
+          contact_message: data.message,
           inquiry_property_id: propertyId,
           inquiry_property_name: propertyName,
           status: 'new'
@@ -87,10 +101,10 @@ export const PropertyContactForm = ({
       const { data: contactData, error: contactError } = await supabase
         .from('contact_submissions')
         .insert({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          message: `[Property Inquiry: ${propertyName}] ${formData.message}`,
+          name: data.name,
+          email: data.email,
+          phone: data.phone || null,
+          message: `[Property Inquiry: ${propertyName}] ${data.message}`,
           status: 'new'
         })
         .select('*')
@@ -110,10 +124,10 @@ export const PropertyContactForm = ({
           body: { 
             payload: {
               id: contactData?.id || 'direct-submission',
-              name: formData.name,
-              email: formData.email,
-              phone: formData.phone || null,
-              message: `[Property Inquiry: ${propertyName}] ${formData.message}`,
+              name: data.name,
+              email: data.email,
+              phone: data.phone || null,
+              message: `[Property Inquiry: ${propertyName}] ${data.message}`,
               created_at: new Date().toISOString()
             }
           },
@@ -159,11 +173,11 @@ export const PropertyContactForm = ({
       setIsSuccess(true);
       
       // Reset form but don't hide success message
-      setFormData({
+      form.reset({
         name: '',
         email: '',
         phone: '',
-        message: t('contactForm.interestedInProperty').replace('{propertyName}', propertyName)
+        message: defaultMessage
       });
     } catch (error: any) {
       console.error('Form submission error:', error);
@@ -178,73 +192,99 @@ export const PropertyContactForm = ({
   };
 
   const FormContent = () => (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="name" className="text-white font-medium">{t('contactForm.name')} *</Label>
-          <Input
-            id="name"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
             name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
-            disabled={isSubmitting}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-white font-medium">{t('contactForm.name')} *</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
+                    disabled={isSubmitting}
+                    required
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
 
-        <div>
-          <Label htmlFor="email" className="text-white font-medium">{t('contactForm.email')} *</Label>
-          <Input
-            id="email"
+          <FormField
+            control={form.control}
             name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
-            disabled={isSubmitting}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-white font-medium">{t('contactForm.email')} *</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="email"
+                    className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
+                    disabled={isSubmitting}
+                    required
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
 
-        <div>
-          <Label htmlFor="phone" className="text-white font-medium">{t('contactForm.phone')}</Label>
-          <Input
-            id="phone"
+          <FormField
+            control={form.control}
             name="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={handleChange}
-            className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
-            disabled={isSubmitting}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-white font-medium">{t('contactForm.phone')}</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="tel"
+                    className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
+                    disabled={isSubmitting}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
 
-        <div>
-          <Label htmlFor="message" className="text-white font-medium">{t('contactForm.message')} *</Label>
-          <Textarea
-            id="message"
+          <FormField
+            control={form.control}
             name="message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-            className="mt-1 h-32 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
-            disabled={isSubmitting}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-white font-medium">{t('contactForm.message')} *</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    className="mt-1 h-32 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
+                    disabled={isSubmitting}
+                    required
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
-      </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-        {isSubmitting ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {t('contactForm.sending')}
-          </>
-        ) : (
-          t('contactForm.sendMessage')
-        )}
-      </Button>
-    </form>
+        <Button type="submit" disabled={isSubmitting} className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {t('contactForm.sending')}
+            </>
+          ) : (
+            t('contactForm.sendMessage')
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 
   const SuccessContent = () => (
