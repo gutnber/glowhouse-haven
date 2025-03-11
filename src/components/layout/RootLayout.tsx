@@ -10,9 +10,10 @@ import { useState, useEffect } from "react"
 
 export default function RootLayout() {
   const [loading, setLoading] = useState(true);
+  const [contentLoaded, setContentLoaded] = useState(false);
   const session = useAuthSession()
 
-  const { data: profile } = useQuery({
+  const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['profile', session?.user?.id],
     queryFn: async () => {
       if (!session?.user) {
@@ -44,19 +45,23 @@ export default function RootLayout() {
   })
 
   useEffect(() => {
-    // Remove loading screen immediately if no user session
-    if (!session?.user) {
-      setLoading(false);
-      return;
+    // Mark content as loaded when profile data is ready
+    if (!session?.user || (!profileLoading && profile !== undefined)) {
+      setContentLoaded(true);
     }
+  }, [session, profile, profileLoading]);
 
-    // Minimal loading time for authenticated users
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 300); // Further reduced from 500ms to 300ms
-    
-    return () => clearTimeout(timer);
-  }, [session]);
+  useEffect(() => {
+    // Only hide loading screen when content is loaded
+    if (contentLoaded) {
+      // Add a slight delay to ensure smooth transition
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 800); // Increased delay for smoother transition
+      
+      return () => clearTimeout(timer);
+    }
+  }, [contentLoaded]);
 
   return (
     <div 
