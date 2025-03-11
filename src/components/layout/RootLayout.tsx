@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Outlet, useLocation } from "react-router-dom"
@@ -7,6 +6,8 @@ import { Footer } from "./Footer"
 import { useAuthSession } from "@/hooks/useAuthSession"
 import { LoadingScreen } from "@/components/ui/loading-screen"
 import { useState, useEffect } from "react"
+
+const MINIMUM_LOADING_TIME = 2400; // Match the animation duration (2.4s)
 
 export default function RootLayout() {
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ export default function RootLayout() {
     },
     enabled: !!session?.user,
     retry: 1
-  })
+  });
 
   useEffect(() => {
     // Remove loading screen immediately if no user session
@@ -51,10 +52,17 @@ export default function RootLayout() {
       return;
     }
 
-    // Show loading on route changes
+    const startTime = Date.now();
+    
+    // Show loading on route changes and ensure minimum duration
     const timer = setTimeout(() => {
-      setLoading(false);
-    }, 400); // Slightly longer to ensure content is ready
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, MINIMUM_LOADING_TIME - elapsedTime);
+      
+      setTimeout(() => {
+        setLoading(false);
+      }, remainingTime);
+    }, 400);
     
     return () => clearTimeout(timer);
   }, [session, location.pathname]);
