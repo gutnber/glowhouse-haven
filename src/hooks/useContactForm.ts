@@ -13,7 +13,7 @@ interface ContactFormData {
 
 export const useContactForm = () => {
   const { toast } = useToast();
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState<ContactFormData>({
@@ -50,6 +50,7 @@ export const useContactForm = () => {
 
       console.log('Submitting contact form...', formData);
 
+      // First insert into the contact_submissions table
       const { data, error } = await supabase
         .from('contact_submissions')
         .insert({
@@ -69,14 +70,22 @@ export const useContactForm = () => {
 
       console.log('Contact submission successful:', data);
 
-      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
-        body: { record: data },
-      });
-      
-      if (emailError) {
-        console.error('Error sending email:', emailError);
+      // Then try to send the email using the edge function
+      try {
+        const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
+          body: { record: data },
+        });
+        
+        if (emailError) {
+          console.error('Error sending email notification via edge function:', emailError);
+          // We continue anyway as the submission was already recorded in the database
+        }
+      } catch (emailSendError) {
+        console.error('Exception when calling email edge function:', emailSendError);
+        // We continue anyway as the submission was already recorded in the database
       }
       
+      // Show success message regardless of email send status since data was saved
       toast({
         title: language === 'es' ? 'Mensaje Enviado' : 'Message Sent',
         description: language === 'es' ? 
@@ -90,7 +99,9 @@ export const useContactForm = () => {
       console.error('Form submission error:', error);
       toast({
         title: 'Error',
-        description: error.message || 'There was a problem sending your message',
+        description: error.message || (language === 'es' ? 
+          'Hubo un problema al enviar su mensaje' : 
+          'There was a problem sending your message'),
         variant: 'destructive',
       });
     } finally {

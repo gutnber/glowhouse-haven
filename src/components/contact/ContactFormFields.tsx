@@ -18,13 +18,13 @@ interface ContactFormFieldsProps {
 }
 
 export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactFormFieldsProps) => {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <div className="space-y-4">
       <div>
         <Label htmlFor="name" className="text-white font-medium">
-          {language === 'es' ? 'Nombre *' : 'Name *'}
+          {t('contactForm.name')} *
         </Label>
         <Input
           id="name"
@@ -39,7 +39,7 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
 
       <div>
         <Label htmlFor="email" className="text-white font-medium">
-          {language === 'es' ? 'Correo Electrónico *' : 'Email *'}
+          {t('contactForm.email')} *
         </Label>
         <Input
           id="email"
@@ -55,7 +55,7 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
 
       <div>
         <Label htmlFor="phone" className="text-white font-medium">
-          {language === 'es' ? 'Teléfono (opcional)' : 'Phone (optional)'}
+          {t('contactForm.phone')} ({t('common.optional')})
         </Label>
         <Input
           id="phone"
@@ -70,7 +70,7 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
 
       <div>
         <Label htmlFor="message" className="text-white font-medium">
-          {language === 'es' ? 'Mensaje *' : 'Message *'}
+          {t('contactForm.message')} *
         </Label>
         <Textarea
           id="message"
@@ -87,10 +87,10 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {language === 'es' ? 'Enviando...' : 'Sending...'}
+            {t('contactForm.sending')}
           </>
         ) : (
-          language === 'es' ? 'Enviar Mensaje' : 'Send Message'
+          t('contactForm.sendMessage')
         )}
       </Button>
     </div>

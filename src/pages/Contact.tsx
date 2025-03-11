@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext"
 
 export default function Contact() {
   const session = useAuthSession()
-  const { language } = useLanguage()
+  const { t, language } = useLanguage()
   
   return (
     <div className="flex flex-col min-h-screen">

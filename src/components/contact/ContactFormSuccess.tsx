@@ -8,26 +8,23 @@ interface ContactFormSuccessProps {
 }
 
 export const ContactFormSuccess = ({ onReset }: ContactFormSuccessProps) => {
-  const { language } = useLanguage();
-
+  const { t } = useLanguage();
+  
   return (
     <div className="text-center py-8 space-y-4">
       <div className="flex justify-center">
         <CheckCircle className="h-16 w-16 text-green-500" />
       </div>
-      <h3 className="text-xl font-bold text-white">
-        {language === 'es' ? 'Mensaje Enviado Exitosamente!' : 'Message Sent Successfully!'}
-      </h3>
-      <p className="text-orange-200">
-        {language === 'es' 
-          ? 'Gracias por contactarnos. Nos pondremos en contacto con usted lo antes posible.'
-          : 'Thank you for contacting us. We will get back to you as soon as possible.'}
+      <h3 className="text-xl font-bold text-white">{t('contactForm.messageSentSuccess')}</h3>
+      <p className="text-gray-300">
+        {t('contactForm.getBackSoon')}
       </p>
       <Button 
         onClick={onReset} 
-        className="mt-4 bg-orange-600 hover:bg-orange-700 text-white"
+        variant="outline"
+        className="mt-4 border-orange-500/50 text-white hover:bg-orange-500/20"
       >
-        {language === 'es' ? 'Enviar otro mensaje' : 'Send another message'}
+        {t('contactForm.sendAnother')}
       </Button>
     </div>
   );

@@ -23,5 +23,21 @@
     "role": "Usuario",
     "roleDescription": "Usuario regular con acceso limitado"
   },
-  "properties": "Propiedades"
+  "properties": "Propiedades",
+  "contactForm": {
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "message": "Mensaje",
+    "sending": "Enviando...",
+    "sendMessage": "Enviar Mensaje",
+    "messageSentSuccess": "¡Mensaje Enviado Exitosamente!",
+    "thankYouInterest": "Gracias por su interés en",
+    "getBackSoon": "Nos pondremos en contacto con usted lo antes posible.",
+    "sendAnother": "Enviar Otro Mensaje",
+    "interestedInProperty": "Estoy interesado/a en {propertyName}. Por favor, proporcione más información."
+  },
+  "property": {
+    "contactUs": "Contáctenos"
+  }
 }
