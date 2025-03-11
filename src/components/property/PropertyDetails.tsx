@@ -8,7 +8,7 @@ import { PropertyStats } from './detail-sections/PropertyStats';
 import { PropertyPrice } from './detail-sections/PropertyPrice';
 import { PropertyDescription } from './detail-sections/PropertyDescription';
 import { PropertyFeatures } from './detail-sections/PropertyFeatures';
-import { PropertyYouTubePlayer } from './PropertyYouTubePlayer';
+import { PropertyYouTubeSection } from './detail-sections/PropertyYouTubeSection';
 
 interface PropertyDetailsProps {
   id: string;
@@ -96,17 +96,12 @@ export const PropertyDetails = ({
       <PropertyDescription description={description} />
       <PropertyFeatures features={features} />
 
-      {youtubeUrl && (
-        <div className="space-y-2">
-          <h3 className="text-xl font-semibold text-white">{t('property.video')}</h3>
-          <PropertyYouTubePlayer 
-            youtubeUrl={youtubeUrl} 
-            autoplay={youtubeAutoplay} 
-            muted={youtubeMuted} 
-            controls={youtubeControls} 
-          />
-        </div>
-      )}
+      <PropertyYouTubeSection 
+        youtubeUrl={youtubeUrl}
+        autoplay={youtubeAutoplay}
+        muted={youtubeMuted}
+        controls={youtubeControls}
+      />
     </div>
   );
 };
