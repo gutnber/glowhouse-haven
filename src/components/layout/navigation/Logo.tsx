@@ -16,6 +16,15 @@ export function Logo() {
     const fetchLogo = async () => {
       try {
         setIsLoading(true);
+        // Check local storage first for cached logo URL
+        const cachedLogo = localStorage.getItem('app_logo_url');
+        
+        if (cachedLogo) {
+          setLogoUrl(cachedLogo);
+          setIsLoading(false);
+        }
+        
+        // Still fetch from server to update if needed
         const { data, error } = await supabase
           .from('app_settings')
           .select('logo_url')
@@ -26,7 +35,11 @@ export function Logo() {
           return;
         }
         
-        setLogoUrl(data?.logo_url || null);
+        if (data?.logo_url) {
+          // Cache the logo URL
+          localStorage.setItem('app_logo_url', data.logo_url);
+          setLogoUrl(data.logo_url);
+        }
       } catch (error) {
         console.error('Error fetching logo:', error);
       } finally {
@@ -41,6 +54,9 @@ export function Logo() {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
   
+  // Default to the INMA logo if no custom logo is loaded
+  const defaultLogo = "/inma-logo.svg";
+  
   return (
     <div className="flex items-center gap-6">
       <Link to="/" className="flex items-center text-xl font-bold text-primary">
@@ -48,12 +64,14 @@ export function Logo() {
           <img 
             src={logoUrl} 
             alt="Company Logo" 
-            className="h-[70px] max-w-[180px] object-contain" 
+            className="h-[70px] max-w-[180px] object-contain transition-opacity duration-300" 
           />
         ) : (
-          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-700">
-            
-          </span>
+          <img 
+            src={defaultLogo}
+            alt="Default Logo"
+            className="h-[70px] max-w-[180px] object-contain transition-opacity duration-300"
+          />
         )}
       </Link>
       <nav className="hidden lg:flex items-center gap-6">

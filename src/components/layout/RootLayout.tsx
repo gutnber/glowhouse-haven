@@ -1,7 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import { TopNavigation } from "./TopNavigation"
 import { Footer } from "./Footer"
 import { useAuthSession } from "@/hooks/useAuthSession"
@@ -10,7 +10,8 @@ import { useState, useEffect } from "react"
 
 export default function RootLayout() {
   const [loading, setLoading] = useState(true);
-  const session = useAuthSession()
+  const session = useAuthSession();
+  const location = useLocation();
 
   const { data: profile } = useQuery({
     queryKey: ['profile', session?.user?.id],
@@ -50,13 +51,13 @@ export default function RootLayout() {
       return;
     }
 
-    // Minimal loading time for authenticated users
+    // Show loading on route changes
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 300); // Further reduced from 500ms to 300ms
+    }, 400); // Slightly longer to ensure content is ready
     
     return () => clearTimeout(timer);
-  }, [session]);
+  }, [session, location.pathname]);
 
   return (
     <div 
