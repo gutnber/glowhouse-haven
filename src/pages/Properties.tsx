@@ -14,7 +14,6 @@ import { useToast } from "@/hooks/use-toast";
 import { TopNavigation } from "@/components/layout/TopNavigation";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { LoadingAnimation } from "@/components/ui/loading-animation";
-
 const Properties = () => {
   const {
     isAdmin
@@ -159,5 +158,4 @@ const Properties = () => {
       {/* Removed Footer component from here */}
     </div>;
 };
-
 export default Properties;
