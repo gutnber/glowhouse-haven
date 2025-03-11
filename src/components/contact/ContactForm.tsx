@@ -5,18 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from 'react-i18next';
-import { supabase } from '@/integrations/supabase/client';
-import { Loader2, CheckCircle } from 'lucide-react';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Loader2 } from 'lucide-react';
 
 export const ContactForm = () => {
-  const { t } = useTranslation();
   const { toast } = useToast();
   const { language } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,12 +30,10 @@ export const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Validate required fields
       if (!formData.name || !formData.email || !formData.message) {
         throw new Error(language === 'es' ? 'Por favor complete todos los campos requeridos' : 'Please fill out all required fields');
       }
 
-      // Insert the contact submission
       const { error } = await supabase
         .from('contact_submissions')
         .insert({
@@ -56,24 +50,13 @@ export const ContactForm = () => {
         title: language === 'es' ? 'Mensaje Enviado' : 'Message Sent',
         description: language === 'es' ? 'Gracias por su mensaje. Nos pondremos en contacto pronto.' : 'Thank you for your message. We will get back to you soon.',
       });
-      
-      // Set success state
-      setIsSuccess(true);
-      
-      // Reset form after delay
-      setTimeout(() => {
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          message: ''
-        });
-        
-        // Reset success after longer delay
-        setTimeout(() => {
-          setIsSuccess(false);
-        }, 5000);
-      }, 500);
+
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: ''
+      });
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -85,7 +68,7 @@ export const ContactForm = () => {
     }
   };
 
-  const FormContent = () => (
+  return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-4">
         <div>
@@ -154,29 +137,4 @@ export const ContactForm = () => {
       </Button>
     </form>
   );
-
-  const SuccessContent = () => (
-    <div className="text-center py-8 space-y-4">
-      <div className="flex justify-center">
-        <CheckCircle className="h-16 w-16 text-green-500" />
-      </div>
-      <h3 className="text-xl font-bold text-white">
-        {language === 'es' ? '¡Mensaje Enviado Exitosamente!' : 'Message Sent Successfully!'}
-      </h3>
-      <p className="text-orange-200">
-        {language === 'es' ? 'Gracias por contactarnos.' : 'Thank you for contacting us.'}
-        <br />
-        {language === 'es' ? 'Nos pondremos en contacto con usted lo antes posible.' : 'We\'ll get back to you as soon as possible.'}
-      </p>
-      <Button 
-        onClick={() => setIsSuccess(false)} 
-        variant="outline"
-        className="mt-4 border-orange-500/50 text-white hover:bg-orange-500/20"
-      >
-        {language === 'es' ? 'Enviar Otro Mensaje' : 'Send Another Message'}
-      </Button>
-    </div>
-  );
-
-  return isSuccess ? <SuccessContent /> : <FormContent />;
 };
