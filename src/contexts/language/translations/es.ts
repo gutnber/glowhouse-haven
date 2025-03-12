@@ -1,3 +1,4 @@
+
 import { TranslationValue } from '../types';
 
 const esTranslations: Record<string, TranslationValue> = {
