@@ -15,6 +15,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { PropertyProfileHeader } from "@/components/property/profile/PropertyProfileHeader";
 import { PropertyMainMedia } from "@/components/property/profile/PropertyMainMedia";
 import { PropertyContactSection } from "@/components/property/profile/PropertyContactSection";
+import { SEO } from "@/components/SEO";
 
 const PropertyProfile = () => {
   const { id } = useParams();
@@ -59,6 +60,7 @@ const PropertyProfile = () => {
   
   return (
     <div className="flex flex-col min-h-screen">
+      <SEO propertyId={id} />
       <TopNavigation session={session} />
       <main className="flex-1 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 pt-16">
         <div className="max-w-6xl mx-auto px-4">

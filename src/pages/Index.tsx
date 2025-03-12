@@ -9,6 +9,7 @@ import { InfoSections } from "@/components/home/InfoSections";
 import { TopNavigation } from "@/components/layout/TopNavigation";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { LoadingAnimation } from "@/components/ui/loading-animation";
+import { SEO } from "@/components/SEO";
 
 const POSTS_PER_PAGE = 5;
 const INITIAL_VISIBLE_POSTS = 1;
@@ -103,6 +104,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col relative">
+      <SEO />
       <TopNavigation session={session} />
       <StarryBackground />
       <div className="relative z-10 flex-1">

@@ -1,0 +1,36 @@
+
+User-agent: *
+Allow: /
+
+# Specifically allow Facebook's crawler
+User-agent: facebookexternalhit
+Allow: /
+
+# Allow Facebook's crawler for app content
+User-agent: FacebookBot
+Allow: /
+
+# Common bot patterns
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+# Sitemaps
+Sitemap: https://www.inma.mx/sitemap.xml

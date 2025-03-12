@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,6 +10,7 @@ import { TopNavigation } from "@/components/layout/TopNavigation"
 import { useAuthSession } from "@/hooks/useAuthSession"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { LoadingAnimation } from "@/components/ui/loading-animation"
+import { SEO } from "@/components/SEO"
 
 const POSTS_PER_PAGE = 12
 
@@ -35,6 +37,7 @@ export default function News() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <SEO />
       <TopNavigation session={session} />
       <main className="flex-1 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 pt-16">
         <div className="max-w-7xl mx-auto p-6 space-y-8">
@@ -42,12 +45,12 @@ export default function News() {
             <Button variant="outline" asChild className="text-orange-500 border-orange-500/30 hover:bg-orange-500/20 hover:text-white">
               <Link to="/" className="flex items-center gap-2">
                 <ArrowLeft className="h-4 w-4" />
-                Volver al Inicio
+                {t('backToHome')}
               </Link>
             </Button>
             <h1 className="text-3xl font-bold text-white flex items-center gap-2">
               <Star className="h-6 w-6 text-orange-500" />
-              Noticias y Actualizaciones
+              {t('latestNews')}
             </h1>
           </div>
 
@@ -74,7 +77,7 @@ export default function News() {
                       <ArrowRight className="h-5 w-5 text-white/70 transform transition-all duration-300 group-hover:translate-x-2 group-hover:text-orange-500" />
                     </div>
                     <CardDescription className="text-orange-500/80 mt-2">
-                      {new Date(post.created_at).toLocaleDateString('es-ES', {
+                      {new Date(post.created_at).toLocaleDateString(t('language') === 'es' ? 'es-ES' : 'en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'

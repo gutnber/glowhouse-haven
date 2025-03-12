@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 
 type Language = 'en' | 'es';
@@ -7,6 +6,11 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
+  getMetaTags: (path: string) => {
+    title: string;
+    description: string;
+    keywords: string;
+  };
 }
 
 // Define a nested structure for translations
@@ -128,7 +132,34 @@ const translations: TranslationsType = {
       "controls": "Show Controls"
     },
     "replaceImage": "Replace Image",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "seo": {
+      "home": {
+        "title": "INMA Real Estate Solutions | Premium Real Estate Services in Mexico",
+        "description": "INMA offers premium real estate services: selling, renting, and property management in Mexico. Find your ideal property with our experts.",
+        "keywords": "real estate, properties, sale, rent, property management, Mexico, INMA"
+      },
+      "properties": {
+        "title": "Properties | INMA Real Estate Solutions",
+        "description": "Explore our exclusive properties for sale and rent in Mexico. Find houses, apartments, condos, and commercial properties with INMA.",
+        "keywords": "properties for sale, properties for rent, Mexico real estate, houses, apartments, condos"
+      },
+      "contact": {
+        "title": "Contact Us | INMA Real Estate Solutions",
+        "description": "Get in touch with INMA's real estate experts. We're here to help you find or sell your property in Mexico.",
+        "keywords": "contact real estate agent, property consultation, Mexico real estate help"
+      },
+      "news": {
+        "title": "Real Estate News | INMA Real Estate Solutions",
+        "description": "Stay updated with the latest real estate news, market trends, and property insights from INMA Real Estate Solutions.",
+        "keywords": "real estate news, property market, Mexico real estate trends"
+      },
+      "property": {
+        "title": "{propertyName} | INMA Real Estate Solutions",
+        "description": "View details of {propertyName}. {bedrooms} bedrooms, {bathrooms} bathrooms, {area}m² in {location}. Contact INMA for more information.",
+        "keywords": "property for sale, property for rent, {location} real estate, {propertyType}"
+      }
+    }
   },
   es: {
     "mission": "Misión",
@@ -240,7 +271,34 @@ const translations: TranslationsType = {
       "controls": "Mostrar controles"
     },
     "replaceImage": "Reemplazar Imagen",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "seo": {
+      "home": {
+        "title": "INMA Soluciones Inmobiliarias | Servicios Inmobiliarios Premium en México",
+        "description": "INMA ofrece servicios inmobiliarios premium: venta, renta y administración de propiedades en México. Encuentra tu propiedad ideal con nuestros expertos.",
+        "keywords": "inmobiliaria, bienes raíces, propiedades, venta, renta, administración de propiedades, México, INMA"
+      },
+      "properties": {
+        "title": "Propiedades | INMA Soluciones Inmobiliarias",
+        "description": "Explora nuestras propiedades exclusivas en venta y renta en México. Encuentra casas, departamentos, condominios y propiedades comerciales con INMA.",
+        "keywords": "propiedades en venta, propiedades en renta, bienes raíces en México, casas, departamentos, condominios"
+      },
+      "contact": {
+        "title": "Contáctenos | INMA Soluciones Inmobiliarias",
+        "description": "Ponte en contacto con los expertos inmobiliarios de INMA. Estamos aquí para ayudarte a encontrar o vender tu propiedad en México.",
+        "keywords": "contactar agente inmobiliario, consulta de propiedades, ayuda inmobiliaria en México"
+      },
+      "news": {
+        "title": "Noticias Inmobiliarias | INMA Soluciones Inmobiliarias",
+        "description": "Mantente actualizado con las últimas noticias inmobiliarias, tendencias del mercado y perspectivas de propiedades de INMA Soluciones Inmobiliarias.",
+        "keywords": "noticias inmobiliarias, mercado inmobiliario, tendencias inmobiliarias en México"
+      },
+      "property": {
+        "title": "{propertyName} | INMA Soluciones Inmobiliarias",
+        "description": "Ver detalles de {propertyName}. {bedrooms} dormitorios, {bathrooms} baños, {area}m² en {location}. Contacta a INMA para más información.",
+        "keywords": "propiedad en venta, propiedad en renta, bienes raíces en {location}, {propertyType}"
+      }
+    }
   }
 };
 
@@ -255,10 +313,24 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const handleSetLanguage = (newLang: Language) => {
     setLanguage(newLang);
     localStorage.setItem('preferred-language', newLang);
+    
+    document.documentElement.lang = newLang;
+    
+    const metaOgLocale = document.querySelector('meta[property="og:locale"]');
+    const metaOgLocaleAlt = document.querySelector('meta[property="og:locale:alternate"]');
+    
+    if (metaOgLocale && metaOgLocaleAlt) {
+      if (newLang === 'es') {
+        metaOgLocale.setAttribute('content', 'es_MX');
+        metaOgLocaleAlt.setAttribute('content', 'en_US');
+      } else {
+        metaOgLocale.setAttribute('content', 'en_US');
+        metaOgLocaleAlt.setAttribute('content', 'es_MX');
+      }
+    }
   };
 
   const t = (key: string): string => {
-    // Handle nested keys like 'property.details'
     const parts = key.split('.');
     if (parts.length === 1) {
       const value = translations[language][key];
@@ -266,13 +338,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     } else {
       let currentObj: any = translations[language];
       
-      // Navigate through the nested structure
       for (let i = 0; i < parts.length; i++) {
         const part = parts[i];
         if (currentObj && typeof currentObj === 'object' && part in currentObj) {
           currentObj = currentObj[part];
         } else {
-          return key; // Key path not found
+          return key;
         }
       }
       
@@ -280,8 +351,32 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const getMetaTags = (path: string) => {
+    let seoKey = 'home';
+    
+    if (path.startsWith('/properties')) {
+      seoKey = 'properties';
+    } else if (path.startsWith('/contact')) {
+      seoKey = 'contact';
+    } else if (path.startsWith('/news')) {
+      seoKey = 'news';
+    } else if (path.match(/\/property\/[^/]+$/)) {
+      seoKey = 'property';
+    }
+    
+    return {
+      title: t(`seo.${seoKey}.title`),
+      description: t(`seo.${seoKey}.description`),
+      keywords: t(`seo.${seoKey}.keywords`)
+    };
+  };
+
+  React.useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t, getMetaTags }}>
       {children}
     </LanguageContext.Provider>
   );

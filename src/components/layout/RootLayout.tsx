@@ -7,6 +7,7 @@ import { Footer } from "./Footer"
 import { useAuthSession } from "@/hooks/useAuthSession"
 import { LoadingScreen } from "@/components/ui/loading-screen"
 import { useState, useEffect } from "react"
+import { SEO } from "@/components/SEO"
 
 const MINIMUM_LOADING_TIME = 5000; // 5 seconds for initial load/refresh
 
@@ -73,6 +74,7 @@ export default function RootLayout() {
       data-template={profile?.ui_template || "original"} 
       className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground"
     >
+      <SEO />
       {loading && <LoadingScreen />}
       <TopNavigation session={session} />
       <main className="flex-1 pt-20">
