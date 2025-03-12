@@ -1,45 +1,128 @@
-
 {
-  "common": {
-    "loading": "Loading...",
-    "error": "An error occurred",
-    "success": "Success",
-    "optional": "optional"
+  "nav": {
+    "home": "Home",
+    "properties": "Properties",
+    "news": "News",
+    "settings": "Settings",
+    "users": "Users",
+    "tools": "Tools",
+    "contact": "Contact",
+    "communications": "Communications"
   },
-  "allProperties": "All",
-  "singleFamily": "Single Family",
-  "townhouse": "Townhouse",
-  "vacantLand": "Vacant Land",
-  "condo": "Condo",
-  "apartment": "Apartment",
-  "multifamily": "Multi-Family",
-  "commercial": "Commercial",
-  "propertyType": "Property Type",
-  "admin": {
-    "role": "Admin",
-    "roleDescription": "Can manage all aspects of the site",
-    "users": "Users Management"
+  "index": {
+    "welcome": "Welcome to INMA Real Estate",
+    "description": "Find the best properties in Baja California, Mexico.",
+    "featuredProperties": "Featured Properties",
+    "latestNews": "Latest News"
   },
-  "user": {
-    "role": "User",
-    "roleDescription": "Regular user with limited access"
+  "properties": {
+    "title": "Properties in Baja California",
+    "addProperty": "Add Property",
+    "editProperty": "Edit Property",
+    "deleteProperty": "Delete Property",
+    "confirmDelete": "Are you sure you want to delete this property?",
+    "propertyAdded": "Property added successfully!",
+    "propertyUpdated": "Property updated successfully!",
+    "propertyDeleted": "Property deleted successfully!",
+    "noProperties": "No properties found.",
+    "details": "Property Details",
+    "contactUs": "Contact Us About This Property",
+    "stats": "Property Stats",
+    "price": "Price",
+    "description": "Description",
+    "features": "Features",
+    "location": "Location",
+    "similarProperties": "Similar Properties",
+    "propertyType": "Property Type",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "area": "Area",
+    "buildYear": "Build Year",
+    "pricePerSqm": "Price per m²",
+    "arv": "After Repair Value",
+    "referenceNumber": "Reference Number",
+    "width": "Width",
+    "height": "Height",
+    "heatedArea": "Heated Area"
   },
-  "properties": "Properties",
+  "news": {
+    "title": "Latest News",
+    "addPost": "Add News Post",
+    "editPost": "Edit News Post",
+    "deletePost": "Delete News Post",
+    "confirmDelete": "Are you sure you want to delete this news post?",
+    "postAdded": "News post added successfully!",
+    "postUpdated": "News post updated successfully!",
+    "postDeleted": "News post deleted successfully!",
+    "noPosts": "No news posts found.",
+    "details": "News Post Details"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile Settings",
+    "account": "Account Settings",
+    "notifications": "Notification Settings",
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "users": {
+    "title": "Users",
+    "addUser": "Add User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "confirmDelete": "Are you sure you want to delete this user?",
+    "userAdded": "User added successfully!",
+    "userUpdated": "User updated successfully!",
+    "userDeleted": "User deleted successfully!",
+    "noUsers": "No users found."
+  },
+  "tools": {
+    "title": "Tools",
+    "seoAnalyzer": "SEO Analyzer",
+    "keywordResearch": "Keyword Research",
+    "socialMedia": "Social Media Management"
+  },
   "contactForm": {
-    "name": "Name",
-    "email": "Email",
-    "phone": "Phone (optional)",
-    "message": "Message",
-    "sending": "Sending...",
+    "name": "Your Name",
+    "email": "Your Email",
+    "phone": "Your Phone",
+    "message": "Your Message",
     "sendMessage": "Send Message",
-    "messageSentSuccess": "Message Sent Successfully!",
-    "thankYouInterest": "Thank you for your interest in",
-    "getBackSoon": "We will get back to you as soon as possible.",
-    "sendAnother": "Send Another Message",
-    "interestedInProperty": "I'm interested in {propertyName}. Please provide more information."
+    "sending": "Sending...",
+    "success": "Thank you!",
+    "successMessage": "Your message has been sent.",
+    "nameRequired": "Name is required.",
+    "emailRequired": "Email is required.",
+    "messageRequired": "Message is required."
+  },
+  "footer": {
+    "copyright": "© 2024 INMA Real Estate. All rights reserved."
+  },
+  "whatsapp": "Contact via WhatsApp",
+  "admin": {
+    "communications": "Communications",
+    "emailTemplates": "Email Templates",
+    "smsTemplates": "SMS Templates",
+    "socialMediaPosts": "Social Media Posts"
   },
   "property": {
-    "contactUs": "Contact Us"
+    "contactUs": "Contact Us",
+    "details": "Details"
   },
-  "contact": "Get in Touch"
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "phone": "Phone",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "success": "Thank you for your message!",
+    "successMessage": "We have received your message and will get back to you as soon as possible.",
+    "sendAnother": "Send Another Message",
+    "transcriptAdded": "Your chat conversation has been added to this message."
+  },
+  "assistant": {
+    "save": "Save",
+    "download": "Download"
+  }
 }

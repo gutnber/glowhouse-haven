@@ -1,11 +1,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useChatAssistant } from '@/contexts/ChatAssistantContext';
-import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Mail, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { WhatsAppButton } from '@/components/property/contact-form/WhatsAppButton';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
 
 export const ChatBubble = () => {
   const { t, language } = useLanguage();
@@ -13,6 +14,7 @@ export const ChatBubble = () => {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -33,6 +35,78 @@ export const ChatBubble = () => {
     if (inputValue.trim() && !isLoading) {
       sendMessage(inputValue);
       setInputValue('');
+    }
+  };
+
+  // Send chat transcript to user's email
+  const handleSendTranscript = async () => {
+    try {
+      // Format the chat transcript
+      const transcript = messages.map(msg => 
+        `${msg.role === 'user' ? 'You' : 'Assistant'}: ${msg.content}`
+      ).join('\n\n');
+      
+      // Save to localStorage temporarily
+      localStorage.setItem('chatTranscript', transcript);
+      
+      // Show success toast
+      toast({
+        title: language === 'es' ? 'Conversación guardada' : 'Conversation saved',
+        description: language === 'es' 
+          ? 'Puedes continuar la conversación en la página de contacto' 
+          : 'You can continue this conversation on the contact page',
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error('Error saving transcript:', error);
+      toast({
+        title: language === 'es' ? 'Error' : 'Error',
+        description: language === 'es' 
+          ? 'No se pudo guardar la conversación' 
+          : 'Failed to save the conversation',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  // Download chat transcript as text file
+  const handleDownloadTranscript = () => {
+    try {
+      // Format the chat transcript
+      const title = language === 'es' ? 'Conversación con Asistente INMA' : 'Conversation with INMA Assistant';
+      const date = new Date().toLocaleString();
+      const header = `${title}\n${date}\n\n`;
+      
+      const transcript = messages.map(msg => 
+        `${msg.role === 'user' ? 'You' : 'Assistant'}: ${msg.content}`
+      ).join('\n\n');
+      
+      const fullTranscript = header + transcript;
+      
+      // Create a download link
+      const element = document.createElement('a');
+      const file = new Blob([fullTranscript], {type: 'text/plain'});
+      element.href = URL.createObjectURL(file);
+      element.download = 'INMA-chat-transcript.txt';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+      
+      toast({
+        title: language === 'es' ? 'Descarga completada' : 'Download complete',
+        description: language === 'es' 
+          ? 'La conversación se ha descargado como archivo de texto' 
+          : 'The conversation has been downloaded as a text file',
+      });
+    } catch (error) {
+      console.error('Error downloading transcript:', error);
+      toast({
+        title: language === 'es' ? 'Error' : 'Error',
+        description: language === 'es' 
+          ? 'No se pudo descargar la conversación' 
+          : 'Failed to download the conversation',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -60,14 +134,17 @@ export const ChatBubble = () => {
             <WhatsAppButton 
               propertyName={language === 'es' ? "Consulta general" : "General inquiry"}
               propertyAddress={language === 'es' ? "No especificada" : "Not specified"}
+              className="bg-green-600 hover:bg-green-700 text-white"
+              fullWidth
             />
             <Button 
-              variant="secondary" 
-              className="w-full"
+              variant="default" 
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white"
               onClick={() => {
                 window.location.href = "/contact";
               }}
             >
+              <Mail className="mr-2 h-4 w-4" />
               {language === 'es' ? 'Formulario de contacto' : 'Contact form'}
             </Button>
           </div>
@@ -167,6 +244,32 @@ export const ChatBubble = () => {
               <div ref={messagesEndRef} />
             </div>
           </div>
+          
+          {/* Action buttons - Only show if there are messages beyond the welcome message */}
+          {messages.length > 1 && (
+            <div className="flex justify-between items-center p-2 bg-gray-800 border-t border-gray-700">
+              <div className="flex space-x-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleSendTranscript}
+                  className="text-gray-300 hover:text-white hover:bg-gray-700"
+                >
+                  <Mail className="h-4 w-4 mr-1" />
+                  {language === 'es' ? 'Guardar' : 'Save'}
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleDownloadTranscript}
+                  className="text-gray-300 hover:text-white hover:bg-gray-700"
+                >
+                  <Download className="h-4 w-4 mr-1" />
+                  {language === 'es' ? 'Descargar' : 'Download'}
+                </Button>
+              </div>
+            </div>
+          )}
           
           {/* Input */}
           <form onSubmit={handleSubmit} className="p-3 bg-gray-900 border-t border-orange-500/30">

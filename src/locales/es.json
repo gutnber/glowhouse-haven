@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Cargando...",
@@ -41,5 +40,16 @@
   "property": {
     "contactUs": "Contáctenos"
   },
-  "contact": "Contáctenos"
+  "contact": {
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "message": "Mensaje",
+    "phone": "Teléfono",
+    "send": "Enviar Mensaje",
+    "sending": "Enviando...",
+    "success": "¡Gracias por tu mensaje!",
+    "successMessage": "Hemos recibido tu mensaje y te responderemos lo antes posible.",
+    "sendAnother": "Enviar Otro Mensaje",
+    "transcriptAdded": "Tu conversación con el asistente ha sido agregada a este mensaje."
+  }
 }

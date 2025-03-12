@@ -1,32 +1,61 @@
 
-import { TopNavigation } from "@/components/layout/TopNavigation"
-import { ContactForm } from "@/components/contact/ContactForm"
-import { useAuthSession } from "@/hooks/useAuthSession"
-import { useLanguage } from "@/contexts/LanguageContext"
+import React, { useEffect, useState } from 'react';
+import { useContactForm } from '@/hooks/useContactForm';
+import { ContactForm } from '@/components/contact/ContactForm';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Contact() {
-  const session = useAuthSession()
-  const { t, language } = useLanguage()
+  const { t } = useLanguage();
+  const contactForm = useContactForm();
+  const [transcript, setTranscript] = useState<string | null>(null);
   
+  useEffect(() => {
+    // Check for saved chat transcript in localStorage
+    const savedTranscript = localStorage.getItem('chatTranscript');
+    if (savedTranscript) {
+      setTranscript(savedTranscript);
+      
+      // Append transcript to the message if form is available
+      if (contactForm.form) {
+        const currentMessage = contactForm.form.getValues('message') || '';
+        const fullMessage = currentMessage + 
+          (currentMessage ? '\n\n' : '') + 
+          '--- Chat Transcript ---\n' + 
+          savedTranscript;
+        
+        contactForm.form.setValue('message', fullMessage);
+        
+        // Remove from localStorage after using it
+        localStorage.removeItem('chatTranscript');
+      }
+    }
+  }, [contactForm.form]);
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <TopNavigation session={session} />
-      <main className="flex-1 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 pt-16">
-        <div className="max-w-4xl mx-auto px-4 py-12">
-          <div className="bg-gradient-to-r from-orange-900 via-orange-800 to-orange-900 p-8 rounded-xl border border-orange-500/30 shadow-xl">
-            <h1 className="text-3xl font-bold mb-6 text-center text-white border-b border-orange-500/30 pb-4">
-              {t('contact')}
-            </h1>
-            <p className="text-center text-orange-200 mb-8">
-              {language === 'es' 
-                ? '¿Tiene preguntas o desea obtener más información sobre nuestras propiedades? ¡Estamos aquí para ayudarle!'
-                : 'Have questions or want to learn more about our properties? We\'re here to help!'}
-            </p>
-            
-            <ContactForm />
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold text-white mb-8 border-b border-orange-500/30 pb-2">
+          {t('nav.contact')}
+        </h1>
+        
+        <div className="bg-gray-900 rounded-xl border border-orange-500/30 p-6 shadow-lg">
+          {transcript && (
+            <div className="mb-4 p-4 bg-orange-900/20 rounded-lg border border-orange-600/30">
+              <p className="text-white font-medium mb-2">
+                {t('contact.transcriptAdded')}
+              </p>
+            </div>
+          )}
+          
+          <ContactForm 
+            form={contactForm.form}
+            isSubmitting={contactForm.isSubmitting}
+            isSuccess={contactForm.isSuccess}
+            onSubmit={contactForm.handleSubmit}
+            resetForm={contactForm.resetForm}
+          />
         </div>
-      </main>
+      </div>
     </div>
-  )
+  );
 }

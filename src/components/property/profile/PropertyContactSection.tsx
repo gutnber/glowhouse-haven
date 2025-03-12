@@ -21,6 +21,7 @@ export const PropertyContactSection = ({ property }: PropertyContactSectionProps
         <WhatsAppButton
           propertyName={property.name}
           propertyAddress={property.address || ''}
+          className="bg-green-600 hover:bg-green-700 text-white w-full"
         />
       </div>
     </div>
