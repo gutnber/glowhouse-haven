@@ -1,6 +1,7 @@
 
 import { ContactFormFields } from './ContactFormFields';
 import { ContactFormSuccess } from './ContactFormSuccess';
+import { useState } from 'react';
 
 interface ContactFormProps {
   form: any;
@@ -21,15 +22,19 @@ export const ContactForm = ({
     return <ContactFormSuccess onReset={resetForm} />;
   }
 
+  const formValues = form.getValues();
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    form.setValue(name, value);
+  };
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
       <ContactFormFields
-        formData={form.getValues()}
+        formData={formValues}
         isSubmitting={isSubmitting}
-        onChange={(e) => {
-          const { name, value } = e.target;
-          form.setValue(name as any, value);
-        }}
+        onChange={handleInputChange}
       />
     </form>
   );
