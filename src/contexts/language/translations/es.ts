@@ -37,7 +37,7 @@ const esTranslations: Record<string, TranslationValue> = {
   "signIn": "Iniciar Sesión",
   "signOut": "Cerrar Sesión",
   "news": "Noticias",
-  "contact": "Contacto",
+  "contactPage": "Contacto",
   "propertyManagement": "Gestión de Propiedades",
   "loading": "Cargando propiedades...",
   "addProperty": "Agregar Propiedad",

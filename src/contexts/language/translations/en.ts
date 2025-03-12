@@ -37,7 +37,7 @@ const enTranslations: Record<string, TranslationValue> = {
   "signIn": "Sign In",
   "signOut": "Sign Out",
   "news": "News",
-  "contact": "Contact",
+  "contactPage": "Contact",
   "propertyManagement": "Property Management",
   "loading": "Loading properties...",
   "addProperty": "Add Property",
@@ -139,7 +139,54 @@ const enTranslations: Record<string, TranslationValue> = {
       "keywords": "property for sale, property for rent, {location} real estate, {propertyType}"
     }
   },
-  "readMore": "Read More"
+  "readMore": "Read More",
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "optional": "optional"
+  },
+  "admin": {
+    "role": "Administrator",
+    "roleDescription": "Can manage all aspects of the site",
+    "users": "User Management"
+  },
+  "user": {
+    "role": "User",
+    "roleDescription": "Regular user with limited access"
+  },
+  "chat": {
+    "save": "Save",
+    "email": "Email",
+    "download": "Download",
+    "typing": "Type your question...",
+    "saved": "Conversation saved",
+    "savedSuccess": "You can continue the conversation on the contact page",
+    "downloadComplete": "Download complete",
+    "downloadSuccess": "The conversation has been downloaded as a text file"
+  },
+  "nav": {
+    "contact": "Contact"
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "phone": "Phone",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "success": "Thank you for your message!",
+    "successMessage": "We have received your message and will get back to you as soon as possible.",
+    "sendAnother": "Send Another Message",
+    "transcriptAdded": "Your conversation with the assistant has been added to this message.",
+    "emailConversation": "Email conversation",
+    "enterEmail": "Enter your email to receive this conversation",
+    "yourEmail": "Your email",
+    "cancel": "Cancel",
+    "sendEmail": "Send",
+    "emailSent": "Email sent",
+    "emailSentSuccess": "The conversation has been sent to your email"
+  }
 };
 
 export default enTranslations;
