@@ -165,6 +165,9 @@ const esTranslations: Record<string, TranslationValue> = {
     "downloadComplete": "Descarga completada",
     "downloadSuccess": "La conversación se ha descargado como archivo de texto"
   },
+  "nav": {
+    "contact": "Contacto"
+  },
   "contact": {
     "name": "Nombre",
     "email": "Correo electrónico",
