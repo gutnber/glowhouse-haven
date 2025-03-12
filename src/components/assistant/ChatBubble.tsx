@@ -4,7 +4,6 @@ import { useChatAssistant } from '@/contexts/ChatAssistantContext';
 import { MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/components/ui/use-toast';
-import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { ChatDialog } from './chat/ChatDialog';
 import { EmailDialog } from './chat/EmailDialog';
@@ -19,7 +18,6 @@ export const ChatBubble = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,37 +36,6 @@ export const ChatBubble = () => {
     if (inputValue.trim() && !isLoading) {
       sendMessage(inputValue);
       setInputValue('');
-    }
-  };
-
-  const handleSendTranscript = async () => {
-    try {
-      const transcript = messages.map(msg => 
-        `${msg.role === 'user' ? 'You' : 'Assistant'}: ${msg.content}`
-      ).join('\n\n');
-      
-      localStorage.setItem('chatTranscript', transcript);
-      
-      navigate('/contact');
-      
-      closeChat();
-      
-      toast({
-        title: language === 'es' ? 'Conversación guardada' : 'Conversation saved',
-        description: language === 'es' 
-          ? 'Puedes continuar la conversación en la página de contacto' 
-          : 'You can continue this conversation on the contact page',
-        duration: 5000,
-      });
-    } catch (error) {
-      console.error('Error saving transcript:', error);
-      toast({
-        title: language === 'es' ? 'Error' : 'Error',
-        description: language === 'es' 
-          ? 'No se pudo guardar la conversación' 
-          : 'Failed to save the conversation',
-        variant: 'destructive',
-      });
     }
   };
 
@@ -144,44 +111,6 @@ export const ChatBubble = () => {
     }
   };
 
-  const handleDownloadTranscript = () => {
-    try {
-      const title = language === 'es' ? 'Conversación con Asistente INMA' : 'Conversation with INMA Assistant';
-      const date = new Date().toLocaleString();
-      const header = `${title}\n${date}\n\n`;
-      
-      const transcript = messages.map(msg => 
-        `${msg.role === 'user' ? 'You' : 'Assistant'}: ${msg.content}`
-      ).join('\n\n');
-      
-      const fullTranscript = header + transcript;
-      
-      const element = document.createElement('a');
-      const file = new Blob([fullTranscript], {type: 'text/plain'});
-      element.href = URL.createObjectURL(file);
-      element.download = 'INMA-chat-transcript.txt';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-      
-      toast({
-        title: language === 'es' ? 'Descarga completada' : 'Download complete',
-        description: language === 'es' 
-          ? 'La conversación se ha descargado como archivo de texto' 
-          : 'The conversation has been downloaded as a text file',
-      });
-    } catch (error) {
-      console.error('Error downloading transcript:', error);
-      toast({
-        title: language === 'es' ? 'Error' : 'Error',
-        description: language === 'es' 
-          ? 'No se pudo descargar la conversación' 
-          : 'Failed to download the conversation',
-        variant: 'destructive',
-      });
-    }
-  };
-
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
       <EmailDialog
@@ -201,9 +130,7 @@ export const ChatBubble = () => {
           setInputValue={setInputValue}
           handleSubmit={handleSubmit}
           closeChat={closeChat}
-          handleSendTranscript={handleSendTranscript}
           handleOpenEmailDialog={handleOpenEmailDialog}
-          handleDownloadTranscript={handleDownloadTranscript}
           messagesEndRef={messagesEndRef}
           inputRef={inputRef}
         />

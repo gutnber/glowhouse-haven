@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Loader2, Mail } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -24,6 +24,15 @@ export const EmailDialog: React.FC<EmailDialogProps> = ({
   handleEmailTranscript
 }) => {
   const { language } = useLanguage();
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  useEffect(() => {
+    if (showEmailDialog && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [showEmailDialog]);
   
   return (
     <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
@@ -41,6 +50,7 @@ export const EmailDialog: React.FC<EmailDialogProps> = ({
         
         <div className="py-4">
           <Input
+            ref={inputRef}
             type="email"
             placeholder={language === 'es' ? "Su correo electrónico" : "Your email address"}
             value={emailValue}

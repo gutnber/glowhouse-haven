@@ -14,9 +14,7 @@ interface ChatDialogProps {
   setInputValue: (value: string) => void;
   handleSubmit: (e: React.FormEvent) => void;
   closeChat: () => void;
-  handleSendTranscript: () => void;
   handleOpenEmailDialog: () => void;
-  handleDownloadTranscript: () => void;
   messagesEndRef: React.RefObject<HTMLDivElement>;
   inputRef: React.RefObject<HTMLInputElement>;
 }
@@ -28,9 +26,7 @@ export const ChatDialog: React.FC<ChatDialogProps> = ({
   setInputValue,
   handleSubmit,
   closeChat,
-  handleSendTranscript,
   handleOpenEmailDialog,
-  handleDownloadTranscript,
   messagesEndRef,
   inputRef
 }) => {
@@ -61,9 +57,7 @@ export const ChatDialog: React.FC<ChatDialogProps> = ({
       
       {messages.length > 1 && (
         <ChatActions 
-          handleSendTranscript={handleSendTranscript}
           handleOpenEmailDialog={handleOpenEmailDialog}
-          handleDownloadTranscript={handleDownloadTranscript}
         />
       )}
       
