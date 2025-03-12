@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench, Menu, User } from "lucide-react";
+import { Home, Settings, Users, Building2, LogIn, LogOut, Wrench, Menu, User, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -128,6 +128,12 @@ export const UserMenu = ({ session }: UserMenuProps) => {
                 <Link to="/tools" className="flex items-center gap-2 px-4 py-3 hover:bg-orange-500/20 transition-colors duration-200 group">
                   <Wrench className="h-4 w-4 text-orange-400" />
                   <span className="font-medium text-white group-hover:text-black">{capitalizeFirstLetter(t('tools'))}</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/admin/communications" className="flex items-center gap-2 px-4 py-3 hover:bg-orange-500/20 transition-colors duration-200 group">
+                  <MessageSquare className="h-4 w-4 text-orange-400" />
+                  <span className="font-medium text-white group-hover:text-black">{capitalizeFirstLetter(t('communications'))}</span>
                 </Link>
               </DropdownMenuItem>
             </>
