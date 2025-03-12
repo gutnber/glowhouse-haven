@@ -25,8 +25,12 @@ export const ContactForm = ({
   return (
     <form onSubmit={onSubmit} className="space-y-5">
       <ContactFormFields
-        form={form}
+        formData={form.getValues()}
         isSubmitting={isSubmitting}
+        onChange={(e) => {
+          const { name, value } = e.target;
+          form.setValue(name as any, value);
+        }}
       />
     </form>
   );

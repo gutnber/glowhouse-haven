@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { supabase } from '@/integrations/supabase/client';
 
 export const ChatBubble = () => {
   const { t, language } = useLanguage();
@@ -21,12 +22,10 @@ export const ChatBubble = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => {
@@ -43,24 +42,18 @@ export const ChatBubble = () => {
     }
   };
 
-  // Send chat transcript to user's email
   const handleSendTranscript = async () => {
     try {
-      // Format the chat transcript
       const transcript = messages.map(msg => 
         `${msg.role === 'user' ? 'You' : 'Assistant'}: ${msg.content}`
       ).join('\n\n');
       
-      // Save to localStorage temporarily
       localStorage.setItem('chatTranscript', transcript);
       
-      // Navigate to contact page
       navigate('/contact');
       
-      // Close the chat
       closeChat();
       
-      // Show success toast
       toast({
         title: language === 'es' ? 'Conversación guardada' : 'Conversation saved',
         description: language === 'es' 
@@ -80,12 +73,10 @@ export const ChatBubble = () => {
     }
   };
 
-  // Open email dialog
   const handleOpenEmailDialog = () => {
     setShowEmailDialog(true);
   };
 
-  // Email chat transcript directly
   const handleEmailTranscript = async () => {
     if (!emailValue || !/\S+@\S+\.\S+/.test(emailValue)) {
       toast({
@@ -101,12 +92,10 @@ export const ChatBubble = () => {
     setIsEmailSending(true);
 
     try {
-      // Format the chat transcript
       const transcript = messages.map(msg => 
         `${msg.role === 'user' ? 'You' : 'Assistant'}: ${msg.content}`
       ).join('\n\n');
       
-      // Add both the email and the transcript to the database
       const { data, error } = await supabase
         .from('contact_submissions')
         .insert([{
@@ -120,7 +109,6 @@ export const ChatBubble = () => {
 
       if (error) throw error;
 
-      // Add to newsletter subscribers
       await supabase
         .from('newsletter_subscribers')
         .upsert(
@@ -128,14 +116,12 @@ export const ChatBubble = () => {
           { onConflict: 'email', ignoreDuplicates: true }
         );
       
-      // Send email via edge function
       const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
         body: { record: data }
       });
 
       if (emailError) throw emailError;
       
-      // Success!
       setShowEmailDialog(false);
       setEmailValue('');
       
@@ -159,10 +145,8 @@ export const ChatBubble = () => {
     }
   };
 
-  // Download chat transcript as text file
   const handleDownloadTranscript = () => {
     try {
-      // Format the chat transcript
       const title = language === 'es' ? 'Conversación con Asistente INMA' : 'Conversation with INMA Assistant';
       const date = new Date().toLocaleString();
       const header = `${title}\n${date}\n\n`;
@@ -173,7 +157,6 @@ export const ChatBubble = () => {
       
       const fullTranscript = header + transcript;
       
-      // Create a download link
       const element = document.createElement('a');
       const file = new Blob([fullTranscript], {type: 'text/plain'});
       element.href = URL.createObjectURL(file);
@@ -200,15 +183,12 @@ export const ChatBubble = () => {
     }
   };
 
-  // Format message content with support for newlines and contact buttons
   const formatMessage = (content: string) => {
-    // Check if message suggests contacting
     const hasContactSuggestion = content.toLowerCase().includes('contact') || 
                                 content.toLowerCase().includes('contactar') ||
                                 content.toLowerCase().includes('contacto') ||
                                 content.toLowerCase().includes('whatsapp');
     
-    // Split content by newlines and render as paragraphs
     const paragraphs = content.split('\n').filter(p => p.trim());
     
     return (
@@ -243,7 +223,6 @@ export const ChatBubble = () => {
     );
   };
 
-  // INMA logo loading animation component
   const LoadingAnimation = () => (
     <div className="flex flex-col items-center justify-center p-3">
       <svg 
@@ -286,7 +265,6 @@ export const ChatBubble = () => {
     </div>
   );
 
-  // Email dialog component
   const EmailDialog = () => (
     <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
       <DialogContent className="bg-gray-900 text-white border border-orange-500/30">
@@ -343,13 +321,10 @@ export const ChatBubble = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
-      {/* Email Dialog */}
       <EmailDialog />
       
-      {/* Chat panel */}
       {isOpen && (
         <div className="mb-3 w-full max-w-[380px] flex flex-col bg-gray-900 border border-orange-500/30 rounded-xl shadow-xl overflow-hidden">
-          {/* Header */}
           <div className="flex items-center justify-between bg-gradient-to-r from-orange-800 to-orange-900 p-3">
             <h3 className="text-white font-medium">
               {language === 'es' ? 'Asistente Inmobiliario INMA' : 'INMA Real Estate Assistant'}
@@ -363,7 +338,6 @@ export const ChatBubble = () => {
             </button>
           </div>
           
-          {/* Messages */}
           <div className="flex-1 p-3 overflow-y-auto max-h-[350px] min-h-[250px] bg-gray-800/50">
             <div className="space-y-3">
               {messages.map((message) => (
@@ -393,7 +367,6 @@ export const ChatBubble = () => {
             </div>
           </div>
           
-          {/* Action buttons - Only show if there are messages beyond the welcome message */}
           {messages.length > 1 && (
             <div className="flex justify-between items-center p-2 bg-gray-800 border-t border-gray-700">
               <div className="flex space-x-2">
@@ -428,7 +401,6 @@ export const ChatBubble = () => {
             </div>
           )}
           
-          {/* Input */}
           <form onSubmit={handleSubmit} className="p-3 bg-gray-900 border-t border-orange-500/30">
             <div className="flex items-center gap-2">
               <Input
@@ -454,7 +426,6 @@ export const ChatBubble = () => {
         </div>
       )}
       
-      {/* Chat toggle button */}
       <button
         onClick={toggleChat}
         className={`rounded-full p-3.5 shadow-lg transition-all duration-300 ${
@@ -469,4 +440,3 @@ export const ChatBubble = () => {
     </div>
   );
 };
-
