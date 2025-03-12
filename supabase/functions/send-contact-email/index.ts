@@ -27,6 +27,7 @@ serve(async (req) => {
     // Get the request body
     const payload = await req.json();
     const record = payload.record;
+    const isChatTranscript = record.message && record.message.includes('--- Chat Transcript ---');
 
     console.log('Received contact submission', record);
 
@@ -51,14 +52,16 @@ serve(async (req) => {
     const contactMessage = {
       from: 'INMA Real Estate <onboarding@resend.dev>',
       to: [ADMIN_EMAIL],
-      subject: `New Contact Form Submission - ${record.name}`,
+      subject: isChatTranscript 
+        ? `Chat Transcript from ${record.name}` 
+        : `New Contact Form Submission - ${record.name}`,
       html: `
-        <h1>New Contact Form Submission</h1>
+        <h1>${isChatTranscript ? 'New Chat Transcript' : 'New Contact Form Submission'}</h1>
         <p><strong>Name:</strong> ${record.name}</p>
         <p><strong>Email:</strong> ${record.email}</p>
         <p><strong>Phone:</strong> ${record.phone || 'Not provided'}</p>
-        <p><strong>Message:</strong></p>
-        <p>${record.message}</p>
+        <p><strong>${isChatTranscript ? 'Transcript' : 'Message'}:</strong></p>
+        <pre style="white-space: pre-wrap; background-color: #f5f5f5; padding: 15px; border-radius: 5px;">${record.message}</pre>
         <p><strong>Submitted at:</strong> ${new Date(record.created_at).toLocaleString()}</p>
       `,
     };
@@ -88,14 +91,26 @@ serve(async (req) => {
         const autoReplyMessage = {
           from: 'INMA Real Estate <onboarding@resend.dev>',
           to: [record.email],
-          subject: 'Thank you for contacting INMA',
-          html: `
-            <h1>Thank you for contacting us!</h1>
-            <p>Dear ${record.name},</p>
-            <p>We have received your message and will get back to you as soon as possible.</p>
-            <p>Best regards,</p>
-            <p>The INMA Team</p>
-          `,
+          subject: isChatTranscript 
+            ? 'Your Chat Transcript from INMA' 
+            : 'Thank you for contacting INMA',
+          html: isChatTranscript
+            ? `
+              <h1>Your Chat Transcript</h1>
+              <p>Dear ${record.name},</p>
+              <p>Thank you for chatting with our assistant. Here is a copy of your conversation:</p>
+              <pre style="white-space: pre-wrap; background-color: #f5f5f5; padding: 15px; border-radius: 5px;">${record.message}</pre>
+              <p>If you have any further questions, please don't hesitate to contact us.</p>
+              <p>Best regards,</p>
+              <p>The INMA Team</p>
+            `
+            : `
+              <h1>Thank you for contacting us!</h1>
+              <p>Dear ${record.name},</p>
+              <p>We have received your message and will get back to you as soon as possible.</p>
+              <p>Best regards,</p>
+              <p>The INMA Team</p>
+            `,
         };
 
         // Send auto-reply
@@ -139,7 +154,8 @@ serve(async (req) => {
           const { error: insertError } = await supabase
             .from('email_notifications')
             .insert({
-              email_type: 'contact_form',
+              email_type: isChatTranscript ? 'chat_transcript' : 'contact_form',
+              recipient: record.email,
               status: 'pending',
               payload: { record },
               error_message: error.message || 'Error sending email'

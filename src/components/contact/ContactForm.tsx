@@ -1,28 +1,32 @@
 
-import { useContactForm } from '@/hooks/useContactForm';
+import { useForm } from 'react-hook-form';
 import { ContactFormFields } from './ContactFormFields';
 import { ContactFormSuccess } from './ContactFormSuccess';
 
-export const ContactForm = () => {
-  const {
-    formData,
-    isSubmitting,
-    isSuccess,
-    handleChange,
-    handleSubmit,
-    setIsSuccess
-  } = useContactForm();
+interface ContactFormProps {
+  form: any;
+  isSubmitting: boolean;
+  isSuccess: boolean;
+  onSubmit: (data: any) => void;
+  resetForm: () => void;
+}
 
+export const ContactForm = ({
+  form,
+  isSubmitting,
+  isSuccess,
+  onSubmit,
+  resetForm
+}: ContactFormProps) => {
   if (isSuccess) {
-    return <ContactFormSuccess onReset={() => setIsSuccess(false)} />;
+    return <ContactFormSuccess onReset={resetForm} />;
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={onSubmit} className="space-y-5">
       <ContactFormFields
-        formData={formData}
+        form={form}
         isSubmitting={isSubmitting}
-        onChange={handleChange}
       />
     </form>
   );

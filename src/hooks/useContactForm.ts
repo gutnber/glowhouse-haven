@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,20 +17,19 @@ export const useContactForm = () => {
   const { t, language } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [formData, setFormData] = useState<ContactFormData>({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
+  
+  // Initialize the form using react-hook-form
+  const form = useForm<ContactFormData>({
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      message: ''
+    }
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
   const resetForm = () => {
-    setFormData({
+    form.reset({
       name: '',
       email: '',
       phone: '',
@@ -37,19 +37,17 @@ export const useContactForm = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSubmit = async (data: ContactFormData) => {
     if (isSubmitting) {
       console.log('Form already submitting, preventing double submission');
       return;
     }
     
     setIsSubmitting(true);
-    console.log('Starting form submission...', formData);
+    console.log('Starting form submission...', data);
 
     try {
-      if (!formData.name || !formData.email || !formData.message) {
+      if (!data.name || !data.email || !data.message) {
         throw new Error(language === 'es' ? 
           'Por favor complete todos los campos requeridos' : 
           'Please fill out all required fields');
@@ -61,10 +59,10 @@ export const useContactForm = () => {
       const { data: insertedData, error: insertError } = await supabase
         .from('contact_submissions')
         .insert([{
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          message: formData.message,
+          name: data.name,
+          email: data.email,
+          phone: data.phone || null,
+          message: data.message,
           status: 'new'
         }])
         .select()
@@ -78,6 +76,21 @@ export const useContactForm = () => {
       }
 
       console.log('Contact submission successful:', insertedData);
+
+      // Add to newsletter_subscribers if it doesn't exist already
+      const { error: subscribeError } = await supabase
+        .from('newsletter_subscribers')
+        .upsert(
+          { email: data.email },
+          { onConflict: 'email', ignoreDuplicates: true }
+        );
+
+      if (subscribeError) {
+        console.error('Error adding to subscribers:', subscribeError);
+        // Continue since this is not critical
+      } else {
+        console.log('Added email to subscribers');
+      }
 
       // Then try to send the email using the edge function
       const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
@@ -115,11 +128,10 @@ export const useContactForm = () => {
   };
 
   return {
-    formData,
+    form,
     isSubmitting,
     isSuccess,
-    handleChange,
-    handleSubmit,
-    setIsSuccess
+    handleSubmit: form.handleSubmit(handleSubmit),
+    resetForm
   };
 };

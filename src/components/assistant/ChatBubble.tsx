@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useChatAssistant } from '@/contexts/ChatAssistantContext';
 import { MessageCircle, X, Send, Loader2, Mail, Download } from 'lucide-react';
@@ -7,14 +6,20 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { WhatsAppButton } from '@/components/property/contact-form/WhatsAppButton';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
 export const ChatBubble = () => {
   const { t, language } = useLanguage();
   const { isOpen, messages, isLoading, toggleChat, sendMessage, closeChat } = useChatAssistant();
   const [inputValue, setInputValue] = useState('');
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [emailValue, setEmailValue] = useState('');
+  const [isEmailSending, setIsEmailSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -49,6 +54,12 @@ export const ChatBubble = () => {
       // Save to localStorage temporarily
       localStorage.setItem('chatTranscript', transcript);
       
+      // Navigate to contact page
+      navigate('/contact');
+      
+      // Close the chat
+      closeChat();
+      
       // Show success toast
       toast({
         title: language === 'es' ? 'Conversación guardada' : 'Conversation saved',
@@ -66,6 +77,85 @@ export const ChatBubble = () => {
           : 'Failed to save the conversation',
         variant: 'destructive',
       });
+    }
+  };
+
+  // Open email dialog
+  const handleOpenEmailDialog = () => {
+    setShowEmailDialog(true);
+  };
+
+  // Email chat transcript directly
+  const handleEmailTranscript = async () => {
+    if (!emailValue || !/\S+@\S+\.\S+/.test(emailValue)) {
+      toast({
+        title: language === 'es' ? 'Error' : 'Error',
+        description: language === 'es' 
+          ? 'Por favor ingrese un correo electrónico válido' 
+          : 'Please enter a valid email address',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsEmailSending(true);
+
+    try {
+      // Format the chat transcript
+      const transcript = messages.map(msg => 
+        `${msg.role === 'user' ? 'You' : 'Assistant'}: ${msg.content}`
+      ).join('\n\n');
+      
+      // Add both the email and the transcript to the database
+      const { data, error } = await supabase
+        .from('contact_submissions')
+        .insert([{
+          name: language === 'es' ? 'Usuario del chat' : 'Chat User',
+          email: emailValue,
+          message: `--- Chat Transcript ---\n${transcript}`,
+          status: 'new'
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Add to newsletter subscribers
+      await supabase
+        .from('newsletter_subscribers')
+        .upsert(
+          { email: emailValue },
+          { onConflict: 'email', ignoreDuplicates: true }
+        );
+      
+      // Send email via edge function
+      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
+        body: { record: data }
+      });
+
+      if (emailError) throw emailError;
+      
+      // Success!
+      setShowEmailDialog(false);
+      setEmailValue('');
+      
+      toast({
+        title: language === 'es' ? 'Correo enviado' : 'Email sent',
+        description: language === 'es' 
+          ? 'La conversación ha sido enviada a su correo electrónico' 
+          : 'The conversation has been sent to your email',
+      });
+    } catch (error) {
+      console.error('Error emailing transcript:', error);
+      toast({
+        title: language === 'es' ? 'Error' : 'Error',
+        description: language === 'es' 
+          ? 'No se pudo enviar el correo electrónico' 
+          : 'Failed to send the email',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsEmailSending(false);
     }
   };
 
@@ -192,12 +282,70 @@ export const ChatBubble = () => {
           style={{ animationDelay: '2.0s' }}
         />
       </svg>
-      <p className="text-sm text-white font-medium">Porfavor, espera...</p>
+      <p className="text-sm text-white font-medium">Por favor, espera...</p>
     </div>
+  );
+
+  // Email dialog component
+  const EmailDialog = () => (
+    <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+      <DialogContent className="bg-gray-900 text-white border border-orange-500/30">
+        <DialogHeader>
+          <DialogTitle className="text-lg">
+            {language === 'es' ? 'Enviar conversación por correo' : 'Email this conversation'}
+          </DialogTitle>
+          <DialogDescription className="text-gray-300">
+            {language === 'es' 
+              ? 'Ingrese su correo electrónico para recibir esta conversación' 
+              : 'Enter your email to receive this conversation'}
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="py-4">
+          <Input
+            type="email"
+            placeholder={language === 'es' ? "Su correo electrónico" : "Your email address"}
+            value={emailValue}
+            onChange={(e) => setEmailValue(e.target.value)}
+            className="bg-gray-800 border-orange-500/30"
+          />
+        </div>
+        
+        <DialogFooter>
+          <Button 
+            type="button" 
+            variant="outline"
+            onClick={() => setShowEmailDialog(false)}
+            className="border-gray-600 text-gray-300"
+          >
+            {language === 'es' ? 'Cancelar' : 'Cancel'}
+          </Button>
+          <Button 
+            type="button"
+            onClick={handleEmailTranscript}
+            disabled={isEmailSending}
+            className="bg-orange-600 hover:bg-orange-700 text-white"
+          >
+            {isEmailSending ? (
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> 
+                {language === 'es' ? 'Enviando...' : 'Sending...'}
+              </>
+            ) : (
+              <><Mail className="h-4 w-4 mr-2" /> 
+                {language === 'es' ? 'Enviar' : 'Send'}
+              </>
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
+      {/* Email Dialog */}
+      <EmailDialog />
+      
       {/* Chat panel */}
       {isOpen && (
         <div className="mb-3 w-full max-w-[380px] flex flex-col bg-gray-900 border border-orange-500/30 rounded-xl shadow-xl overflow-hidden">
@@ -261,6 +409,15 @@ export const ChatBubble = () => {
                 <Button 
                   variant="ghost" 
                   size="sm" 
+                  onClick={handleOpenEmailDialog}
+                  className="text-gray-300 hover:text-white hover:bg-gray-700"
+                >
+                  <Mail className="h-4 w-4 mr-1" />
+                  {language === 'es' ? 'Enviar por correo' : 'Email'}
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
                   onClick={handleDownloadTranscript}
                   className="text-gray-300 hover:text-white hover:bg-gray-700"
                 >
@@ -312,3 +469,4 @@ export const ChatBubble = () => {
     </div>
   );
 };
+
