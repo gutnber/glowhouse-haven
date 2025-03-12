@@ -53,7 +53,7 @@ serve(async (req) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "deepseek-chat",
+        model: "deepseek-chat", // Ensuring this is set to deepseek-chat
         messages: fullMessages,
         temperature: 0.7,
         max_tokens: 1000
