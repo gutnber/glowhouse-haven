@@ -1,4 +1,3 @@
-
 import { TranslationValue } from '../types';
 
 const esTranslations: Record<string, TranslationValue> = {
@@ -164,6 +163,25 @@ const esTranslations: Record<string, TranslationValue> = {
     "savedSuccess": "Puedes continuar la conversación en la página de contacto",
     "downloadComplete": "Descarga completada",
     "downloadSuccess": "La conversación se ha descargado como archivo de texto"
+  },
+  "contact": {
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "message": "Mensaje",
+    "phone": "Teléfono",
+    "send": "Enviar Mensaje",
+    "sending": "Enviando...",
+    "success": "¡Gracias por tu mensaje!",
+    "successMessage": "Hemos recibido tu mensaje y te responderemos lo antes posible.",
+    "sendAnother": "Enviar Otro Mensaje",
+    "transcriptAdded": "Tu conversación con el asistente ha sido agregada a este mensaje.",
+    "emailConversation": "Enviar conversación por correo",
+    "enterEmail": "Ingrese su correo electrónico para recibir esta conversación",
+    "yourEmail": "Su correo electrónico",
+    "cancel": "Cancelar",
+    "sendEmail": "Enviar",
+    "emailSent": "Correo enviado",
+    "emailSentSuccess": "La conversación ha sido enviada a su correo electrónico"
   }
 };
 
