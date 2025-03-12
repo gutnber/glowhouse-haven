@@ -62,89 +62,79 @@ serve(async (req) => {
       isSpanish = spanishIndicators.some(indicator => lowerCaseMessage.includes(indicator));
     }
 
-    // Format message for admin notification
-    const contactMessage = {
-      from: 'INMA Real Estate <onboarding@resend.dev>',
-      to: [ADMIN_EMAIL],
-      subject: isChatTranscript 
-        ? `Chat Transcript from ${record.name}` 
-        : `New Contact Form Submission - ${record.name}`,
-      html: `
-        <h1>${isChatTranscript ? 'New Chat Transcript' : 'New Contact Form Submission'}</h1>
-        <p><strong>Name:</strong> ${record.name}</p>
-        <p><strong>Email:</strong> ${record.email}</p>
-        <p><strong>Phone:</strong> ${record.phone || 'Not provided'}</p>
-        <p><strong>${isChatTranscript ? 'Transcript' : 'Message'}:</strong></p>
-        <pre style="white-space: pre-wrap; background-color: #f5f5f5; padding: 15px; border-radius: 5px;">${record.message}</pre>
-        <p><strong>Submitted at:</strong> ${new Date(record.created_at).toLocaleString()}</p>
-      `,
-    };
+    // Only send to admin if it's not a chat transcript or if explicitly requested
+    if (!isChatTranscript) {
+      // Format message for admin notification
+      const contactMessage = {
+        from: 'INMA Real Estate <onboarding@resend.dev>',
+        to: [ADMIN_EMAIL],
+        subject: `New Contact Form Submission - ${record.name}`,
+        html: `
+          <h1>New Contact Form Submission</h1>
+          <p><strong>Name:</strong> ${record.name}</p>
+          <p><strong>Email:</strong> ${record.email}</p>
+          <p><strong>Phone:</strong> ${record.phone || 'Not provided'}</p>
+          <p><strong>Message:</strong></p>
+          <pre style="white-space: pre-wrap; background-color: #f5f5f5; padding: 15px; border-radius: 5px;">${record.message}</pre>
+          <p><strong>Submitted at:</strong> ${new Date(record.created_at).toLocaleString()}</p>
+        `,
+      };
 
-    console.log('Sending email via Resend to', ADMIN_EMAIL);
+      console.log('Sending email via Resend to', ADMIN_EMAIL);
 
-    // Send email using Resend
-    if (RESEND_API_KEY) {
-      try {
-        const response = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${RESEND_API_KEY}`,
-          },
-          body: JSON.stringify(contactMessage),
-        });
+      // Send email using Resend
+      if (RESEND_API_KEY) {
+        try {
+          const response = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${RESEND_API_KEY}`,
+            },
+            body: JSON.stringify(contactMessage),
+          });
 
-        const result = await response.json();
-        console.log('Email send result:', result);
+          const result = await response.json();
+          console.log('Email send result:', result);
 
-        if (!response.ok) {
-          throw new Error(`Resend API error: ${result.message || result.error || response.statusText}`);
+          if (!response.ok) {
+            throw new Error(`Resend API error: ${result.message || result.error || response.statusText}`);
+          }
+        } catch (error) {
+          console.error('Error sending admin email:', error);
         }
+      }
+    }
 
+    // Send email to user for chat transcript (only for chat transcripts)
+    if (isChatTranscript && RESEND_API_KEY) {
+      try {
         // Create auto-reply content based on language
-        const autoReplyContent = isChatTranscript
-          ? isSpanish
-            ? `
-              <h1>Tu Transcripción de Conversación</h1>
-              <p>Estimado/a ${record.name},</p>
-              <p>Gracias por conversar con nuestro asistente. Aquí tienes una copia de tu conversación:</p>
-              <pre style="white-space: pre-wrap; background-color: #f5f5f5; padding: 15px; border-radius: 5px;">${record.message}</pre>
-              <p>Si tienes alguna pregunta adicional, no dudes en contactarnos.</p>
-              <p>Saludos cordiales,</p>
-              <p>El Equipo de INMA</p>
-            `
-            : `
-              <h1>Your Chat Transcript</h1>
-              <p>Dear ${record.name},</p>
-              <p>Thank you for chatting with our assistant. Here is a copy of your conversation:</p>
-              <pre style="white-space: pre-wrap; background-color: #f5f5f5; padding: 15px; border-radius: 5px;">${record.message}</pre>
-              <p>If you have any further questions, please don't hesitate to contact us.</p>
-              <p>Best regards,</p>
-              <p>The INMA Team</p>
-            `
-          : isSpanish
-            ? `
-              <h1>¡Gracias por contactarnos!</h1>
-              <p>Estimado/a ${record.name},</p>
-              <p>Hemos recibido tu mensaje y nos pondremos en contacto contigo lo antes posible.</p>
-              <p>Saludos cordiales,</p>
-              <p>El Equipo de INMA</p>
-            `
-            : `
-              <h1>Thank you for contacting us!</h1>
-              <p>Dear ${record.name},</p>
-              <p>We have received your message and will get back to you as soon as possible.</p>
-              <p>Best regards,</p>
-              <p>The INMA Team</p>
-            `;
+        const autoReplyContent = isSpanish
+          ? `
+            <h1>Tu Transcripción de Conversación</h1>
+            <p>Estimado/a ${record.name},</p>
+            <p>Gracias por conversar con nuestro asistente. Aquí tienes una copia de tu conversación:</p>
+            <pre style="white-space: pre-wrap; background-color: #f5f5f5; padding: 15px; border-radius: 5px;">${record.message}</pre>
+            <p>Si tienes alguna pregunta adicional, no dudes en contactarnos.</p>
+            <p>Saludos cordiales,</p>
+            <p>El Equipo de INMA</p>
+          `
+          : `
+            <h1>Your Chat Transcript</h1>
+            <p>Dear ${record.name},</p>
+            <p>Thank you for chatting with our assistant. Here is a copy of your conversation:</p>
+            <pre style="white-space: pre-wrap; background-color: #f5f5f5; padding: 15px; border-radius: 5px;">${record.message}</pre>
+            <p>If you have any further questions, please don't hesitate to contact us.</p>
+            <p>Best regards,</p>
+            <p>The INMA Team</p>
+          `;
 
-        // Also send an auto-reply to the submitter
+        // Send an auto-reply to the submitter
         const autoReplyMessage = {
           from: 'INMA Real Estate <onboarding@resend.dev>',
           to: [record.email],
-          subject: isChatTranscript 
-            ? (isSpanish ? 'Tu Transcripción de Conversación con INMA' : 'Your Chat Transcript from INMA') 
-            : (isSpanish ? 'Gracias por contactar a INMA' : 'Thank you for contacting INMA'),
+          subject: isSpanish ? 'Tu Transcripción de Conversación con INMA' : 'Your Chat Transcript from INMA',
           html: autoReplyContent,
         };
 
@@ -161,87 +151,69 @@ serve(async (req) => {
         const autoReplyResult = await autoReplyResponse.json();
         console.log('Auto-reply email result:', autoReplyResult);
 
-        // Update the contact submission status
-        const { error: updateError } = await supabase
-          .from('contact_submissions')
-          .update({ status: 'notified' })
-          .eq('id', record.id);
-
-        if (updateError) {
-          console.error('Error updating contact submission status:', updateError);
+        if (!autoReplyResponse.ok) {
+          throw new Error(`Resend API error: ${autoReplyResult.message || autoReplyResult.error || autoReplyResponse.statusText}`);
         }
-
-        return new Response(
-          JSON.stringify({ success: true, message: 'Emails sent successfully' }),
-          { 
-            status: 200, 
-            headers: { 
-              'Content-Type': 'application/json',
-              ...corsHeaders
-            } 
-          }
-        );
       } catch (error) {
-        console.error('Error sending email:', error);
-        
-        // Create an entry in the email_notifications table for retry
-        try {
-          const { error: insertError } = await supabase
-            .from('email_notifications')
-            .insert({
-              email_type: isChatTranscript ? 'chat_transcript' : 'contact_form',
-              recipient: record.email,
-              status: 'pending',
-              payload: { record },
-              error_message: error.message || 'Error sending email'
-            });
-            
-          if (insertError) {
-            console.error('Error creating email notification entry:', insertError);
-          } else {
-            console.log('Created email notification entry for retry');
-          }
-        } catch (dbError) {
-          console.error('Error creating retry entry:', dbError);
-        }
-        
-        return new Response(
-          JSON.stringify({ 
-            success: false, 
-            error: error.message || 'Error sending email',
-            message: 'Email sending failed, but submission has been saved' 
-          }),
-          { 
-            status: 500, 
-            headers: { 
-              'Content-Type': 'application/json',
-              ...corsHeaders
-            } 
-          }
-        );
+        console.error('Error sending transcript email:', error);
+        throw error;
       }
-    } else {
-      console.warn('RESEND_API_KEY not configured. Email not sent.');
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          warning: 'Email service not configured' 
-        }),
-        { 
-          status: 200,  // Still return 200 as the form submission itself was successful
-          headers: { 
-            'Content-Type': 'application/json',
-            ...corsHeaders
-          } 
-        }
-      );
     }
+
+    // Update the contact submission status
+    const { error: updateError } = await supabase
+      .from('contact_submissions')
+      .update({ status: 'notified' })
+      .eq('id', record.id);
+
+    if (updateError) {
+      console.error('Error updating contact submission status:', updateError);
+    }
+
+    return new Response(
+      JSON.stringify({ success: true, message: 'Email process completed successfully' }),
+      { 
+        status: 200, 
+        headers: { 
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        } 
+      }
+    );
   } catch (error) {
     console.error('Function error:', error);
+    
+    // Create an entry in the email_notifications table for retry
+    try {
+      const payload = await req.json();
+      const record = payload.record;
+      
+      if (record) {
+        const { error: insertError } = await supabase
+          .from('email_notifications')
+          .insert({
+            email_type: record.message && record.message.includes('--- Chat Transcript ---') ? 'chat_transcript' : 'contact_form',
+            recipient: record.email,
+            status: 'pending',
+            payload: { record },
+            error_message: error.message || 'Error sending email'
+          });
+          
+        if (insertError) {
+          console.error('Error creating email notification entry:', insertError);
+        } else {
+          console.log('Created email notification entry for retry');
+        }
+      }
+    } catch (dbError) {
+      console.error('Error creating retry entry:', dbError);
+    }
+    
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message || 'Internal server error' 
+        error: error.message || 'Internal server error',
+        message: 'Email sending failed, but submission has been saved for retry' 
       }),
       { 
         status: 500, 
