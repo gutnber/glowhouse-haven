@@ -46,7 +46,7 @@ export const useContactForm = () => {
     }
     
     setIsSubmitting(true);
-    console.log('Starting form submission...');
+    console.log('Starting form submission...', formData);
 
     try {
       if (!formData.name || !formData.email || !formData.message) {
@@ -55,8 +55,9 @@ export const useContactForm = () => {
           'Please fill out all required fields');
       }
 
-      console.log('Submitting contact form...', formData);
+      console.log('Validations passed, submitting to database...');
 
+      // First insert into the database
       const { data: insertedData, error: insertError } = await supabase
         .from('contact_submissions')
         .insert([{
@@ -72,8 +73,8 @@ export const useContactForm = () => {
       if (insertError) {
         console.error('Error inserting contact submission:', insertError);
         throw new Error(language === 'es' ? 
-          'Error al guardar el mensaje' : 
-          'Error saving the message');
+          'Error al guardar el mensaje: ' + insertError.message : 
+          'Error saving the message: ' + insertError.message);
       }
 
       console.log('Contact submission successful:', insertedData);
@@ -86,6 +87,8 @@ export const useContactForm = () => {
       if (emailError) {
         console.error('Error sending email notification:', emailError);
         // Continue since the data was saved successfully
+      } else {
+        console.log('Email notification sent successfully');
       }
 
       toast({
