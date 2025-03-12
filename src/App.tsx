@@ -1,7 +1,6 @@
 
 import React, { useEffect } from 'react';
 import {
-  BrowserRouter,
   Routes,
   Route,
   useLocation
@@ -22,25 +21,25 @@ import RootLayout from "./components/layout/RootLayout";
 
 function App() {
   return (
-    <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route element={<RootLayout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/properties" element={<Properties />} />
-            <Route path="/properties/:id" element={<PropertyProfile />} />
-            <Route path="/properties/add" element={<AddProperty />} />
-            <Route path="/properties/:id/edit" element={<EditProperty />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/news/:id" element={<NewsPost />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/tools" element={<Tools />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/admin/communications" element={<Communications />} />
-          </Route>
-        </Routes>
-    </BrowserRouter>
+    <>
+      <Routes>
+        <Route element={<RootLayout />}>
+          <Route path="/" element={<Index />} />
+          <Route path="/properties" element={<Properties />} />
+          <Route path="/properties/:id" element={<PropertyProfile />} />
+          <Route path="/properties/add" element={<AddProperty />} />
+          <Route path="/properties/:id/edit" element={<EditProperty />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/news/:id" element={<NewsPost />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/tools" element={<Tools />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/admin/communications" element={<Communications />} />
+        </Route>
+      </Routes>
+      <ScrollToTop />
+    </>
   );
 }
 
