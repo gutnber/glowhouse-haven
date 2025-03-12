@@ -11,7 +11,7 @@ interface ChatActionsProps {
 export const ChatActions: React.FC<ChatActionsProps> = ({
   handleOpenEmailDialog
 }) => {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   
   return (
     <div className="flex justify-between items-center p-2 bg-gray-800 border-t border-gray-700">
@@ -23,7 +23,7 @@ export const ChatActions: React.FC<ChatActionsProps> = ({
           className="text-gray-300 hover:text-white hover:bg-gray-700"
         >
           <Mail className="h-4 w-4 mr-1" />
-          {t('chat.email')}
+          {language === 'es' ? 'Enviar a tu Email' : 'Email to me'}
         </Button>
       </div>
     </div>

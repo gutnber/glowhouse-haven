@@ -23,16 +23,23 @@ export const EmailDialog: React.FC<EmailDialogProps> = ({
   isEmailSending,
   handleEmailTranscript
 }) => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const inputRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
     if (showEmailDialog && inputRef.current) {
-      setTimeout(() => {
+      // Set a short timeout to ensure the dialog is fully rendered
+      const timer = setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [showEmailDialog]);
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailValue(e.target.value);
+  };
   
   return (
     <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
@@ -54,7 +61,7 @@ export const EmailDialog: React.FC<EmailDialogProps> = ({
             type="email"
             placeholder={language === 'es' ? "Su correo electrónico" : "Your email address"}
             value={emailValue}
-            onChange={(e) => setEmailValue(e.target.value)}
+            onChange={handleChange}
             className="bg-gray-800 border-orange-500/30"
           />
         </div>

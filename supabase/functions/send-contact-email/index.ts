@@ -48,6 +48,20 @@ serve(async (req) => {
       );
     }
 
+    // Determine language from transcript if it's a chat transcript
+    let isSpanish = false;
+    if (isChatTranscript) {
+      // Check if transcript contains Spanish indicators
+      const spanishIndicators = [
+        'hola', 'gracias', 'buenos días', 'buenas tardes', 'buenas noches', 
+        'por favor', 'cómo estás', 'qué tal', 'adiós', 'hasta luego',
+        'propiedad', 'inmobiliaria', 'precio', 'venta', 'alquiler'
+      ];
+      
+      const lowerCaseMessage = record.message.toLowerCase();
+      isSpanish = spanishIndicators.some(indicator => lowerCaseMessage.includes(indicator));
+    }
+
     // Format message for admin notification
     const contactMessage = {
       from: 'INMA Real Estate <onboarding@resend.dev>',
@@ -87,15 +101,19 @@ serve(async (req) => {
           throw new Error(`Resend API error: ${result.message || result.error || response.statusText}`);
         }
 
-        // Also send an auto-reply to the submitter
-        const autoReplyMessage = {
-          from: 'INMA Real Estate <onboarding@resend.dev>',
-          to: [record.email],
-          subject: isChatTranscript 
-            ? 'Your Chat Transcript from INMA' 
-            : 'Thank you for contacting INMA',
-          html: isChatTranscript
+        // Create auto-reply content based on language
+        const autoReplyContent = isChatTranscript
+          ? isSpanish
             ? `
+              <h1>Tu Transcripción de Conversación</h1>
+              <p>Estimado/a ${record.name},</p>
+              <p>Gracias por conversar con nuestro asistente. Aquí tienes una copia de tu conversación:</p>
+              <pre style="white-space: pre-wrap; background-color: #f5f5f5; padding: 15px; border-radius: 5px;">${record.message}</pre>
+              <p>Si tienes alguna pregunta adicional, no dudes en contactarnos.</p>
+              <p>Saludos cordiales,</p>
+              <p>El Equipo de INMA</p>
+            `
+            : `
               <h1>Your Chat Transcript</h1>
               <p>Dear ${record.name},</p>
               <p>Thank you for chatting with our assistant. Here is a copy of your conversation:</p>
@@ -104,13 +122,30 @@ serve(async (req) => {
               <p>Best regards,</p>
               <p>The INMA Team</p>
             `
+          : isSpanish
+            ? `
+              <h1>¡Gracias por contactarnos!</h1>
+              <p>Estimado/a ${record.name},</p>
+              <p>Hemos recibido tu mensaje y nos pondremos en contacto contigo lo antes posible.</p>
+              <p>Saludos cordiales,</p>
+              <p>El Equipo de INMA</p>
+            `
             : `
               <h1>Thank you for contacting us!</h1>
               <p>Dear ${record.name},</p>
               <p>We have received your message and will get back to you as soon as possible.</p>
               <p>Best regards,</p>
               <p>The INMA Team</p>
-            `,
+            `;
+
+        // Also send an auto-reply to the submitter
+        const autoReplyMessage = {
+          from: 'INMA Real Estate <onboarding@resend.dev>',
+          to: [record.email],
+          subject: isChatTranscript 
+            ? (isSpanish ? 'Tu Transcripción de Conversación con INMA' : 'Your Chat Transcript from INMA') 
+            : (isSpanish ? 'Gracias por contactar a INMA' : 'Thank you for contacting INMA'),
+          html: autoReplyContent,
         };
 
         // Send auto-reply
