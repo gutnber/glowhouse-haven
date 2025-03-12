@@ -1,9 +1,5 @@
 
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export interface ContactFormFieldsProps {
@@ -18,81 +14,81 @@ export interface ContactFormFieldsProps {
 }
 
 export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactFormFieldsProps) => {
-  const { t } = useLanguage();
-
+  const { t, language } = useLanguage();
+  
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="name" className="text-white font-medium">
-          {t('contact.name')} *
-        </Label>
-        <Input
+        <label htmlFor="name" className="block text-white font-medium">
+          {language === 'es' ? 'Nombre' : t('contact.name')} *
+        </label>
+        <input
           id="name"
           name="name"
           value={formData.name}
           onChange={onChange}
           required
-          className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
+          className="mt-1 w-full rounded-md bg-orange-900/30 border border-orange-500/50 p-2 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           disabled={isSubmitting}
         />
       </div>
 
       <div>
-        <Label htmlFor="email" className="text-white font-medium">
-          {t('contact.email')} *
-        </Label>
-        <Input
+        <label htmlFor="email" className="block text-white font-medium">
+          {language === 'es' ? 'Correo Electrónico' : t('contact.email')} *
+        </label>
+        <input
           id="email"
           name="email"
           type="email"
           value={formData.email}
           onChange={onChange}
           required
-          className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
+          className="mt-1 w-full rounded-md bg-orange-900/30 border border-orange-500/50 p-2 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           disabled={isSubmitting}
         />
       </div>
 
       <div>
-        <Label htmlFor="phone" className="text-white font-medium">
-          {t('contact.phone')}
-        </Label>
-        <Input
+        <label htmlFor="phone" className="block text-white font-medium">
+          {language === 'es' ? 'Teléfono (opcional)' : t('contact.phone')}
+        </label>
+        <input
           id="phone"
           name="phone"
           type="tel"
           value={formData.phone}
           onChange={onChange}
-          className="mt-1 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
+          className="mt-1 w-full rounded-md bg-orange-900/30 border border-orange-500/50 p-2 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           disabled={isSubmitting}
         />
       </div>
 
       <div>
-        <Label htmlFor="message" className="text-white font-medium">
-          {t('contact.message')} *
-        </Label>
-        <Textarea
+        <label htmlFor="message" className="block text-white font-medium">
+          {language === 'es' ? 'Mensaje' : t('contact.message')} *
+        </label>
+        <textarea
           id="message"
           name="message"
           value={formData.message}
           onChange={onChange}
           required
-          className="mt-1 h-32 bg-white/10 border-orange-500/30 focus:border-orange-400 text-white"
+          className="mt-1 w-full rounded-md bg-orange-900/30 border border-orange-500/50 p-2 text-white h-32 focus:outline-none focus:ring-2 focus:ring-orange-500"
           disabled={isSubmitting}
         />
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-        {isSubmitting ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {t('contact.sending')}
-          </>
-        ) : (
-          t('contact.send')
-        )}
-      </Button>
+      <button 
+        type="submit" 
+        disabled={isSubmitting} 
+        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md"
+      >
+        {isSubmitting ? 
+          (language === 'es' ? 'Enviando...' : t('contact.sending')) : 
+          (language === 'es' ? 'Enviar Mensaje' : t('contact.send'))
+        }
+      </button>
     </div>
   );
 };

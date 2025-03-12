@@ -1,6 +1,5 @@
 
-import { Button } from '@/components/ui/button';
-import { CheckCircle } from 'lucide-react';
+import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ContactFormSuccessProps {
@@ -8,24 +7,28 @@ interface ContactFormSuccessProps {
 }
 
 export const ContactFormSuccess = ({ onReset }: ContactFormSuccessProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   return (
     <div className="text-center py-8 space-y-4">
       <div className="flex justify-center">
-        <CheckCircle className="h-16 w-16 text-green-500" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-16 w-16 text-green-500">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
       </div>
-      <h3 className="text-xl font-bold text-white">{t('contact.success')}</h3>
-      <p className="text-gray-300">
-        {t('contact.successMessage')}
+      <h3 className="text-xl font-bold text-white">{language === 'es' ? '¡Gracias por tu mensaje!' : t('contact.success')}</h3>
+      <p className="text-gray-200">
+        {language === 'es' 
+          ? 'Hemos recibido tu mensaje y te responderemos lo antes posible.' 
+          : t('contact.successMessage')}
       </p>
-      <Button 
+      <button 
         onClick={onReset} 
-        variant="outline"
-        className="mt-4 border-orange-500/50 text-white hover:bg-orange-500/20"
+        className="mt-4 border border-orange-500/50 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md"
       >
-        {t('contact.sendAnother')}
-      </Button>
+        {language === 'es' ? 'Enviar Otro Mensaje' : t('contact.sendAnother')}
+      </button>
     </div>
   );
 };

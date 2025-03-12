@@ -5,7 +5,7 @@ import { ContactForm } from '@/components/contact/ContactForm';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Contact() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const contactForm = useContactForm();
   const [transcript, setTranscript] = useState<string | null>(null);
   
@@ -35,10 +35,16 @@ export default function Contact() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-8 border-b border-orange-500/30 pb-2">
-          {t('contactPage')}
+          {language === 'es' ? 'Contacto' : t('contactPage')}
         </h1>
         
-        <div className="bg-gray-900 rounded-xl border border-orange-500/30 p-6 shadow-lg">
+        <div className="bg-[#883a19] rounded-xl p-6 shadow-lg">
+          {language === 'es' && (
+            <p className="text-white mb-6">
+              ¿Tiene preguntas o desea obtener más información sobre nuestras propiedades? ¡Estamos aquí para ayudarle!
+            </p>
+          )}
+          
           {transcript && (
             <div className="mb-4 p-4 bg-orange-900/20 rounded-lg border border-orange-600/30">
               <p className="text-white font-medium mb-2">
