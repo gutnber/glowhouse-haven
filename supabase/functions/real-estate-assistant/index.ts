@@ -53,10 +53,13 @@ serve(async (req) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "deepseek-chat", // Ensuring this is set to deepseek-chat
+        model: "deepseek-chat", // Using the standard model instead of reasoning
         messages: fullMessages,
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 1000,
+        top_p: 0.95, // Adding top_p for faster responses
+        frequency_penalty: 0.0, // Adding standard frequency penalty
+        presence_penalty: 0.0 // Adding standard presence penalty
       })
     });
 
