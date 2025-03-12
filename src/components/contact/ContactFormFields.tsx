@@ -24,7 +24,7 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
     <div className="space-y-4">
       <div>
         <Label htmlFor="name" className="text-white font-medium">
-          {t('contactForm.name')} *
+          {t('contact.name')} *
         </Label>
         <Input
           id="name"
@@ -39,7 +39,7 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
 
       <div>
         <Label htmlFor="email" className="text-white font-medium">
-          {t('contactForm.email')} *
+          {t('contact.email')} *
         </Label>
         <Input
           id="email"
@@ -55,7 +55,7 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
 
       <div>
         <Label htmlFor="phone" className="text-white font-medium">
-          {t('contactForm.phone')}
+          {t('contact.phone')}
         </Label>
         <Input
           id="phone"
@@ -70,7 +70,7 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
 
       <div>
         <Label htmlFor="message" className="text-white font-medium">
-          {t('contactForm.message')} *
+          {t('contact.message')} *
         </Label>
         <Textarea
           id="message"
@@ -87,10 +87,10 @@ export const ContactFormFields = ({ formData, isSubmitting, onChange }: ContactF
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {t('contactForm.sending')}
+            {t('contact.sending')}
           </>
         ) : (
-          t('contactForm.sendMessage')
+          t('contact.send')
         )}
       </Button>
     </div>

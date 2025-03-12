@@ -35,6 +35,7 @@ export const useContactForm = () => {
       phone: '',
       message: ''
     });
+    setIsSuccess(false);
   };
 
   const handleSubmit = async (data: ContactFormData) => {
@@ -112,7 +113,6 @@ export const useContactForm = () => {
       });
 
       setIsSuccess(true);
-      resetForm();
     } catch (error: any) {
       console.error('Form submission error:', error);
       toast({

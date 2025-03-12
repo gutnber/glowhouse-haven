@@ -35,7 +35,7 @@ export default function Contact() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-8 border-b border-orange-500/30 pb-2">
-          {t('nav.contact')}
+          {t('contactPage')}
         </h1>
         
         <div className="bg-gray-900 rounded-xl border border-orange-500/30 p-6 shadow-lg">

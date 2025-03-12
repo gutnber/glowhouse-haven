@@ -15,16 +15,16 @@ export const ContactFormSuccess = ({ onReset }: ContactFormSuccessProps) => {
       <div className="flex justify-center">
         <CheckCircle className="h-16 w-16 text-green-500" />
       </div>
-      <h3 className="text-xl font-bold text-white">{t('contactForm.messageSentSuccess')}</h3>
+      <h3 className="text-xl font-bold text-white">{t('contact.success')}</h3>
       <p className="text-gray-300">
-        {t('contactForm.getBackSoon')}
+        {t('contact.successMessage')}
       </p>
       <Button 
         onClick={onReset} 
         variant="outline"
         className="mt-4 border-orange-500/50 text-white hover:bg-orange-500/20"
       >
-        {t('contactForm.sendAnother')}
+        {t('contact.sendAnother')}
       </Button>
     </div>
   );
