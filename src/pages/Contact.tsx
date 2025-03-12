@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useContactForm } from '@/hooks/useContactForm';
 import { ContactForm } from '@/components/contact/ContactForm';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -7,27 +7,21 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export default function Contact() {
   const { t, language } = useLanguage();
   const contactForm = useContactForm();
-  const [transcript, setTranscript] = useState<string | null>(null);
   
   useEffect(() => {
     // Check for saved chat transcript in localStorage
     const savedTranscript = localStorage.getItem('chatTranscript');
-    if (savedTranscript) {
-      setTranscript(savedTranscript);
+    if (savedTranscript && contactForm.form) {
+      const currentMessage = contactForm.form.getValues('message') || '';
+      const fullMessage = currentMessage + 
+        (currentMessage ? '\n\n' : '') + 
+        '--- Chat Transcript ---\n' + 
+        savedTranscript;
       
-      // Append transcript to the message if form is available
-      if (contactForm.form) {
-        const currentMessage = contactForm.form.getValues('message') || '';
-        const fullMessage = currentMessage + 
-          (currentMessage ? '\n\n' : '') + 
-          '--- Chat Transcript ---\n' + 
-          savedTranscript;
-        
-        contactForm.form.setValue('message', fullMessage);
-        
-        // Remove from localStorage after using it
-        localStorage.removeItem('chatTranscript');
-      }
+      contactForm.form.setValue('message', fullMessage);
+      
+      // Remove from localStorage after using it
+      localStorage.removeItem('chatTranscript');
     }
   }, [contactForm.form]);
 
@@ -45,21 +39,15 @@ export default function Contact() {
             </p>
           )}
           
-          {transcript && (
-            <div className="mb-4 p-4 bg-orange-900/20 rounded-lg border border-orange-600/30">
-              <p className="text-white font-medium mb-2">
-                {t('contact.transcriptAdded')}
-              </p>
-            </div>
+          {contactForm.form && (
+            <ContactForm 
+              form={contactForm.form}
+              isSubmitting={contactForm.isSubmitting}
+              isSuccess={contactForm.isSuccess}
+              onSubmit={contactForm.handleSubmit}
+              resetForm={contactForm.resetForm}
+            />
           )}
-          
-          <ContactForm 
-            form={contactForm.form}
-            isSubmitting={contactForm.isSubmitting}
-            isSuccess={contactForm.isSuccess}
-            onSubmit={contactForm.handleSubmit}
-            resetForm={contactForm.resetForm}
-          />
         </div>
       </div>
     </div>

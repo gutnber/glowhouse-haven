@@ -2,12 +2,20 @@
 import React from 'react';
 import { ContactFormFields } from './ContactFormFields';
 import { ContactFormSuccess } from './ContactFormSuccess';
+import { UseFormReturn } from 'react-hook-form';
+
+interface ContactFormValues {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+}
 
 interface ContactFormProps {
-  form: any;
+  form: UseFormReturn<ContactFormValues>;
   isSubmitting: boolean;
   isSuccess: boolean;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: ContactFormValues) => void;
   resetForm: () => void;
 }
 
@@ -22,20 +30,5 @@ export const ContactForm = ({
     return <ContactFormSuccess onReset={resetForm} />;
   }
 
-  const formValues = form.getValues();
-  
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    form.setValue(name, value);
-  };
-
-  return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-      <ContactFormFields
-        formData={formValues}
-        isSubmitting={isSubmitting}
-        onChange={handleInputChange}
-      />
-    </form>
-  );
+  return <ContactFormFields form={form} isSubmitting={isSubmitting} onSubmit={onSubmit} />;
 };

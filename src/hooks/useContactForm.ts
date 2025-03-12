@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 
-interface ContactFormData {
+interface ContactFormValues {
   name: string;
   email: string;
   phone: string;
@@ -19,7 +19,7 @@ export const useContactForm = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   
   // Initialize the form using react-hook-form
-  const form = useForm<ContactFormData>({
+  const form = useForm<ContactFormValues>({
     defaultValues: {
       name: '',
       email: '',
@@ -38,7 +38,7 @@ export const useContactForm = () => {
     setIsSuccess(false);
   };
 
-  const handleSubmit = async (data: ContactFormData) => {
+  const handleSubmit = async (data: ContactFormValues) => {
     if (isSubmitting) {
       console.log('Form already submitting, preventing double submission');
       return;
@@ -131,7 +131,7 @@ export const useContactForm = () => {
     form,
     isSubmitting,
     isSuccess,
-    handleSubmit: form.handleSubmit(handleSubmit),
+    handleSubmit,
     resetForm
   };
 };
