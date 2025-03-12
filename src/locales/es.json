@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Cargando...",
@@ -70,5 +69,7 @@
     "downloadComplete": "Descarga completada",
     "downloadSuccess": "La conversación se ha descargado como archivo de texto"
   },
-  "whatsapp": "WhatsApp"
+  "whatsapp": "WhatsApp",
+  "readMore": "Leer más",
+  "viewAllNews": "Ver Todas las Noticias"
 }
