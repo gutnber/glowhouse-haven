@@ -8,6 +8,8 @@ import { useAuthSession } from "@/hooks/useAuthSession"
 import { LoadingScreen } from "@/components/ui/loading-screen"
 import { useState, useEffect } from "react"
 import { SEO } from "@/components/SEO"
+import { ChatAssistantProvider } from "@/contexts/ChatAssistantContext"
+import { ChatBubble } from "@/components/assistant/ChatBubble"
 
 const MINIMUM_LOADING_TIME = 5000; // 5 seconds for initial load/refresh
 
@@ -70,17 +72,20 @@ export default function RootLayout() {
   }, [session, location.pathname]);
 
   return (
-    <div 
-      data-template={profile?.ui_template || "original"} 
-      className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground"
-    >
-      <SEO />
-      {loading && <LoadingScreen />}
-      <TopNavigation session={session} />
-      <main className="flex-1 pt-20">
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
+    <ChatAssistantProvider>
+      <div 
+        data-template={profile?.ui_template || "original"} 
+        className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground"
+      >
+        <SEO />
+        {loading && <LoadingScreen />}
+        <TopNavigation session={session} />
+        <main className="flex-1 pt-20">
+          <Outlet />
+        </main>
+        <Footer />
+        <ChatBubble />
+      </div>
+    </ChatAssistantProvider>
   )
 }
