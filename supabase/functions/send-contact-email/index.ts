@@ -15,7 +15,7 @@ const supabase = createClient(
 );
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') || '';
-const ADMIN_EMAIL = 'silvia@inma.mx'; // Use admin email for notifications
+const ADMIN_EMAIL = 'henrygutierrezbaja@gmail.com'; // Primary admin email for notifications
 
 serve(async (req) => {
   // Handle CORS
@@ -49,8 +49,8 @@ serve(async (req) => {
 
     // Format message for admin notification
     const contactMessage = {
-      from: 'INMA Contact Form <notifications@resend.dev>',
-      to: ADMIN_EMAIL,
+      from: 'INMA Real Estate <onboarding@resend.dev>',
+      to: [ADMIN_EMAIL],
       subject: `New Contact Form Submission - ${record.name}`,
       html: `
         <h1>New Contact Form Submission</h1>
@@ -86,8 +86,8 @@ serve(async (req) => {
 
         // Also send an auto-reply to the submitter
         const autoReplyMessage = {
-          from: 'INMA <notifications@resend.dev>',
-          to: record.email,
+          from: 'INMA Real Estate <onboarding@resend.dev>',
+          to: [record.email],
           subject: 'Thank you for contacting INMA',
           html: `
             <h1>Thank you for contacting us!</h1>
