@@ -155,25 +155,6 @@ const esTranslations: Record<string, TranslationValue> = {
     "role": "Usuario",
     "roleDescription": "Usuario regular con acceso limitado"
   },
-  "contact": {
-    "name": "Nombre",
-    "email": "Correo electrónico",
-    "message": "Mensaje",
-    "phone": "Teléfono",
-    "send": "Enviar Mensaje",
-    "sending": "Enviando...",
-    "success": "¡Gracias por tu mensaje!",
-    "successMessage": "Hemos recibido tu mensaje y te responderemos lo antes posible.",
-    "sendAnother": "Enviar Otro Mensaje",
-    "transcriptAdded": "Tu conversación con el asistente ha sido agregada a este mensaje.",
-    "emailConversation": "Enviar conversación por correo",
-    "enterEmail": "Ingrese su correo electrónico para recibir esta conversación",
-    "yourEmail": "Su correo electrónico",
-    "cancel": "Cancelar",
-    "sendEmail": "Enviar",
-    "emailSent": "Correo enviado",
-    "emailSentSuccess": "La conversación ha sido enviada a su correo electrónico"
-  },
   "chat": {
     "save": "Guardar",
     "email": "Enviar por correo",
