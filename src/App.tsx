@@ -18,6 +18,7 @@ import Tools from "./pages/Tools";
 import Contact from "./pages/Contact";
 import Communications from "./pages/Communications";
 import RootLayout from "./components/layout/RootLayout";
+import FontTest from "./components/FontTest";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         </Route>
       </Routes>
       <ScrollToTop />
+      <FontTest />
     </>
   );
 }

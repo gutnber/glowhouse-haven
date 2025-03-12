@@ -55,6 +55,10 @@
     @apply border-border;
   }
 
+  html, body {
+    font-family: 'Roboto', sans-serif;
+  }
+
   body {
     @apply bg-gradient-to-br from-gray-900 via-black to-orange-900 text-foreground;
     background-size: 400% 400%;
