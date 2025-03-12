@@ -5,10 +5,11 @@ import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { WhatsAppButton } from '@/components/property/contact-form/WhatsAppButton';
+import { Input } from '@/components/ui/input';
 
 export const ChatBubble = () => {
   const { t, language } = useLanguage();
-  const { isOpen, messages, isLoading, toggleChat, sendMessage } = useChatAssistant();
+  const { isOpen, messages, isLoading, toggleChat, sendMessage, closeChat } = useChatAssistant();
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -79,14 +80,14 @@ export const ChatBubble = () => {
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
       {/* Chat panel */}
       {isOpen && (
-        <div className="mb-3 w-full max-w-[380px] flex flex-col bg-gradient-to-r from-gray-900 to-black border border-orange-500/30 rounded-xl shadow-xl overflow-hidden">
+        <div className="mb-3 w-full max-w-[380px] flex flex-col bg-gray-900 border border-orange-500/30 rounded-xl shadow-xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between bg-gradient-to-r from-orange-800 to-orange-900 p-3">
             <h3 className="text-white font-medium">
               {language === 'es' ? 'Asistente Inmobiliario INMA' : 'INMA Real Estate Assistant'}
             </h3>
             <button 
-              onClick={toggleChat}
+              onClick={closeChat}
               className="text-gray-200 hover:text-white"
               aria-label="Close chat"
             >
@@ -95,7 +96,7 @@ export const ChatBubble = () => {
           </div>
           
           {/* Messages */}
-          <div className="flex-1 p-3 overflow-y-auto max-h-[350px] min-h-[250px] bg-gray-800/30">
+          <div className="flex-1 p-3 overflow-y-auto max-h-[350px] min-h-[250px] bg-gray-800/50">
             <div className="space-y-3">
               {messages.map((message) => (
                 <div 
@@ -127,7 +128,7 @@ export const ChatBubble = () => {
           {/* Input */}
           <form onSubmit={handleSubmit} className="p-3 bg-gray-900 border-t border-orange-500/30">
             <div className="flex items-center gap-2">
-              <input
+              <Input
                 ref={inputRef}
                 type="text"
                 value={inputValue}
@@ -139,7 +140,7 @@ export const ChatBubble = () => {
               <Button 
                 type="submit" 
                 disabled={isLoading || !inputValue.trim()} 
-                variant="secondary"
+                variant="default"
                 size="icon"
                 className="bg-orange-600 hover:bg-orange-700 text-white"
               >
@@ -156,11 +157,11 @@ export const ChatBubble = () => {
         className={`rounded-full p-3.5 shadow-lg transition-all duration-300 ${
           isOpen 
             ? 'bg-orange-600 text-white rotate-0' 
-            : 'bg-gradient-to-r from-orange-600 to-orange-800 text-white hover:bg-orange-800 animate-pulse'
+            : 'bg-gradient-to-r from-orange-600 to-orange-800 text-white hover:bg-orange-800'
         }`}
         aria-label={isOpen ? 'Close chat' : 'Open chat'}
       >
-        <MessageCircle className={`h-6 w-6 ${isOpen ? 'rotate-0' : 'rotate-0'}`} />
+        <MessageCircle className="h-6 w-6" />
       </button>
     </div>
   );

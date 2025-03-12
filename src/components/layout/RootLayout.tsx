@@ -72,7 +72,7 @@ export default function RootLayout() {
   }, [session, location.pathname]);
 
   return (
-    <ChatAssistantProvider>
+    <>
       <div 
         data-template={profile?.ui_template || "original"} 
         className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground"
@@ -84,8 +84,10 @@ export default function RootLayout() {
           <Outlet />
         </main>
         <Footer />
-        <ChatBubble />
       </div>
-    </ChatAssistantProvider>
-  )
+      <ChatAssistantProvider>
+        <ChatBubble />
+      </ChatAssistantProvider>
+    </>
+  );
 }

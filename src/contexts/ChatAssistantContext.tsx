@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useLanguage } from './LanguageContext';
+import { toast } from '@/components/ui/use-toast';
 
 type Message = {
   id: string;
@@ -49,11 +50,18 @@ export const ChatAssistantProvider = ({ children }: ChatAssistantProviderProps) 
   const { data: properties } = useQuery({
     queryKey: ['properties-for-assistant'],
     queryFn: async () => {
-      const { data } = await supabase
-        .from('properties')
-        .select('id, name, price, currency, address, property_type, bedrooms, bathrooms, area')
-        .limit(10);
-      return data || [];
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select('id, name, price, currency, address, property_type, bedrooms, bathrooms, area')
+          .limit(10);
+          
+        if (error) throw error;
+        return data || [];
+      } catch (error) {
+        console.error("Error fetching properties for assistant:", error);
+        return [];
+      }
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -63,12 +71,19 @@ export const ChatAssistantProvider = ({ children }: ChatAssistantProviderProps) 
     queryKey: ['property-for-assistant', propertyId],
     queryFn: async () => {
       if (!propertyId) return null;
-      const { data } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('id', propertyId)
-        .single();
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('id', propertyId)
+          .single();
+          
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        console.error("Error fetching current property for assistant:", error);
+        return null;
+      }
     },
     enabled: !!propertyId,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -154,6 +169,14 @@ export const ChatAssistantProvider = ({ children }: ChatAssistantProviderProps) 
         content: errorMessage,
         timestamp: new Date()
       }]);
+      
+      toast({
+        title: language === 'es' ? 'Error del Asistente' : 'Assistant Error',
+        description: language === 'es' 
+          ? 'Ocurrió un error al comunicarse con el asistente.' 
+          : 'An error occurred when communicating with the assistant.',
+        variant: 'destructive'
+      });
     } finally {
       setIsLoading(false);
     }

@@ -2,7 +2,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
-const DEEPSEEK_API_KEY = Deno.env.get("DEEPSEEK_API_KEY");
+const DEEPSEEK_API_KEY = Deno.env.get("DEEPSEEK_API_KEY") || "sk-b266b9a9f1d143acb5bac4eef1e1be12";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -73,9 +73,15 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error in real-estate-assistant function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        choices: [{ 
+          message: { 
+            content: "I'm sorry, I encountered an error. Please try again or contact our support team." 
+          } 
+        }] 
+      }),
       {
-        status: 500,
+        status: 200, // Return 200 with error message to prevent UI breaking
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
