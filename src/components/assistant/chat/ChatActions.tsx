@@ -15,7 +15,7 @@ export const ChatActions: React.FC<ChatActionsProps> = ({
   handleOpenEmailDialog,
   handleDownloadTranscript
 }) => {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   
   return (
     <div className="flex justify-between items-center p-2 bg-gray-800 border-t border-gray-700">
@@ -27,7 +27,7 @@ export const ChatActions: React.FC<ChatActionsProps> = ({
           className="text-gray-300 hover:text-white hover:bg-gray-700"
         >
           <Mail className="h-4 w-4 mr-1" />
-          {language === 'es' ? 'Guardar' : 'Save'}
+          {t('chat.save')}
         </Button>
         <Button 
           variant="ghost" 
@@ -36,7 +36,7 @@ export const ChatActions: React.FC<ChatActionsProps> = ({
           className="text-gray-300 hover:text-white hover:bg-gray-700"
         >
           <Mail className="h-4 w-4 mr-1" />
-          {language === 'es' ? 'Enviar por correo' : 'Email'}
+          {t('chat.email')}
         </Button>
         <Button 
           variant="ghost" 
@@ -45,7 +45,7 @@ export const ChatActions: React.FC<ChatActionsProps> = ({
           className="text-gray-300 hover:text-white hover:bg-gray-700"
         >
           <Download className="h-4 w-4 mr-1" />
-          {language === 'es' ? 'Descargar' : 'Download'}
+          {t('chat.download')}
         </Button>
       </div>
     </div>

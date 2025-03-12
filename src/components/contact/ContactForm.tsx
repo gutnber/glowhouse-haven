@@ -1,5 +1,4 @@
 
-import { useForm } from 'react-hook-form';
 import { ContactFormFields } from './ContactFormFields';
 import { ContactFormSuccess } from './ContactFormSuccess';
 
@@ -23,7 +22,7 @@ export const ContactForm = ({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
       <ContactFormFields
         formData={form.getValues()}
         isSubmitting={isSubmitting}
