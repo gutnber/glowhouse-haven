@@ -139,8 +139,7 @@ const enTranslations: Record<string, TranslationValue> = {
       "keywords": "property for sale, property for rent, {location} real estate, {propertyType}"
     }
   },
-  "readMore": "Read More",
-  "viewAllNews": "View All News"
+  "readMore": "Read More"
 };
 
 export default enTranslations;

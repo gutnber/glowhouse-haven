@@ -146,7 +146,6 @@ const esTranslations: Record<string, TranslationValue> = {
     "optional": "opcional"
   },
   "readMore": "Leer más",
-  "viewAllNews": "Ver Todas las Noticias",
   "admin": {
     "role": "Administrador",
     "roleDescription": "Puede administrar todos los aspectos del sitio",
