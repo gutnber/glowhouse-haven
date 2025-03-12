@@ -13,6 +13,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') || '';
+const ADMIN_EMAIL = 'silvia@inma.mx'; // Use admin email for notifications
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -59,33 +62,70 @@ serve(async (req) => {
         try {
           console.log(`Processing email ID: ${email.id}, type: ${email.email_type}`);
           
-          // Call the send-contact-email function for each email
-          const response = await fetch(
-            `${supabaseUrl}/functions/v1/send-contact-email`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${supabaseServiceKey}`,
-              },
-              body: JSON.stringify({ payload: email.payload }),
+          if (email.email_type === 'contact_form' && RESEND_API_KEY) {
+            const record = email.payload.record;
+            
+            if (!record) {
+              throw new Error('Invalid record in payload');
             }
-          );
-          
-          const result = await response.json();
-          console.log(`Email function response for ${email.id}:`, result);
-          
-          if (!response.ok) {
-            console.error(`Failed to send email ${email.id}: ${result.error || "Unknown error"}`);
-            throw new Error(result.error || "Failed to send email");
+            
+            // Format message for admin notification
+            const contactMessage = {
+              from: 'INMA Contact Form <notifications@resend.dev>',
+              to: ADMIN_EMAIL,
+              subject: `New Contact Form Submission - ${record.name}`,
+              html: `
+                <h1>New Contact Form Submission</h1>
+                <p><strong>Name:</strong> ${record.name}</p>
+                <p><strong>Email:</strong> ${record.email}</p>
+                <p><strong>Phone:</strong> ${record.phone || 'Not provided'}</p>
+                <p><strong>Message:</strong></p>
+                <p>${record.message}</p>
+                <p><strong>Submitted at:</strong> ${new Date(record.created_at).toLocaleString()}</p>
+              `,
+            };
+
+            console.log('Retrying email via Resend to', ADMIN_EMAIL);
+            
+            // Send email using Resend
+            const response = await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${RESEND_API_KEY}`,
+              },
+              body: JSON.stringify(contactMessage),
+            });
+
+            const result = await response.json();
+            console.log('Email send result:', result);
+
+            if (!response.ok) {
+              throw new Error(`Resend API error: ${result.message || result.error || response.statusText}`);
+            }
+            
+            // Update the contact submission status if it exists
+            if (record.id) {
+              const { error: updateError } = await supabase
+                .from('contact_submissions')
+                .update({ status: 'notified' })
+                .eq('id', record.id);
+
+              if (updateError) {
+                console.error(`Error updating contact submission status for ${record.id}:`, updateError);
+              }
+            }
+          } else {
+            throw new Error(`Unsupported email type: ${email.email_type}`);
           }
           
-          // Update the email status to sent
+          // Mark email as sent
           const { error: updateError } = await supabase
             .from("email_notifications")
             .update({ 
               status: "sent", 
-              processed_at: new Date().toISOString() 
+              processed_at: new Date().toISOString(),
+              retry_count: (email.retry_count || 0) + 1
             })
             .eq("id", email.id);
           
@@ -99,16 +139,24 @@ serve(async (req) => {
         } catch (error) {
           console.error(`Error processing email ${email.id}:`, error.message);
           
-          // Mark as failed
+          // Increment retry count
+          const newRetryCount = (email.retry_count || 0) + 1;
+          const maxRetries = 3;
+          
+          // Mark as failed if max retries reached
+          const newStatus = newRetryCount >= maxRetries ? "failed" : "pending";
+          
           await supabase
             .from("email_notifications")
             .update({ 
-              status: "failed", 
-              processed_at: new Date().toISOString() 
+              status: newStatus, 
+              processed_at: new Date().toISOString(),
+              retry_count: newRetryCount,
+              error_message: error.message
             })
             .eq("id", email.id);
             
-          return { id: email.id, status: "failed", error: error.message, success: false };
+          return { id: email.id, status: newStatus, error: error.message, success: false };
         }
       })
     );

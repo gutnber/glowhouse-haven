@@ -15,7 +15,7 @@ const supabase = createClient(
 );
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') || '';
-const NOTIFICATION_EMAIL = 'help@ignishomes.com';
+const ADMIN_EMAIL = 'silvia@inma.mx'; // Use admin email for notifications
 
 serve(async (req) => {
   // Handle CORS
@@ -47,10 +47,10 @@ serve(async (req) => {
       );
     }
 
-    // Format message
+    // Format message for admin notification
     const contactMessage = {
-      from: 'Notifications <notifications@ignishomes.com>',
-      to: NOTIFICATION_EMAIL,
+      from: 'INMA Contact Form <notifications@resend.dev>',
+      to: ADMIN_EMAIL,
       subject: `New Contact Form Submission - ${record.name}`,
       html: `
         <h1>New Contact Form Submission</h1>
@@ -63,7 +63,7 @@ serve(async (req) => {
       `,
     };
 
-    console.log('Sending email to:', NOTIFICATION_EMAIL);
+    console.log('Sending email via Resend to', ADMIN_EMAIL);
 
     // Send email using Resend
     if (RESEND_API_KEY) {
@@ -81,8 +81,35 @@ serve(async (req) => {
         console.log('Email send result:', result);
 
         if (!response.ok) {
-          throw new Error(`Resend API error: ${result.message || response.statusText}`);
+          throw new Error(`Resend API error: ${result.message || result.error || response.statusText}`);
         }
+
+        // Also send an auto-reply to the submitter
+        const autoReplyMessage = {
+          from: 'INMA <notifications@resend.dev>',
+          to: record.email,
+          subject: 'Thank you for contacting INMA',
+          html: `
+            <h1>Thank you for contacting us!</h1>
+            <p>Dear ${record.name},</p>
+            <p>We have received your message and will get back to you as soon as possible.</p>
+            <p>Best regards,</p>
+            <p>The INMA Team</p>
+          `,
+        };
+
+        // Send auto-reply
+        const autoReplyResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+          },
+          body: JSON.stringify(autoReplyMessage),
+        });
+
+        const autoReplyResult = await autoReplyResponse.json();
+        console.log('Auto-reply email result:', autoReplyResult);
 
         // Update the contact submission status
         const { error: updateError } = await supabase
@@ -95,7 +122,7 @@ serve(async (req) => {
         }
 
         return new Response(
-          JSON.stringify({ success: true, message: 'Email sent successfully' }),
+          JSON.stringify({ success: true, message: 'Emails sent successfully' }),
           { 
             status: 200, 
             headers: { 
@@ -106,10 +133,32 @@ serve(async (req) => {
         );
       } catch (error) {
         console.error('Error sending email:', error);
+        
+        // Create an entry in the email_notifications table for retry
+        try {
+          const { error: insertError } = await supabase
+            .from('email_notifications')
+            .insert({
+              email_type: 'contact_form',
+              status: 'pending',
+              payload: { record },
+              error_message: error.message || 'Error sending email'
+            });
+            
+          if (insertError) {
+            console.error('Error creating email notification entry:', insertError);
+          } else {
+            console.log('Created email notification entry for retry');
+          }
+        } catch (dbError) {
+          console.error('Error creating retry entry:', dbError);
+        }
+        
         return new Response(
           JSON.stringify({ 
             success: false, 
-            error: error.message || 'Error sending email' 
+            error: error.message || 'Error sending email',
+            message: 'Email sending failed, but submission has been saved' 
           }),
           { 
             status: 500, 
