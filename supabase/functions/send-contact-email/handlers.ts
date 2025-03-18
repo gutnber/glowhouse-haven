@@ -42,7 +42,7 @@ export async function handleRequest(req: Request) {
       const transcriptEmailPayload = getUserTranscriptTemplate(record, isSpanish);
       console.log('Sending transcript email to:', record.email);
       
-      const { error: transcriptError, result, redirected } = await sendEmail(transcriptEmailPayload);
+      const { error: transcriptError, result } = await sendEmail(transcriptEmailPayload);
       
       if (transcriptError) {
         console.error('Error sending transcript email:', transcriptError);
@@ -51,20 +51,13 @@ export async function handleRequest(req: Request) {
       
       console.log('Transcript email sent successfully:', result);
       
-      // If email was redirected to admin due to test domain restrictions,
-      // let the client know about this for informative purposes
-      const responseMessage = redirected 
-        ? 'Email sent successfully but redirected to admin (Resend test domain restriction)' 
-        : 'Email process completed successfully';
-      
       // Update submission status
       await updateSubmissionStatus(record.id, 'notified');
       
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: responseMessage,
-          redirected
+          message: 'Email process completed successfully'
         }),
         { 
           status: 200, 
@@ -79,7 +72,7 @@ export async function handleRequest(req: Request) {
     else {
       console.log('Processing regular contact form email');
       const adminEmailPayload = getAdminEmailTemplate({ ...record, adminEmail: ADMIN_EMAIL });
-      const { error: sendError, redirected } = await sendEmail(adminEmailPayload);
+      const { error: sendError } = await sendEmail(adminEmailPayload);
       
       if (sendError) {
         console.error('Error sending admin email:', sendError);
@@ -92,8 +85,7 @@ export async function handleRequest(req: Request) {
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: 'Email process completed successfully',
-          redirected 
+          message: 'Email process completed successfully'
         }),
         { 
           status: 200, 

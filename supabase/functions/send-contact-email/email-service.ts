@@ -10,26 +10,8 @@ export async function sendEmail(emailPayload: any) {
   }
 
   try {
-    // Check if we're using the default Resend test domain
-    const isUsingTestDomain = emailPayload.from.includes('resend.dev');
-    const originalRecipient = emailPayload.to;
-    
-    // If using test domain, we can only send to the verified admin email
-    if (isUsingTestDomain) {
-      console.log(`Using test domain - redirecting email from ${originalRecipient} to admin: ${ADMIN_EMAIL}`);
-      
-      // Store original recipient in text for reference
-      if (typeof emailPayload.html === 'string') {
-        emailPayload.html = `<div style="background-color: #f8f9fa; padding: 10px; margin-bottom: 15px; border-left: 4px solid #6c757d;">
-          <p><strong>Note:</strong> This email was originally intended for: ${Array.isArray(originalRecipient) ? originalRecipient.join(', ') : originalRecipient}</p>
-          <p>It was redirected to you because Resend requires domain verification for sending to external addresses.</p>
-        </div>` + emailPayload.html;
-      }
-      
-      // Override the recipient with the admin email
-      emailPayload.to = [ADMIN_EMAIL];
-    }
-    
+    // Since we're now using a verified domain (info@inma.mx), 
+    // we can send directly to recipients without redirecting
     console.log('Sending email via Resend API with payload:', {
       to: emailPayload.to,
       subject: emailPayload.subject,
@@ -54,13 +36,10 @@ export async function sendEmail(emailPayload: any) {
 
     console.log('Email sent successfully:', result);
     
-    // Return success with additional context for testing environments
+    // Return success
     return { 
       success: true, 
-      result,
-      isUsingTestDomain,
-      redirected: isUsingTestDomain ? true : false,
-      originalRecipient: isUsingTestDomain ? originalRecipient : null
+      result
     };
   } catch (error) {
     console.error('Error sending email:', error);

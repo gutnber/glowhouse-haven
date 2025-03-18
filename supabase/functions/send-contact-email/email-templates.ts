@@ -2,7 +2,7 @@
 // Generate email templates based on content and language
 export function getAdminEmailTemplate(record: any) {
   return {
-    from: 'INMA Real Estate <onboarding@resend.dev>',
+    from: 'INMA Real Estate <info@inma.mx>',
     to: [record.adminEmail],
     subject: `New Contact Form Submission - ${record.name}`,
     html: `
@@ -19,7 +19,7 @@ export function getAdminEmailTemplate(record: any) {
 
 export function getUserTranscriptTemplate(record: any, isSpanish: boolean) {
   return {
-    from: 'INMA Real Estate <onboarding@resend.dev>',
+    from: 'INMA Real Estate <info@inma.mx>',
     to: [record.email],
     subject: isSpanish ? 'Tu Transcripción de Conversación con INMA' : 'Your Chat Transcript from INMA',
     html: isSpanish
