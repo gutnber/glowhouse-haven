@@ -58,36 +58,55 @@ export const ChatBubble = () => {
     setIsEmailSending(true);
 
     try {
-      // Instead of trying to insert directly, save transcript to localStorage
       const transcript = messages.map(msg => 
         `${msg.role === 'user' ? 'You' : 'Assistant'}: ${msg.content}`
       ).join('\n\n');
       
-      // Store the transcript in localStorage
-      localStorage.setItem('chatTranscript', transcript);
+      const { data, error } = await supabase
+        .from('contact_submissions')
+        .insert([{
+          name: language === 'es' ? 'Usuario del chat' : 'Chat User',
+          email: emailValue,
+          message: `--- Chat Transcript ---\n${transcript}`,
+          status: 'new'
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      await supabase
+        .from('newsletter_subscribers')
+        .upsert(
+          { email: emailValue },
+          { onConflict: 'email', ignoreDuplicates: true }
+        );
       
-      // Redirect to contact page
-      window.location.href = '/contact';
+      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
+        body: { record: data }
+      });
+
+      if (emailError) throw emailError;
       
-      // Close the dialog
       setShowEmailDialog(false);
       setEmailValue('');
       
       toast({
-        title: language === 'es' ? 'Redirigiendo' : 'Redirecting',
+        title: language === 'es' ? 'Correo enviado' : 'Email sent',
         description: language === 'es' 
-          ? 'Complete el formulario de contacto para recibir la transcripción' 
-          : 'Please complete the contact form to receive the transcript',
+          ? 'La conversación ha sido enviada a su correo electrónico' 
+          : 'The conversation has been sent to your email',
       });
     } catch (error) {
-      console.error('Error preparing transcript:', error);
+      console.error('Error emailing transcript:', error);
       toast({
         title: language === 'es' ? 'Error' : 'Error',
         description: language === 'es' 
-          ? 'No se pudo preparar la transcripción' 
-          : 'Failed to prepare the transcript',
+          ? 'No se pudo enviar el correo electrónico' 
+          : 'Failed to send the email',
         variant: 'destructive',
       });
+    } finally {
       setIsEmailSending(false);
     }
   };
