@@ -31,28 +31,35 @@ export async function handleRequest(req: Request) {
       );
     }
 
-    // For admin email (normal contact form)
-    if (!isChatTranscript) {
-      const adminEmailPayload = getAdminEmailTemplate({ ...record, adminEmail: ADMIN_EMAIL });
-      const { error: sendError } = await sendEmail(adminEmailPayload);
-      
-      if (sendError) {
-        console.error('Error sending admin email:', sendError);
-      }
-    }
-
     // For user transcript email (only for chat transcripts)
     if (isChatTranscript) {
+      console.log('Processing chat transcript email');
+      
       // Determine language from transcript
       const isSpanish = detectLanguage(record.message);
       
       // Create and send transcript email
       const transcriptEmailPayload = getUserTranscriptTemplate(record, isSpanish);
-      const { error: transcriptError } = await sendEmail(transcriptEmailPayload);
+      console.log('Sending transcript email to:', record.email);
+      
+      const { error: transcriptError, result } = await sendEmail(transcriptEmailPayload);
       
       if (transcriptError) {
         console.error('Error sending transcript email:', transcriptError);
         throw transcriptError;
+      }
+      
+      console.log('Transcript email sent successfully:', result);
+    }
+    // For admin email (normal contact form)
+    else {
+      console.log('Processing regular contact form email');
+      const adminEmailPayload = getAdminEmailTemplate({ ...record, adminEmail: ADMIN_EMAIL });
+      const { error: sendError } = await sendEmail(adminEmailPayload);
+      
+      if (sendError) {
+        console.error('Error sending admin email:', sendError);
+        throw sendError;
       }
     }
 
@@ -77,11 +84,25 @@ export async function handleRequest(req: Request) {
       const payload = await req.json();
       if (payload.record) {
         await createRetryEntry(payload.record, error.message);
+        console.log('Created retry entry for failed email');
       }
     } catch (dbError) {
       console.error('Error creating retry entry:', dbError);
     }
     
-    throw error; // Re-throw to be caught by the main error handler
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        error: error.message || 'Internal server error',
+        message: 'Email sending failed, but submission has been saved for retry' 
+      }),
+      { 
+        status: 500, 
+        headers: { 
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        } 
+      }
+    );
   }
 }

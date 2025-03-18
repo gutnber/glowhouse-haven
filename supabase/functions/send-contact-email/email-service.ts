@@ -10,6 +10,12 @@ export async function sendEmail(emailPayload: any) {
   }
 
   try {
+    console.log('Sending email via Resend API with payload:', {
+      to: emailPayload.to,
+      subject: emailPayload.subject,
+      from: emailPayload.from
+    });
+    
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -20,12 +26,13 @@ export async function sendEmail(emailPayload: any) {
     });
 
     const result = await response.json();
-    console.log('Email send result:', result);
-
+    
     if (!response.ok) {
+      console.error('Resend API error response:', result);
       throw new Error(`Resend API error: ${result.message || result.error || response.statusText}`);
     }
 
+    console.log('Email sent successfully:', result);
     return { success: true, result };
   } catch (error) {
     console.error('Error sending email:', error);

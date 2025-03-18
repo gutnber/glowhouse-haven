@@ -62,6 +62,8 @@ export const ChatBubble = () => {
         `${msg.role === 'user' ? 'You' : 'Assistant'}: ${msg.content}`
       ).join('\n\n');
       
+      console.log('Sending transcript to email:', emailValue);
+      
       const { data, error } = await supabase
         .from('contact_submissions')
         .insert([{
@@ -73,8 +75,12 @@ export const ChatBubble = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error inserting contact submission:', error);
+        throw error;
+      }
 
+      // Add to newsletter subscribers
       await supabase
         .from('newsletter_subscribers')
         .upsert(
@@ -82,11 +88,17 @@ export const ChatBubble = () => {
           { onConflict: 'email', ignoreDuplicates: true }
         );
       
-      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
+      // Call the edge function to send the email
+      const { data: emailData, error: emailError } = await supabase.functions.invoke('send-contact-email', {
         body: { record: data }
       });
 
-      if (emailError) throw emailError;
+      if (emailError) {
+        console.error('Email service error:', emailError);
+        throw new Error(emailError.message || 'Failed to send email');
+      }
+      
+      console.log('Email function response:', emailData);
       
       setShowEmailDialog(false);
       setEmailValue('');
@@ -99,11 +111,15 @@ export const ChatBubble = () => {
       });
     } catch (error) {
       console.error('Error emailing transcript:', error);
+      
+      // Show more specific error message
+      const errorMessage = error.message || (language === 'es' 
+        ? 'No se pudo enviar el correo electrónico' 
+        : 'Failed to send the email');
+      
       toast({
         title: language === 'es' ? 'Error' : 'Error',
-        description: language === 'es' 
-          ? 'No se pudo enviar el correo electrónico' 
-          : 'Failed to send the email',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
