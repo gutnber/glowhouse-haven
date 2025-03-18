@@ -42,7 +42,7 @@ export async function handleRequest(req: Request) {
       const transcriptEmailPayload = getUserTranscriptTemplate(record, isSpanish);
       console.log('Sending transcript email to:', record.email);
       
-      const { error: transcriptError, result } = await sendEmail(transcriptEmailPayload);
+      const { error: transcriptError, result, redirected } = await sendEmail(transcriptEmailPayload);
       
       if (transcriptError) {
         console.error('Error sending transcript email:', transcriptError);
@@ -50,32 +50,60 @@ export async function handleRequest(req: Request) {
       }
       
       console.log('Transcript email sent successfully:', result);
+      
+      // If email was redirected to admin due to test domain restrictions,
+      // let the client know about this for informative purposes
+      const responseMessage = redirected 
+        ? 'Email sent successfully but redirected to admin (Resend test domain restriction)' 
+        : 'Email process completed successfully';
+      
+      // Update submission status
+      await updateSubmissionStatus(record.id, 'notified');
+      
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: responseMessage,
+          redirected
+        }),
+        { 
+          status: 200, 
+          headers: { 
+            'Content-Type': 'application/json',
+            ...corsHeaders
+          } 
+        }
+      );
     }
     // For admin email (normal contact form)
     else {
       console.log('Processing regular contact form email');
       const adminEmailPayload = getAdminEmailTemplate({ ...record, adminEmail: ADMIN_EMAIL });
-      const { error: sendError } = await sendEmail(adminEmailPayload);
+      const { error: sendError, redirected } = await sendEmail(adminEmailPayload);
       
       if (sendError) {
         console.error('Error sending admin email:', sendError);
         throw sendError;
       }
+      
+      // Update submission status
+      await updateSubmissionStatus(record.id, 'notified');
+      
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'Email process completed successfully',
+          redirected 
+        }),
+        { 
+          status: 200, 
+          headers: { 
+            'Content-Type': 'application/json',
+            ...corsHeaders
+          } 
+        }
+      );
     }
-
-    // Update submission status
-    await updateSubmissionStatus(record.id, 'notified');
-
-    return new Response(
-      JSON.stringify({ success: true, message: 'Email process completed successfully' }),
-      { 
-        status: 200, 
-        headers: { 
-          'Content-Type': 'application/json',
-          ...corsHeaders
-        } 
-      }
-    );
   } catch (error) {
     console.error('Error in handler:', error);
     

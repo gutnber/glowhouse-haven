@@ -100,14 +100,23 @@ export const ChatBubble = () => {
       
       console.log('Email function response:', emailData);
       
+      // Check if the email was redirected (due to Resend test domain restrictions)
+      let successMessage = language === 'es' 
+        ? 'La conversación ha sido enviada a su correo electrónico' 
+        : 'The conversation has been sent to your email';
+        
+      if (emailData?.redirected) {
+        successMessage = language === 'es'
+          ? 'La conversación ha sido enviada. Debido a restricciones de prueba, fue redirigida al administrador.'
+          : 'The conversation has been sent. Due to test domain restrictions, it was redirected to the admin.';
+      }
+      
       setShowEmailDialog(false);
       setEmailValue('');
       
       toast({
         title: language === 'es' ? 'Correo enviado' : 'Email sent',
-        description: language === 'es' 
-          ? 'La conversación ha sido enviada a su correo electrónico' 
-          : 'The conversation has been sent to your email',
+        description: successMessage,
       });
     } catch (error) {
       console.error('Error emailing transcript:', error);
