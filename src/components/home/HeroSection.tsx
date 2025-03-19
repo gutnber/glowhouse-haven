@@ -99,7 +99,7 @@ export const HeroSection = () => {
         </div>
         
         {/* Right Column - Property Video/Image & Property Info */}
-        <div className={`flex flex-col items-center justify-center transition-all duration-1000 delay-500 ${animationClass}`}>
+        <div className="bg-inherit">
           {/* Video Container */}
           <div className="relative rounded-xl overflow-hidden shadow-2xl border border-white/20 max-w-md w-full aspect-video scale-120">
             {propertyData?.youtube_url ? <PropertyYouTubePlayer youtubeUrl={propertyData.youtube_url} autoplay={true} muted={true} controls={true} /> : <img src={propertyData?.feature_image_url || "/hero-property.jpg"} alt="Property in Baja California" className="w-full h-full object-cover" onError={e => {
@@ -110,7 +110,7 @@ export const HeroSection = () => {
           
           {/* Property Information Card - Below the Video */}
           <div className="mt-4 w-full max-w-md">
-            <div className="bg-gray-800/80 backdrop-blur-md rounded-xl p-4 border border-gray-700 shadow-lg">
+            <div className="bg-gray-800/80 backdrop-blur-md rounded-xl p-4 border border-gray-700 shadow-lg my-0 py-[22px]">
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-white font-medium text-lg">
