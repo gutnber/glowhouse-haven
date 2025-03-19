@@ -108,7 +108,7 @@ const Index = () => {
       <StarryBackground />
       <div className="relative z-10 flex-1">
         <div className="container mx-auto px-4 pb-12 space-y-16">
-          {/* Updated Hero Section */}
+          {/* New Hero Section */}
           <HeroSection />
           
           {/* News Slideshow */}
@@ -128,7 +128,7 @@ const Index = () => {
           {/* Featured Properties */}
           <FeaturedProperties properties={featuredProperties} />
           
-          {/* Info Sections */}
+          {/* Info Sections (maintained for compatibility) */}
           <InfoSections />
         </div>
       </div>
