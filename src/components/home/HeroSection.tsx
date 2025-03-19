@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -100,8 +101,8 @@ export const HeroSection = () => {
         
         {/* Right Column - Property Video/Image & Property Info */}
         <div className="bg-inherit">
-          {/* Video Container */}
-          <div className="relative rounded-xl overflow-hidden shadow-2xl border border-white/20 max-w-md w-full aspect-video scale-120">
+          {/* Video Container - Increased size by adjusting scale class */}
+          <div className="relative rounded-xl overflow-hidden shadow-2xl border border-white/20 max-w-md w-full aspect-video scale-150 mx-auto md:mx-0 md:ml-auto">
             {propertyData?.youtube_url ? <PropertyYouTubePlayer youtubeUrl={propertyData.youtube_url} autoplay={true} muted={true} controls={true} /> : <img src={propertyData?.feature_image_url || "/hero-property.jpg"} alt="Property in Baja California" className="w-full h-full object-cover" onError={e => {
             // Fallback in case image doesn't load
             e.currentTarget.src = "/placeholder.svg";
@@ -109,7 +110,7 @@ export const HeroSection = () => {
           </div>
           
           {/* Property Information Card - Below the Video */}
-          <div className="mt-4 w-full max-w-md">
+          <div className="mt-10 w-full max-w-md mx-auto md:mx-0 md:ml-auto">
             <div className="bg-gray-800/80 backdrop-blur-md rounded-xl p-4 border border-gray-700 shadow-lg my-0 py-[22px]">
               <div className="flex justify-between items-start">
                 <div>
