@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom"
 import { ArrowRight, ChevronDown, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -25,17 +26,20 @@ export const NewsSection = ({
   INITIAL_VISIBLE_POSTS,
   POSTS_PER_PAGE
 }: NewsSectionProps) => {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   
   if (newsPosts.length === 0) return null
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
-      {/* Removed the heading and 'View all news' button */}
+      {/* Section heading */}
+      <div className="text-center mb-8">
+        <h2 className="text-3xl md:text-4xl font-bold text-white inline-block border-b-4 border-orange-500 pb-2">
+          {language === 'es' ? 'Últimas Noticias' : 'Latest News'}
+        </h2>
+      </div>
       
       <div className="space-y-4">
-        {/* Removed the first news post display */}
-        
         {newsPosts.length > INITIAL_VISIBLE_POSTS && (
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="more-news" className="border-none">

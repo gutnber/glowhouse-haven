@@ -6,7 +6,7 @@ import { NewsSection } from "@/components/home/NewsSection";
 import { NewsSlideshow } from "@/components/home/NewsSlideshow";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { InfoSections } from "@/components/home/InfoSections";
-import { TopNavigation } from "@/components/layout/TopNavigation";
+import { HeroSection } from "@/components/home/HeroSection";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { LoadingAnimation } from "@/components/ui/loading-animation";
 import { SEO } from "@/components/SEO";
@@ -105,13 +105,30 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col relative">
       <SEO />
-      <TopNavigation session={session} />
       <StarryBackground />
       <div className="relative z-10 flex-1">
-        <div className="container mx-auto px-4 pb-12 space-y-12 my-[71px]">
-          <NewsSlideshow newsPosts={newsPosts} />
-          <NewsSection newsPosts={newsPosts} hasMorePosts={hasMorePosts} loadMorePosts={loadMorePosts} INITIAL_VISIBLE_POSTS={INITIAL_VISIBLE_POSTS} POSTS_PER_PAGE={POSTS_PER_PAGE} />
+        <div className="container mx-auto px-4 pb-12 space-y-16">
+          {/* New Hero Section */}
+          <HeroSection />
+          
+          {/* News Slideshow */}
+          <div className="pt-8">
+            <NewsSlideshow newsPosts={newsPosts} />
+          </div>
+          
+          {/* News Section */}
+          <NewsSection 
+            newsPosts={newsPosts} 
+            hasMorePosts={hasMorePosts} 
+            loadMorePosts={loadMorePosts} 
+            INITIAL_VISIBLE_POSTS={INITIAL_VISIBLE_POSTS} 
+            POSTS_PER_PAGE={POSTS_PER_PAGE} 
+          />
+          
+          {/* Featured Properties */}
           <FeaturedProperties properties={featuredProperties} />
+          
+          {/* Info Sections (maintained for compatibility) */}
           <InfoSections />
         </div>
       </div>
