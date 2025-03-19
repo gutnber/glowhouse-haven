@@ -1,3 +1,4 @@
+
 #root {
   margin: 0 auto;
   text-align: center;
@@ -62,11 +63,6 @@
   max-height: 80px;
   width: auto;
   object-fit: contain;
-}
-
-/* Diagonal clip effect for hero section */
-.clip-diagonal {
-  clip-path: polygon(0 0, 100% 0, 45% 100%, 0% 100%);
 }
 
 /* Ensure Roboto font is applied everywhere */

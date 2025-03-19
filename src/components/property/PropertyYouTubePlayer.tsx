@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react"
 
 interface PropertyYouTubePlayerProps {
@@ -6,15 +5,13 @@ interface PropertyYouTubePlayerProps {
   autoplay?: boolean
   muted?: boolean
   controls?: boolean
-  className?: string
 }
 
 export const PropertyYouTubePlayer = ({ 
   youtubeUrl,
   autoplay = false,
   muted = true,
-  controls = true,
-  className
+  controls = true
 }: PropertyYouTubePlayerProps) => {
   const playerRef = useRef<HTMLIFrameElement>(null)
 
@@ -37,9 +34,7 @@ export const PropertyYouTubePlayer = ({
       mute: muted ? "1" : "0",
       controls: controls ? "1" : "0",
       rel: "0", // Don't show related videos
-      modestbranding: "1", // Minimal YouTube branding
-      loop: "1", // Loop the video
-      playlist: videoId // Required for looping
+      modestbranding: "1" // Minimal YouTube branding
     })
 
     playerRef.current.src = `https://www.youtube.com/embed/${videoId}?${params.toString()}`
@@ -48,10 +43,10 @@ export const PropertyYouTubePlayer = ({
   if (!youtubeUrl) return null
 
   return (
-    <div className={`w-full h-full overflow-hidden bg-black ${className || ""}`}>
+    <div className="aspect-video w-full rounded-lg overflow-hidden bg-black">
       <iframe
         ref={playerRef}
-        className="w-full h-full object-cover"
+        className="w-full h-full"
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
