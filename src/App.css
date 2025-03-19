@@ -78,3 +78,13 @@ h1, h2, h3, h4, h5, h6, p, span, div, button, input, textarea, select, a {
 .scale-120 {
   transform: scale(1.2);
 }
+
+/* Text gradient for hero headline */
+.text-gradient {
+  background: linear-gradient(to right, #ffffff, #e2e2e2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+

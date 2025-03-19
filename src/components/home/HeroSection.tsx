@@ -74,15 +74,15 @@ export const HeroSection = () => {
   const ctaText = language === 'es' ? "Programa tu consulta" : "Schedule Your Consultation";
   
   return (
-    <div className="py-16 md:py-24 relative">
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-orange-600/10 rounded-3xl backdrop-blur-sm border border-orange-500/10" />
+    <div className="relative py-16 md:py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-3xl shadow-xl overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-orange-600/10 backdrop-blur-sm"></div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10 px-6 md:px-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10 px-6 md:px-10 max-w-7xl mx-auto">
         {/* Left Column - Text Content */}
         <div className="space-y-8 flex flex-col justify-center">
           {/* Headline & Subheadline */}
           <div className={`space-y-4 transition-all duration-700 delay-100 ${animationClass}`}>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-orange-300">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gradient">
               {headline}
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-xl">
@@ -118,7 +118,7 @@ export const HeroSection = () => {
           <div className={`pt-4 transition-all duration-700 delay-400 ${animationClass}`}>
             <Button 
               asChild
-              size="lg"
+              size="lg" 
               className="bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-full px-8 py-6 h-auto shadow-lg hover:shadow-xl transition-all group"
             >
               <Link to="/contact" className="flex items-center gap-2">
@@ -129,15 +129,16 @@ export const HeroSection = () => {
           </div>
         </div>
         
-        {/* Right Column - Property Video/Image */}
-        <div className={`relative flex items-center justify-center transition-all duration-1000 delay-500 ${animationClass}`}>
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 max-w-md w-full aspect-[4/3] scale-120">
+        {/* Right Column - Property Video/Image & Property Info */}
+        <div className={`flex flex-col items-center justify-center transition-all duration-1000 delay-500 ${animationClass}`}>
+          {/* Video Container */}
+          <div className="relative rounded-xl overflow-hidden shadow-2xl border border-white/20 max-w-md w-full aspect-video scale-120">
             {propertyData?.youtube_url ? (
               <PropertyYouTubePlayer
                 youtubeUrl={propertyData.youtube_url}
                 autoplay={true}
                 muted={true}
-                controls={false}
+                controls={true}
               />
             ) : (
               <img 
@@ -150,22 +151,42 @@ export const HeroSection = () => {
                 }}
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            <div className="absolute bottom-4 left-4 right-4">
-              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
-                <p className="text-white font-medium">
-                  {propertyData?.name || (language === 'es' ? "Punta Colonet" : "Punta Colonet")}
-                </p>
-                <p className="text-orange-300 font-bold">
-                  {propertyData ? formatCurrency(propertyData.price, propertyData.currency) : "$1,200,000 USD"}
-                </p>
+          </div>
+          
+          {/* Property Information Card - Below the Video */}
+          <div className="mt-4 w-full max-w-md">
+            <div className="bg-gray-800/80 backdrop-blur-md rounded-xl p-4 border border-gray-700 shadow-lg">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-white font-medium text-lg">
+                    {propertyData?.name || (language === 'es' ? "Punta Colonet" : "Punta Colonet")}
+                  </h3>
+                  <p className="text-orange-300 font-bold text-xl mt-1">
+                    {propertyData ? formatCurrency(propertyData.price, propertyData.currency) : "$1,200,000 USD"}
+                  </p>
+                </div>
+                <Link 
+                  to={`/property/${propertyData?.id || ""}`} 
+                  className="text-orange-400 hover:text-orange-300 text-sm font-medium transition-colors"
+                >
+                  {language === 'es' ? "Ver detalles" : "View details"} →
+                </Link>
               </div>
+              
+              {propertyData?.area && (
+                <p className="text-gray-300 text-sm mt-2">
+                  {propertyData.area.toLocaleString()} m² | 
+                  {propertyData.price_per_sqm 
+                    ? ` ${formatCurrency(propertyData.price_per_sqm, propertyData.currency)}/m²` 
+                    : ""}
+                </p>
+              )}
             </div>
           </div>
           
           {/* Decorative elements */}
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-orange-500/20 rounded-full blur-2xl"></div>
-          <div className="absolute -top-6 -left-6 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-16 -right-16 w-32 h-32 bg-orange-500/20 rounded-full blur-3xl"></div>
+          <div className="absolute -top-16 -left-16 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl"></div>
         </div>
       </div>
     </div>
