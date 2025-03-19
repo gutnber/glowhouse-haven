@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from "react"
 
 interface PropertyYouTubePlayerProps {
@@ -5,13 +6,15 @@ interface PropertyYouTubePlayerProps {
   autoplay?: boolean
   muted?: boolean
   controls?: boolean
+  className?: string
 }
 
 export const PropertyYouTubePlayer = ({ 
   youtubeUrl,
   autoplay = false,
   muted = true,
-  controls = true
+  controls = true,
+  className = ""
 }: PropertyYouTubePlayerProps) => {
   const playerRef = useRef<HTMLIFrameElement>(null)
 
@@ -43,7 +46,7 @@ export const PropertyYouTubePlayer = ({
   if (!youtubeUrl) return null
 
   return (
-    <div className="aspect-video w-full rounded-lg overflow-hidden bg-black">
+    <div className={`aspect-video w-full h-full bg-black ${className}`}>
       <iframe
         ref={playerRef}
         className="w-full h-full"

@@ -1,28 +1,59 @@
 
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Star, Check } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PropertyYouTubePlayer } from "@/components/property/PropertyYouTubePlayer";
+import { supabase } from "@/integrations/supabase/client";
+import { formatCurrency } from "@/lib/utils";
 
 export const HeroSection = () => {
   const { t, language } = useLanguage();
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [propertyData, setPropertyData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  
+  // Fetch Punta Colonet property data
+  useEffect(() => {
+    const fetchPropertyData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select('*')
+          .ilike('name', '%colonet%')
+          .limit(1)
+          .single();
+          
+        if (error) {
+          console.error('Error fetching property:', error);
+        } else if (data) {
+          setPropertyData(data);
+        }
+      } catch (err) {
+        console.error('Error in fetching property:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchPropertyData();
+  }, []);
   
   // Simulate loading of content for animation purposes
-  useState(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setAnimationComplete(true);
     }, 500);
     return () => clearTimeout(timer);
-  });
+  }, []);
   
   const animationClass = animationComplete ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8";
   
   // Determine the correct text based on language
   const headline = language === 'es' 
-    ? "Encuentra la propiedad de tus sueños en Los Cabos" 
-    : "Find Your Dream Property in Los Cabos";
+    ? "Encuentra la propiedad de tus sueños en Baja California" 
+    : "Find Your Dream Property in Baja California";
     
   const subheadline = language === 'es'
     ? "Somos especialistas en bienes raíces, ofreciendo las mejores propiedades con servicio personalizado y conocimiento local."
@@ -30,12 +61,12 @@ export const HeroSection = () => {
   
   const outcomes = language === 'es'
     ? [
-        "Acceso exclusivo a las mejores propiedades en Los Cabos",
+        "Acceso exclusivo a las mejores propiedades en Baja California",
         "Asesoramiento personalizado durante todo el proceso",
         "Conocimiento local y experiencia en el mercado inmobiliario"
       ]
     : [
-        "Exclusive access to the best properties in Los Cabos",
+        "Exclusive access to the best properties in Baja California",
         "Personalized guidance throughout the entire process",
         "Local knowledge and expertise in the real estate market"
       ];
@@ -67,7 +98,7 @@ export const HeroSection = () => {
               ))}
             </div>
             <span className="text-white/70 text-sm">
-              {language === 'es' ? "500+ clientes satisfechos" : "500+ satisfied clients"}
+              {language === 'es' ? "100+ clientes satisfechos" : "100+ satisfied clients"}
             </span>
           </div>
           
@@ -98,23 +129,36 @@ export const HeroSection = () => {
           </div>
         </div>
         
-        {/* Right Column - Image */}
+        {/* Right Column - Property Video/Image */}
         <div className={`relative flex items-center justify-center transition-all duration-1000 delay-500 ${animationClass}`}>
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 max-w-md w-full aspect-[4/3]">
-            <img 
-              src="/hero-property.jpg" 
-              alt="Luxury property in Los Cabos" 
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                // Fallback in case image doesn't load
-                e.currentTarget.src = "/placeholder.svg";
-              }}
-            />
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 max-w-md w-full aspect-[4/3] scale-120">
+            {propertyData?.youtube_url ? (
+              <PropertyYouTubePlayer
+                youtubeUrl={propertyData.youtube_url}
+                autoplay={true}
+                muted={true}
+                controls={false}
+              />
+            ) : (
+              <img 
+                src={propertyData?.feature_image_url || "/hero-property.jpg"} 
+                alt="Property in Baja California" 
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  // Fallback in case image doesn't load
+                  e.currentTarget.src = "/placeholder.svg";
+                }}
+              />
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <div className="absolute bottom-4 left-4 right-4">
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
-                <p className="text-white font-medium">{language === 'es' ? "Villa Oceano" : "Ocean Villa"}</p>
-                <p className="text-orange-300 font-bold">$2,450,000 USD</p>
+                <p className="text-white font-medium">
+                  {propertyData?.name || (language === 'es' ? "Punta Colonet" : "Punta Colonet")}
+                </p>
+                <p className="text-orange-300 font-bold">
+                  {propertyData ? formatCurrency(propertyData.price, propertyData.currency) : "$1,200,000 USD"}
+                </p>
               </div>
             </div>
           </div>
