@@ -65,6 +65,11 @@
   object-fit: contain;
 }
 
+/* Diagonal clip effect for hero section */
+.clip-diagonal {
+  clip-path: polygon(0 0, 65% 0, 45% 100%, 0% 100%);
+}
+
 /* Ensure Roboto font is applied everywhere */
 * {
   font-family: 'Roboto', sans-serif;
