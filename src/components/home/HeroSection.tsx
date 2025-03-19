@@ -105,7 +105,7 @@ export const HeroSection = () => {
         {/* Right Column - Property Video/Image & Property Info */}
         <div className="bg-inherit">
           {/* Video Container - Adjusted position and rounded corners for all devices */}
-          <div className={`relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 max-w-md w-full aspect-video scale-150 mx-auto md:mx-0 ${isMobile ? "" : "md:ml-auto md:-ml-12 md:mt-24"}`}>
+          <div className={`relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 max-w-md w-full aspect-video scale-150 mx-auto md:mx-0 ${isMobile ? "" : "md:ml-auto md:mr-12 md:mt-24"}`}>
             {propertyData?.youtube_url ? <PropertyYouTubePlayer youtubeUrl={propertyData.youtube_url} autoplay={true} muted={true} controls={true} /> : <img src={propertyData?.feature_image_url || "/hero-property.jpg"} alt="Property in Baja California" className="w-full h-full object-cover" onError={e => {
             // Fallback in case image doesn't load
             e.currentTarget.src = "/placeholder.svg";
@@ -113,7 +113,7 @@ export const HeroSection = () => {
           </div>
           
           {/* Property Information Card - Below the Video */}
-          <div className={`mt-10 w-full max-w-md mx-auto md:mx-0 ${isMobile ? "" : "md:ml-auto md:-ml-12"}`}>
+          <div className={`mt-10 w-full max-w-md mx-auto md:mx-0 ${isMobile ? "" : "md:ml-auto md:mr-12"}`}>
             <div className="bg-gray-800/80 backdrop-blur-md rounded-xl p-4 border border-gray-700 shadow-lg my-0 py-[22px]">
               <div className="flex justify-between items-start">
                 <div>
