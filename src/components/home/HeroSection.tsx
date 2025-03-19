@@ -166,7 +166,7 @@ export const HeroSection = () => {
                   </p>
                 </div>
                 <Link 
-                  to={`/property/${propertyData?.id || ""}`} 
+                  to={`/properties/${propertyData?.id || ""}`} 
                   className="text-orange-400 hover:text-orange-300 text-sm font-medium transition-colors"
                 >
                   {language === 'es' ? "Ver detalles" : "View details"} →
