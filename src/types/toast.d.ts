@@ -8,5 +8,6 @@ declare module "@/hooks/use-toast" {
     action?: ReactNode;
     icon?: ReactNode;
     variant?: "default" | "destructive";
+    className?: string;
   }
 }

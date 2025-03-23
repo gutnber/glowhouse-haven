@@ -1,6 +1,6 @@
 
 import * as React from "react"
-import { toast as sonnerToast, type ToastT } from "sonner"
+import { toast as sonnerToast } from "sonner"
 
 // Define the proper types for sonner toast
 interface ToastOptions {
@@ -11,13 +11,14 @@ interface ToastOptions {
   variant?: "default" | "destructive"
   type?: "normal" | "success" | "error" | "loading"
   id?: string
+  className?: string
   // Add other sonner properties as needed
 }
 
 // Function to get toasts from the DOM
 // This is a workaround since sonner doesn't export a useToaster hook
 function useToasts() {
-  const [toasts, setToasts] = React.useState<ToastT[]>([])
+  const [toasts, setToasts] = React.useState<any[]>([])
   
   React.useEffect(() => {
     // Get toasts from the DOM
@@ -26,7 +27,7 @@ function useToasts() {
       const toastsArray = Array.from(toastElements).map(el => {
         const id = el.getAttribute('data-sonner-toast')
         const title = el.querySelector('[data-sonner-title]')?.textContent || ''
-        return { id: id || Math.random().toString() } as ToastT
+        return { id: id || Math.random().toString(), title }
       })
       setToasts(toastsArray)
     }
@@ -54,10 +55,13 @@ export function useToast() {
   const toast = React.useCallback(
     ({ variant = "default", ...props }: ToastOptions) => {
       // Convert our variant to sonner's type if needed
-      const type = variant === "destructive" ? "error" : undefined;
+      const type = variant === "destructive" ? "error" : "default";
       
       // Pass options correctly to sonner
-      return sonnerToast({ ...props, type });
+      return sonnerToast(props.title as string, {
+        ...props,
+        type,
+      })
     },
     []
   )
@@ -68,8 +72,11 @@ export function useToast() {
 // This is for direct access without the hook
 export const toast = ({ variant = "default", ...props }: ToastOptions) => {
   // Convert our variant to sonner's type if needed
-  const type = variant === "destructive" ? "error" : undefined;
+  const type = variant === "destructive" ? "error" : "default";
   
   // Pass options correctly to sonner
-  return sonnerToast({ ...props, type });
+  return sonnerToast(props.title as string, {
+    ...props,
+    type,
+  })
 }
