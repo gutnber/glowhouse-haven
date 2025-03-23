@@ -3,7 +3,8 @@ import { ReactNode } from "react";
 import { ToastT } from "sonner";
 
 declare module "@/hooks/use-toast" {
-  type ToastTypes = "success" | "error" | "loading" | "default";
+  // Ensure these match the types expected by the Radix UI Toast component
+  type ToastTypes = "foreground" | "background";
   
   interface ToastOptions {
     title?: ReactNode;
