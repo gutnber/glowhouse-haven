@@ -1,33 +1,40 @@
 
 import * as React from "react"
-import { toast as sonnerToast } from "sonner"
+import { toast as sonnerToast, Toast as SonnerToast } from "sonner"
 
-// Define the proper types for sonner toast
+// Define the proper types for our toast options
 interface ToastOptions {
   title?: React.ReactNode
   description?: React.ReactNode
   action?: React.ReactNode
   icon?: React.ReactNode
   variant?: "default" | "destructive"
-  type?: "normal" | "success" | "error" | "loading"
-  id?: string
   className?: string
-  // Add other sonner properties as needed
+  duration?: number
+  id?: string
 }
+
+type ToastProps = SonnerToast & ToastOptions;
 
 // Function to get toasts from the DOM
 // This is a workaround since sonner doesn't export a useToaster hook
 function useToasts() {
-  const [toasts, setToasts] = React.useState<any[]>([])
+  const [toasts, setToasts] = React.useState<ToastProps[]>([])
   
   React.useEffect(() => {
     // Get toasts from the DOM
     const updateToasts = () => {
       const toastElements = document.querySelectorAll('[data-sonner-toast]')
       const toastsArray = Array.from(toastElements).map(el => {
-        const id = el.getAttribute('data-sonner-toast')
-        const title = el.querySelector('[data-sonner-title]')?.textContent || ''
-        return { id: id || Math.random().toString(), title }
+        const id = el.getAttribute('data-sonner-toast') || Math.random().toString();
+        const title = el.querySelector('[data-sonner-title]')?.textContent || '';
+        const description = el.querySelector('[data-sonner-description]')?.textContent || '';
+        
+        return { 
+          id, 
+          title, 
+          description 
+        } as ToastProps;
       })
       setToasts(toastsArray)
     }
@@ -53,15 +60,24 @@ export function useToast() {
   const toasts = useToasts()
   
   const toast = React.useCallback(
-    ({ variant = "default", ...props }: ToastOptions) => {
-      // Convert our variant to sonner's type if needed
-      const type = variant === "destructive" ? "error" : "default";
+    ({ variant = "default", title, description, action, icon, className, duration, id }: ToastOptions) => {
+      // Map our variant to sonner's expected options
+      const options: Record<string, any> = {
+        description,
+        action,
+        icon,
+        className,
+        duration,
+        id
+      };
       
-      // Pass options correctly to sonner
-      return sonnerToast(props.title as string, {
-        ...props,
-        type,
-      })
+      // Set the correct toast type based on variant
+      if (variant === "destructive") {
+        options.error = true;
+      }
+      
+      // Call Sonner toast with the right parameters
+      return sonnerToast(title as string, options);
     },
     []
   )
@@ -70,13 +86,22 @@ export function useToast() {
 }
 
 // This is for direct access without the hook
-export const toast = ({ variant = "default", ...props }: ToastOptions) => {
-  // Convert our variant to sonner's type if needed
-  const type = variant === "destructive" ? "error" : "default";
+export const toast = ({ variant = "default", title, description, action, icon, className, duration, id }: ToastOptions) => {
+  // Map our variant to sonner's expected options
+  const options: Record<string, any> = {
+    description,
+    action,
+    icon,
+    className,
+    duration,
+    id
+  };
   
-  // Pass options correctly to sonner
-  return sonnerToast(props.title as string, {
-    ...props,
-    type,
-  })
+  // Set the correct toast type based on variant
+  if (variant === "destructive") {
+    options.error = true;
+  }
+  
+  // Call Sonner toast with the right parameters
+  return sonnerToast(title as string, options);
 }
