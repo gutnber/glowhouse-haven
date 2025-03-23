@@ -1,6 +1,6 @@
 
 import * as React from "react"
-import { toast as sonnerToast, Toast as SonnerToast } from "sonner"
+import { toast as sonnerToast, ToastT } from "sonner"
 
 // Define the proper types for our toast options
 interface ToastOptions {
@@ -14,7 +14,8 @@ interface ToastOptions {
   id?: string
 }
 
-type ToastProps = SonnerToast & ToastOptions;
+// Use ToastT from sonner instead of the non-existent Toast type
+type ToastProps = ToastT & ToastOptions;
 
 // Function to get toasts from the DOM
 // This is a workaround since sonner doesn't export a useToaster hook

@@ -10,14 +10,14 @@ export function Toaster() {
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, variant, ...props }) {
         return (
-          <Toast key={id} {...props}>
+          <Toast key={id} {...props} variant={variant}>
             <div className="grid gap-1">
               {title && <ToastTitle>{title}</ToastTitle>}
               {description && (
                 <ToastDescription>{description}</ToastDescription>
               )}
             </div>
-            {action && React.isValidElement(action) && action}
+            {action && React.isValidElement(action) ? action : null}
             <ToastClose />
           </Toast>
         )
