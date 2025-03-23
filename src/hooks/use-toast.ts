@@ -2,16 +2,19 @@
 import * as React from "react"
 import {
   toast as sonnerToast,
-  type Toast as SonnerToast,
+  useToaster,
+  type ToastT,
 } from "sonner"
 
-// Extend the type
-type ToastProps = SonnerToast & {
+// Extend the toast type
+type ToastProps = ToastT & {
   variant?: "default" | "destructive"
 }
 
-// This is your custom hook
+// Custom hook that provides both toast function and toasts array
 export function useToast() {
+  const { toasts } = useToaster()
+  
   const toast = React.useCallback(
     ({ variant = "default", ...props }: ToastProps) => {
       return sonnerToast(props)
@@ -19,7 +22,7 @@ export function useToast() {
     []
   )
 
-  return { toast }
+  return { toast, toasts }
 }
 
 // This is for direct access without the hook
