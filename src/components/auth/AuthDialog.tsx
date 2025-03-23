@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { KeyRound } from "lucide-react"
 
 interface AuthDialogProps {
   isOpen: boolean
@@ -17,11 +18,13 @@ interface AuthDialogProps {
 export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isSignUp, setIsSignUp] = useState(false)
+  const [isPasswordReset, setIsPasswordReset] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [fullName, setFullName] = useState("")
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
   const [showEmailConfirmationNeeded, setShowEmailConfirmationNeeded] = useState(false)
+  const [showPasswordResetSent, setShowPasswordResetSent] = useState(false)
   const { toast } = useToast()
   const navigate = useNavigate()
 
@@ -92,16 +95,51 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
     }
   }
 
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}`,
+      })
+      
+      if (error) throw error
+      
+      setShowPasswordResetSent(true)
+      toast({
+        title: "Success",
+        description: "Password reset email sent. Please check your inbox.",
+      })
+    } catch (error) {
+      console.error("Password reset error:", error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to send password reset email",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const resetForm = () => {
     setEmail("")
     setPassword("")
     setFullName("")
     setShowSuccessMessage(false)
     setShowEmailConfirmationNeeded(false)
+    setShowPasswordResetSent(false)
   }
 
   const toggleAuthMode = () => {
     setIsSignUp(!isSignUp)
+    setIsPasswordReset(false)
+    resetForm()
+  }
+
+  const togglePasswordReset = () => {
+    setIsPasswordReset(!isPasswordReset)
     resetForm()
   }
 
@@ -109,11 +147,19 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isSignUp ? "Create an account" : "Welcome back"}</DialogTitle>
+          <DialogTitle>
+            {isPasswordReset 
+              ? "Reset Your Password" 
+              : isSignUp 
+                ? "Create an account" 
+                : "Welcome back"}
+          </DialogTitle>
           <DialogDescription>
-            {isSignUp
-              ? "Enter your details below to create your account"
-              : "Enter your email below to sign in to your account"}
+            {isPasswordReset
+              ? "Enter your email address and we'll send you a link to reset your password"
+              : isSignUp
+                ? "Enter your details below to create your account"
+                : "Enter your email below to sign in to your account"}
           </DialogDescription>
         </DialogHeader>
 
@@ -152,6 +198,51 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
               Try Again
             </Button>
           </div>
+        ) : showPasswordResetSent ? (
+          <div className="space-y-4 pt-4">
+            <Alert>
+              <AlertDescription>
+                Password reset link has been sent to your email. Please check your inbox and follow the instructions.
+              </AlertDescription>
+            </Alert>
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => {
+                setIsPasswordReset(false)
+                setShowPasswordResetSent(false)
+              }}
+            >
+              Back to Sign In
+            </Button>
+          </div>
+        ) : isPasswordReset ? (
+          <form onSubmit={handlePasswordReset} className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <Label htmlFor="reset-email">Email</Label>
+              <Input
+                id="reset-email"
+                type="email"
+                placeholder="m@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-4">
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Sending..." : "Send Reset Link"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={togglePasswordReset}
+              >
+                Back to Sign In
+              </Button>
+            </div>
+          </form>
         ) : (
           <form onSubmit={handleAuth} className="space-y-4 pt-4">
             {isSignUp && (
@@ -193,6 +284,17 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Loading..." : isSignUp ? "Sign Up" : "Sign In"}
               </Button>
+              {!isSignUp && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full flex items-center justify-center gap-2 text-orange-400 hover:text-orange-500 hover:bg-orange-500/10"
+                  onClick={togglePasswordReset}
+                >
+                  <KeyRound className="h-4 w-4" />
+                  Forgot your password?
+                </Button>
+              )}
               <Button
                 type="button"
                 variant="outline"
