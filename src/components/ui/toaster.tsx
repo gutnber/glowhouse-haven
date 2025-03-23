@@ -16,7 +16,8 @@ export function Toaster() {
                 <ToastDescription>{description}</ToastDescription>
               )}
             </div>
-            {action}
+            {/* Render action only if it's a valid React node */}
+            {React.isValidElement(action) && action}
             <ToastClose />
           </Toast>
         )

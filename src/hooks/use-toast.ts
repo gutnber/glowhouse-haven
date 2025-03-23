@@ -2,10 +2,16 @@
 import * as React from "react"
 import { toast as sonnerToast, type ToastT } from "sonner"
 
-// Extend the toast type to include our variant
-type ToastProps = Omit<ToastT, "id"> & {
-  variant?: "default" | "destructive"
+// Define the proper types for sonner toast
+interface ToastOptions {
+  title?: React.ReactNode
+  description?: React.ReactNode
+  action?: React.ReactNode
   icon?: React.ReactNode
+  variant?: "default" | "destructive"
+  type?: "normal" | "success" | "error" | "loading"
+  id?: string
+  // Add other sonner properties as needed
 }
 
 // Function to get toasts from the DOM
@@ -46,8 +52,12 @@ export function useToast() {
   const toasts = useToasts()
   
   const toast = React.useCallback(
-    ({ variant = "default", ...props }: ToastProps) => {
-      return sonnerToast(props)
+    ({ variant = "default", ...props }: ToastOptions) => {
+      // Convert our variant to sonner's type if needed
+      const type = variant === "destructive" ? "error" : undefined;
+      
+      // Pass options correctly to sonner
+      return sonnerToast({ ...props, type });
     },
     []
   )
@@ -56,6 +66,10 @@ export function useToast() {
 }
 
 // This is for direct access without the hook
-export const toast = ({ variant = "default", ...props }: ToastProps) => {
-  return sonnerToast(props)
+export const toast = ({ variant = "default", ...props }: ToastOptions) => {
+  // Convert our variant to sonner's type if needed
+  const type = variant === "destructive" ? "error" : undefined;
+  
+  // Pass options correctly to sonner
+  return sonnerToast({ ...props, type });
 }
