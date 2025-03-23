@@ -12,6 +12,7 @@ interface ToastOptions {
   className?: string
   duration?: number
   id?: string
+  type?: "foreground" | "background"
 }
 
 // Use ToastT from sonner instead of the non-existent Toast type
@@ -34,7 +35,9 @@ function useToasts() {
         return { 
           id, 
           title, 
-          description 
+          description,
+          // Default to "foreground" type to match Radix UI's expectations
+          type: "foreground" as const
         } as ToastProps;
       })
       setToasts(toastsArray)
@@ -61,7 +64,7 @@ export function useToast() {
   const toasts = useToasts()
   
   const toast = React.useCallback(
-    ({ variant = "default", title, description, action, icon, className, duration, id }: ToastOptions) => {
+    ({ variant = "default", title, description, action, icon, className, duration, id, type = "foreground" }: ToastOptions) => {
       // Map our variant to sonner's expected options
       const options: Record<string, any> = {
         description,
@@ -69,7 +72,8 @@ export function useToast() {
         icon,
         className,
         duration,
-        id
+        id,
+        type
       };
       
       // Set the correct toast type based on variant
@@ -87,7 +91,7 @@ export function useToast() {
 }
 
 // This is for direct access without the hook
-export const toast = ({ variant = "default", title, description, action, icon, className, duration, id }: ToastOptions) => {
+export const toast = ({ variant = "default", title, description, action, icon, className, duration, id, type = "foreground" }: ToastOptions) => {
   // Map our variant to sonner's expected options
   const options: Record<string, any> = {
     description,
@@ -95,7 +99,8 @@ export const toast = ({ variant = "default", title, description, action, icon, c
     icon,
     className,
     duration,
-    id
+    id,
+    type
   };
   
   // Set the correct toast type based on variant

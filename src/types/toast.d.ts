@@ -15,6 +15,8 @@ declare module "@/hooks/use-toast" {
     className?: string;
     duration?: number;
     id?: string;
+    // Add type property that matches Radix UI's expectations
+    type?: "foreground" | "background";
   }
   
   interface Toast extends ToastOptions {
