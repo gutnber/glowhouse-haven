@@ -132,13 +132,15 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
     setShowPasswordResetSent(false)
   }
 
-  const toggleAuthMode = () => {
+  const toggleAuthMode = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault() // Prevent default to avoid page navigation
     setIsSignUp(!isSignUp)
     setIsPasswordReset(false)
     resetForm()
   }
 
-  const togglePasswordReset = () => {
+  const togglePasswordReset = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault() // Prevent default to avoid page navigation
     setIsPasswordReset(!isPasswordReset)
     resetForm()
   }
@@ -173,7 +175,8 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
             <Button
               type="button"
               className="w-full"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault() // Prevent default to avoid page navigation
                 setIsSignUp(false)
                 setShowSuccessMessage(false)
               }}
@@ -191,7 +194,8 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
             <Button
               type="button"
               className="w-full"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault() // Prevent default to avoid page navigation
                 setShowEmailConfirmationNeeded(false)
               }}
             >
@@ -208,7 +212,8 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
             <Button
               type="button"
               className="w-full"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault() // Prevent default to avoid page navigation
                 setIsPasswordReset(false)
                 setShowPasswordResetSent(false)
               }}
