@@ -67,7 +67,8 @@ export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
       width: property.width ?? null,
       height: property.height ?? null,
       heated_area: property.heated_area ?? null,
-      features: property.features ?? [],
+      features: Array.isArray(property.features) ? property.features : 
+               (property.features ? String(property.features).split(',').map(f => f.trim()).filter(f => f.length > 0) : []),
       images: property.images || [],
     } : undefined,
   })

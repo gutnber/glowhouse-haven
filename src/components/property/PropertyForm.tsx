@@ -38,7 +38,7 @@ export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps
 
   // Ensure features is always an array
   useEffect(() => {
-    if (features && typeof features === 'string') {
+    if (typeof features === 'string' && features) {
       const featuresArray = features.split(',').map(f => f.trim()).filter(f => f.length > 0)
       form.setValue('features', featuresArray)
     } else if (!features) {
@@ -46,12 +46,12 @@ export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps
     }
   }, [features, form])
 
-  console.log('Form values:', form.getValues())
-
   const handleSubmit = (values: PropertyFormValues) => {
-    // Ensure features is an array
-    if (values.features && typeof values.features === 'string') {
+    // Ensure features is an array before submitting
+    if (typeof values.features === 'string' && values.features) {
       values.features = values.features.split(',').map(f => f.trim()).filter(f => f.length > 0)
+    } else if (!values.features) {
+      values.features = []
     }
     
     onSubmit(values)
