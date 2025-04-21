@@ -4,6 +4,8 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescripti
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLanguage } from "@/contexts/LanguageContext"
+import { PropertyFeaturesList } from "@/components/home/featured-property/PropertyFeaturesList"
+import { useEffect } from "react"
 
 interface DetailsFieldsProps {
   form: UseFormReturn<any>
@@ -13,6 +15,34 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
   const propertyType = form.watch('property_type')
   const isVacantLand = propertyType === 'vacantLand'
   const { t } = useLanguage()
+  const features = form.watch('features')
+
+  // Handle features string conversion
+  useEffect(() => {
+    if (features && typeof features === 'string') {
+      const featuresArray = features.split(',').map(f => f.trim()).filter(f => f.length > 0)
+      form.setValue('features', featuresArray)
+    }
+  }, [features, form])
+
+  const handleFeaturesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value) {
+      const featuresArray = value.split(',').map(f => f.trim()).filter(f => f.length > 0)
+      form.setValue('features', featuresArray)
+    } else {
+      form.setValue('features', [])
+    }
+  }
+
+  // Convert features array to comma-separated string for display in input
+  const getFeaturesInputValue = () => {
+    if (!features) return ''
+    if (Array.isArray(features)) {
+      return features.join(', ')
+    }
+    return features
+  }
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
@@ -170,9 +200,18 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
           <FormItem>
             <FormLabel className="text-orange-500">{t('property.features')}</FormLabel>
             <FormControl>
-              <Input placeholder="Garage, Pool, etc. (comma-separated)" {...field} />
+              <Input 
+                placeholder="Garage, Pool, etc. (comma-separated)" 
+                value={getFeaturesInputValue()}
+                onChange={handleFeaturesChange}
+              />
             </FormControl>
             <FormDescription>Enter features separated by commas</FormDescription>
+            {Array.isArray(features) && features.length > 0 && (
+              <div className="mt-2">
+                <PropertyFeaturesList features={features} />
+              </div>
+            )}
             <FormMessage />
           </FormItem>
         )}

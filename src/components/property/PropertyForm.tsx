@@ -11,6 +11,7 @@ import { DescriptionField } from "./form-sections/DescriptionField"
 import { ImagesField } from "./form-sections/ImagesField"
 import { YouTubeFields } from "./form-sections/YouTubeFields"
 import { PropertyFormValues } from "@/schemas/propertyFormSchema"
+import { useEffect } from "react"
 
 interface PropertyFormProps {
   form: UseFormReturn<PropertyFormValues>
@@ -25,18 +26,40 @@ export const PropertyForm = ({ form, onSubmit, isSubmitting }: PropertyFormProps
   // Calculate price per square meter when price or area changes
   const price = form.watch('price')
   const area = form.watch('area')
+  const features = form.watch('features')
   
   // Auto-calculate price per sqm if there's both price and area, but only if price_per_sqm hasn't been set manually
-  if (price > 0 && area > 0 && !form.getValues('price_per_sqm')) {
-    const calculatedPricePerSqm = Math.round(price / area)
-    form.setValue('price_per_sqm', calculatedPricePerSqm)
-  }
+  useEffect(() => {
+    if (price > 0 && area > 0 && !form.getValues('price_per_sqm')) {
+      const calculatedPricePerSqm = Math.round(price / area)
+      form.setValue('price_per_sqm', calculatedPricePerSqm)
+    }
+  }, [price, area, form])
+
+  // Ensure features is always an array
+  useEffect(() => {
+    if (features && typeof features === 'string') {
+      const featuresArray = features.split(',').map(f => f.trim()).filter(f => f.length > 0)
+      form.setValue('features', featuresArray)
+    } else if (!features) {
+      form.setValue('features', [])
+    }
+  }, [features, form])
 
   console.log('Form values:', form.getValues())
 
+  const handleSubmit = (values: PropertyFormValues) => {
+    // Ensure features is an array
+    if (values.features && typeof values.features === 'string') {
+      values.features = values.features.split(',').map(f => f.trim()).filter(f => f.length > 0)
+    }
+    
+    onSubmit(values)
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <BasicInfoFields form={form} />
         <DetailsFields form={form} />
         <AdditionalDetailsFields form={form} />

@@ -67,6 +67,7 @@ export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
       width: property.width ?? null,
       height: property.height ?? null,
       heated_area: property.heated_area ?? null,
+      features: property.features ?? [],
       images: property.images || [],
     } : undefined,
   })
@@ -81,10 +82,17 @@ export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
         price_per_sqm = values.price / values.area;
       }
       
+      // Ensure features is an array
+      let features = values.features;
+      if (features && typeof features === 'string') {
+        features = features.split(',').map(f => f.trim()).filter(f => f.length > 0);
+      }
+      
       const { error } = await supabase
         .from('properties')
         .update({
           ...values,
+          features: features,
           currency: values.currency || "USD",
           price_per_sqm: price_per_sqm,
           google_maps_url: values.google_maps_url || null,

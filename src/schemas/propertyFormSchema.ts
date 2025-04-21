@@ -14,7 +14,12 @@ export const propertyFormSchema = z.object({
   width: z.number().min(0).optional().nullable(),
   height: z.number().min(0).optional().nullable(),
   description: z.string().optional().nullable(),
-  features: z.array(z.string()).optional().nullable(),
+  features: z.union([
+    z.array(z.string()), 
+    z.string().transform(str => 
+      str ? str.split(',').map(s => s.trim()).filter(s => s.length > 0) : []
+    )
+  ]),
   google_maps_url: z.string().optional().nullable(),
   youtube_url: z.string().optional().nullable(),
   youtube_autoplay: z.boolean().optional().nullable(),
