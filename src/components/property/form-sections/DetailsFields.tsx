@@ -1,10 +1,11 @@
+
 import { UseFormReturn } from "react-hook-form"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { PropertyFeaturesList } from "@/components/home/featured-property/PropertyFeaturesList"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 interface DetailsFieldsProps {
   form: UseFormReturn<any>
@@ -15,8 +16,22 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
   const isVacantLand = propertyType === 'vacantLand'
   const { t } = useLanguage()
   const features = form.watch('features')
+  
+  // Local state for the input field
+  const [featuresInput, setFeaturesInput] = useState<string>('')
+  
+  // Initialize the features input field from the form value
+  useEffect(() => {
+    if (Array.isArray(features)) {
+      setFeaturesInput(features.join(', '))
+    } else if (features && typeof features === 'string') {
+      setFeaturesInput(features)
+    } else {
+      setFeaturesInput('')
+    }
+  }, [])
 
-  // Handle features string conversion
+  // Handle features string conversion when form value changes
   useEffect(() => {
     if (features && typeof features === 'string') {
       const featuresArray = (features as string).split(',').map(f => f.trim()).filter(f => f.length > 0)
@@ -24,23 +39,19 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
     }
   }, [features, form])
 
+  // Handle direct input in the features field
   const handleFeaturesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
+    // Update the local input state
+    setFeaturesInput(value)
+    
+    // Convert to array and update form value
     if (value) {
       const featuresArray = value.split(',').map(f => f.trim()).filter(f => f.length > 0)
       form.setValue('features', featuresArray)
     } else {
       form.setValue('features', [])
     }
-  }
-
-  // Convert features array to comma-separated string for display in input
-  const getFeaturesInputValue = () => {
-    if (!features) return ''
-    if (Array.isArray(features)) {
-      return features.join(', ')
-    }
-    return features as string
   }
 
   return (
@@ -195,13 +206,13 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
       <FormField
         control={form.control}
         name="features"
-        render={({ field }) => (
+        render={() => (
           <FormItem>
             <FormLabel className="text-orange-500">{t('property.features')}</FormLabel>
             <FormControl>
               <Input 
                 placeholder="Garage, Pool, etc. (comma-separated)" 
-                value={getFeaturesInputValue()}
+                value={featuresInput}
                 onChange={handleFeaturesChange}
               />
             </FormControl>
