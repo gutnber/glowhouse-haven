@@ -1,4 +1,3 @@
-
 import { UseFormReturn } from "react-hook-form"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -20,7 +19,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
   // Handle features string conversion
   useEffect(() => {
     if (features && typeof features === 'string') {
-      const featuresArray = features.split(',').map(f => f.trim()).filter(f => f.length > 0)
+      const featuresArray = (features as string).split(',').map(f => f.trim()).filter(f => f.length > 0)
       form.setValue('features', featuresArray)
     }
   }, [features, form])
@@ -41,7 +40,7 @@ export const DetailsFields = ({ form }: DetailsFieldsProps) => {
     if (Array.isArray(features)) {
       return features.join(', ')
     }
-    return features
+    return features as string
   }
 
   return (

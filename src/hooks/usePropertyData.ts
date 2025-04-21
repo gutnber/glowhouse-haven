@@ -68,7 +68,9 @@ export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
       height: property.height ?? null,
       heated_area: property.heated_area ?? null,
       features: Array.isArray(property.features) ? property.features : 
-               (property.features ? String(property.features).split(',').map(f => f.trim()).filter(f => f.length > 0) : []),
+               (property.features && typeof property.features === 'string' 
+                ? (property.features as string).split(',').map(f => f.trim()).filter(f => f.length > 0) 
+                : []),
       images: property.images || [],
     } : undefined,
   })
@@ -86,7 +88,9 @@ export const usePropertyData = (propertyId: string, onSuccess: () => void) => {
       // Ensure features is an array
       let features = values.features;
       if (features && typeof features === 'string') {
-        features = features.split(',').map(f => f.trim()).filter(f => f.length > 0);
+        features = (features as string).split(',').map(f => f.trim()).filter(f => f.length > 0);
+      } else if (!features) {
+        features = [];
       }
       
       const { error } = await supabase
