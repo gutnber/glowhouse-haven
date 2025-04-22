@@ -31,32 +31,26 @@ export const FullScreenViewer = ({
   const { isAdmin } = useIsAdmin()
   const [isDragging, setIsDragging] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const [isOpen, setIsOpen] = useState(false)
-
-  // Synchronize the dialog open state with selectedImage prop
-  useEffect(() => {
-    if (selectedImage) {
-      console.log("Opening dialog with image:", selectedImage);
-      setIsOpen(true);
-    }
-  }, [selectedImage]);
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (!isOpen) return
-    
+  
+  // Handle keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement> | KeyboardEvent) => {
     if (e.key === 'ArrowLeft' && selectedIndex > 0) {
       onNavigate('prev')
     } else if (e.key === 'ArrowRight' && selectedIndex < images.length - 1) {
       onNavigate('next')
     } else if (e.key === 'Escape') {
-      handleDialogClose()
+      onClose()
     }
   }
 
+  // Global keyboard listener
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, selectedIndex, images]);
+    if (!selectedImage) return
+    
+    const keyListener = (e: KeyboardEvent) => handleKeyDown(e)
+    window.addEventListener('keydown', keyListener)
+    return () => window.removeEventListener('keydown', keyListener)
+  }, [selectedImage, selectedIndex, images]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isAdmin || !selectedImage || selectedImage !== featureImageUrl) return
@@ -78,25 +72,16 @@ export const FullScreenViewer = ({
   }
 
   const handleMouseUp = () => {
-    if (!isDragging || !selectedImage || selectedImage !== featureImageUrl) return
-    setIsDragging(false)
-    onPositionSave()
-  }
-
-  const handleDialogClose = () => {
-    setIsOpen(false)
-    onClose()
+    if (isDragging) {
+      setIsDragging(false)
+      onPositionSave()
+    }
   }
   
+  if (!selectedImage) return null;
+  
   return (
-    <Dialog 
-      open={isOpen} 
-      onOpenChange={(open) => {
-        if (!open) {
-          handleDialogClose()
-        }
-      }}
-    >
+    <Dialog open={!!selectedImage} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden">
         <div className="absolute right-4 top-4 z-10 flex gap-2">
           <Button
@@ -121,7 +106,7 @@ export const FullScreenViewer = ({
             variant="ghost"
             size="icon"
             className="bg-black/20 hover:bg-black/40 text-white"
-            onClick={handleDialogClose}
+            onClick={onClose}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -132,6 +117,8 @@ export const FullScreenViewer = ({
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          tabIndex={0}
+          onKeyDown={handleKeyDown}
         >
           {selectedImage && (
             <div className="relative">
