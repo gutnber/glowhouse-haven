@@ -31,34 +31,32 @@ export const FullScreenViewer = ({
   const { isAdmin } = useIsAdmin()
   const [isDragging, setIsDragging] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
-  // Update dialog open state when selectedImage changes
+  // Synchronize the dialog open state with selectedImage prop
   useEffect(() => {
     if (selectedImage) {
       console.log("Opening dialog with image:", selectedImage);
-      setDialogOpen(true);
-    } else {
-      setDialogOpen(false);
+      setIsOpen(true);
     }
   }, [selectedImage]);
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (!selectedImage) return
+    if (!isOpen) return
     
     if (e.key === 'ArrowLeft' && selectedIndex > 0) {
       onNavigate('prev')
     } else if (e.key === 'ArrowRight' && selectedIndex < images.length - 1) {
       onNavigate('next')
     } else if (e.key === 'Escape') {
-      onClose()
+      handleDialogClose()
     }
   }
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedImage, selectedIndex, images]);
+  }, [isOpen, selectedIndex, images]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isAdmin || !selectedImage || selectedImage !== featureImageUrl) return
@@ -86,15 +84,17 @@ export const FullScreenViewer = ({
   }
 
   const handleDialogClose = () => {
-    setDialogOpen(false)
+    setIsOpen(false)
     onClose()
   }
   
   return (
     <Dialog 
-      open={dialogOpen} 
+      open={isOpen} 
       onOpenChange={(open) => {
-        if (!open) handleDialogClose()
+        if (!open) {
+          handleDialogClose()
+        }
       }}
     >
       <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden">
