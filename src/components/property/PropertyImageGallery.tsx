@@ -25,7 +25,7 @@ export const PropertyImageGallery = ({
   const { toast } = useToast()
 
   const handleImageSelect = (src: string, index: number) => {
-    console.log("Image selected:", src, "index:", index)
+    console.log("Image selected in gallery component:", src, "index:", index)
     setSelectedImage(src)
     setSelectedIndex(index)
     if (src === featureImageUrl) {

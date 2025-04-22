@@ -1,5 +1,5 @@
 
-import { X, ChevronLeft, ChevronRight } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
@@ -31,6 +31,12 @@ export const FullScreenViewer = ({
   const { isAdmin } = useIsAdmin()
   const [isDragging, setIsDragging] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    // Set dialog open state based on selectedImage
+    setOpen(!!selectedImage)
+  }, [selectedImage])
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (!selectedImage) return
@@ -73,9 +79,17 @@ export const FullScreenViewer = ({
     setIsDragging(false)
     onPositionSave()
   }
+
+  const handleCloseDialog = () => {
+    setOpen(false)
+    onClose()
+  }
   
   return (
-    <Dialog open={!!selectedImage} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      setOpen(isOpen)
+      if (!isOpen) onClose()
+    }}>
       <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden">
         <div className="absolute right-4 top-4 z-10 flex gap-2">
           <Button
@@ -100,7 +114,7 @@ export const FullScreenViewer = ({
             variant="ghost"
             size="icon"
             className="bg-black/20 hover:bg-black/40 text-white"
-            onClick={() => onClose()}
+            onClick={handleCloseDialog}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -113,15 +127,18 @@ export const FullScreenViewer = ({
           onMouseLeave={handleMouseUp}
         >
           {selectedImage && (
-            <img
-              src={selectedImage}
-              alt="Expanded view"
-              className={`max-w-full max-h-[90vh] object-contain transition-all duration-200 ${isAdmin && selectedImage === featureImageUrl ? 'cursor-move' : ''}`}
-              style={{ 
-                objectPosition: `${position.x}% ${position.y}%`
-              }}
-              onMouseDown={handleMouseDown}
-            />
+            <div className="relative">
+              <img
+                src={selectedImage}
+                alt="Expanded view"
+                className={`max-w-full max-h-[90vh] object-contain transition-all duration-200 ${isAdmin && selectedImage === featureImageUrl ? 'cursor-move' : ''}`}
+                style={{ 
+                  objectPosition: `${position.x}% ${position.y}%`
+                }}
+                onMouseDown={handleMouseDown}
+              />
+              <ZoomIn className="absolute top-4 left-4 text-white/50 h-6 w-6" />
+            </div>
           )}
           {isAdmin && selectedImage === featureImageUrl && (
             <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">

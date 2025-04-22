@@ -35,14 +35,14 @@ export const ThumbnailCarousel = ({
 
     return (
       <div 
-        className="cursor-pointer relative" 
-        onClick={(e) => {
-          e.preventDefault()
-          onImageSelect(src, index)
+        className="cursor-pointer relative group" 
+        onClick={() => {
+          console.log("Thumbnail clicked:", src, index);
+          onImageSelect(src, index);
         }}
       >
         <AspectRatio ratio={4/3}>
-          <div className="relative rounded-lg overflow-hidden group">
+          <div className="relative rounded-lg overflow-hidden">
             <BorderBeam delay={index} />
             <img
               src={src}
@@ -65,8 +65,8 @@ export const ThumbnailCarousel = ({
             size="sm"
             className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
             onClick={(e) => {
-              e.stopPropagation()
-              onSetFeatureImage(src)
+              e.stopPropagation();
+              onSetFeatureImage(src);
             }}
           >
             Set as feature
