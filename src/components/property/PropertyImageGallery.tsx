@@ -1,3 +1,4 @@
+
 import { House } from "lucide-react"
 import { useState } from "react"
 import { supabase } from "@/integrations/supabase/client"
@@ -24,6 +25,7 @@ export const PropertyImageGallery = ({
   const { toast } = useToast()
 
   const handleImageSelect = (src: string, index: number) => {
+    console.log("Image selected:", src, "index:", index)
     setSelectedImage(src)
     setSelectedIndex(index)
     if (src === featureImageUrl) {
@@ -43,7 +45,7 @@ export const PropertyImageGallery = ({
 
       if (error) throw error
 
-      if (data.feature_image_position) {
+      if (data?.feature_image_position) {
         const [x, y] = data.feature_image_position.split(' ').map(val => 
           parseFloat(val.replace('%', ''))
         )
@@ -78,7 +80,9 @@ export const PropertyImageGallery = ({
   }
 
   const handleNavigate = (direction: 'prev' | 'next') => {
-    const currentIndex = images.indexOf(selectedImage || '')
+    if (!selectedImage) return
+    
+    const currentIndex = images.indexOf(selectedImage)
     let newIndex = currentIndex
 
     if (direction === 'prev' && currentIndex > 0) {

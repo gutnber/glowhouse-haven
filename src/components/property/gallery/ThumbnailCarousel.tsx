@@ -1,3 +1,4 @@
+
 import { Star } from "lucide-react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/carousel"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { BorderBeam } from "@/components/ui/border-beam"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 
 interface ThumbnailCarouselProps {
   images: string[]
@@ -32,16 +34,22 @@ export const ThumbnailCarousel = ({
     const isFeatureImage = src === featureImageUrl
 
     return (
-      <div className="cursor-pointer group relative" onClick={() => onImageSelect(src, index)}>
+      <div 
+        className="cursor-pointer relative" 
+        onClick={(e) => {
+          e.preventDefault()
+          onImageSelect(src, index)
+        }}
+      >
         <AspectRatio ratio={4/3}>
-          <div className="relative rounded-lg overflow-hidden">
+          <div className="relative rounded-lg overflow-hidden group">
             <BorderBeam delay={index} />
             <img
               src={src}
               alt={`${propertyName} ${index + 1}`}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             />
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
               <div className="text-white text-sm font-medium">Click to expand</div>
             </div>
             {isFeatureImage && (
@@ -55,7 +63,7 @@ export const ThumbnailCarousel = ({
           <Button
             variant="secondary"
             size="sm"
-            className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
             onClick={(e) => {
               e.stopPropagation()
               onSetFeatureImage(src)

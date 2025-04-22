@@ -1,3 +1,4 @@
+
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
@@ -72,9 +73,9 @@ export const FullScreenViewer = ({
     setIsDragging(false)
     onPositionSave()
   }
-
+  
   return (
-    <Dialog open={!!selectedImage} onOpenChange={() => onClose()}>
+    <Dialog open={!!selectedImage} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden">
         <div className="absolute right-4 top-4 z-10 flex gap-2">
           <Button
@@ -111,15 +112,17 @@ export const FullScreenViewer = ({
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          <img
-            src={selectedImage || ''}
-            alt="Expanded view"
-            className={`max-w-full max-h-[90vh] object-contain transition-all duration-200 ${isAdmin && selectedImage === featureImageUrl ? 'cursor-move' : ''}`}
-            style={{ 
-              objectPosition: `${position.x}% ${position.y}%`
-            }}
-            onMouseDown={handleMouseDown}
-          />
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Expanded view"
+              className={`max-w-full max-h-[90vh] object-contain transition-all duration-200 ${isAdmin && selectedImage === featureImageUrl ? 'cursor-move' : ''}`}
+              style={{ 
+                objectPosition: `${position.x}% ${position.y}%`
+              }}
+              onMouseDown={handleMouseDown}
+            />
+          )}
           {isAdmin && selectedImage === featureImageUrl && (
             <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
               {isDragging ? 'Release to save position' : 'Click and drag to adjust image position'}
