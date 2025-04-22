@@ -31,12 +31,17 @@ export const FullScreenViewer = ({
   const { isAdmin } = useIsAdmin()
   const [isDragging, setIsDragging] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const [open, setOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
 
+  // Update dialog open state when selectedImage changes
   useEffect(() => {
-    // Set dialog open state based on selectedImage
-    setOpen(!!selectedImage)
-  }, [selectedImage])
+    if (selectedImage) {
+      console.log("Opening dialog with image:", selectedImage);
+      setDialogOpen(true);
+    } else {
+      setDialogOpen(false);
+    }
+  }, [selectedImage]);
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (!selectedImage) return
@@ -53,7 +58,7 @@ export const FullScreenViewer = ({
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedImage, selectedIndex, images])
+  }, [selectedImage, selectedIndex, images]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isAdmin || !selectedImage || selectedImage !== featureImageUrl) return
@@ -80,16 +85,18 @@ export const FullScreenViewer = ({
     onPositionSave()
   }
 
-  const handleCloseDialog = () => {
-    setOpen(false)
+  const handleDialogClose = () => {
+    setDialogOpen(false)
     onClose()
   }
   
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-      setOpen(isOpen)
-      if (!isOpen) onClose()
-    }}>
+    <Dialog 
+      open={dialogOpen} 
+      onOpenChange={(open) => {
+        if (!open) handleDialogClose()
+      }}
+    >
       <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden">
         <div className="absolute right-4 top-4 z-10 flex gap-2">
           <Button
@@ -114,7 +121,7 @@ export const FullScreenViewer = ({
             variant="ghost"
             size="icon"
             className="bg-black/20 hover:bg-black/40 text-white"
-            onClick={handleCloseDialog}
+            onClick={handleDialogClose}
           >
             <X className="h-4 w-4" />
           </Button>

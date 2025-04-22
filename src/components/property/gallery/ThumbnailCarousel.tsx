@@ -34,23 +34,17 @@ export const ThumbnailCarousel = ({
     const isFeatureImage = src === featureImageUrl
 
     return (
-      <div 
-        className="cursor-pointer relative group" 
-        onClick={() => {
-          console.log("Thumbnail clicked:", src, index);
-          onImageSelect(src, index);
-        }}
-      >
+      <div className="relative cursor-pointer" onClick={() => onImageSelect(src, index)}>
         <AspectRatio ratio={4/3}>
           <div className="relative rounded-lg overflow-hidden">
             <BorderBeam delay={index} />
             <img
               src={src}
               alt={`${propertyName} ${index + 1}`}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-              <div className="text-white text-sm font-medium">Click to expand</div>
+            <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
+              <div className="text-white text-sm font-medium">View larger</div>
             </div>
             {isFeatureImage && (
               <div className="absolute top-2 right-2 bg-yellow-500 rounded-full p-1">
@@ -63,7 +57,7 @@ export const ThumbnailCarousel = ({
           <Button
             variant="secondary"
             size="sm"
-            className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            className="absolute bottom-2 right-2 opacity-0 hover:opacity-100 transition-opacity duration-300"
             onClick={(e) => {
               e.stopPropagation();
               onSetFeatureImage(src);

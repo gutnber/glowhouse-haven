@@ -119,6 +119,10 @@ export const PropertyImageGallery = ({
     }
   }
 
+  const handleCloseViewer = () => {
+    setSelectedImage(null)
+  }
+
   if (!images || images.length === 0) {
     return (
       <div className="col-span-4 bg-muted rounded-lg flex items-center justify-center py-12">
@@ -143,7 +147,7 @@ export const PropertyImageGallery = ({
         images={images}
         featureImageUrl={featureImageUrl}
         position={position}
-        onClose={() => setSelectedImage(null)}
+        onClose={handleCloseViewer}
         onNavigate={handleNavigate}
         onPositionChange={setPosition}
         onPositionSave={handlePositionSave}
