@@ -8,7 +8,7 @@ export const HeroSection = () => {
   const { language } = useLanguage();
 
   return (
-    <div className="relative min-h-[80vh] flex flex-col items-center justify-center py-16 md:py-24">
+    <div className="relative min-h-[80vh] flex flex-col items-center justify-center py-16 md:py-24 rounded-3xl overflow-hidden mx-4 md:mx-8 lg:mx-12">
       {/* Background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-gray-800/95 to-gray-900/90"></div>
       
