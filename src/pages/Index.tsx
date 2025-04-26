@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import StarryBackground from "@/components/background/StarryBackground";
@@ -10,10 +9,8 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { LoadingAnimation } from "@/components/ui/loading-animation";
 import { SEO } from "@/components/SEO";
-
 const POSTS_PER_PAGE = 5;
 const INITIAL_VISIBLE_POSTS = 1;
-
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([]);
@@ -21,7 +18,6 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPosts, setTotalPosts] = useState(0);
   const session = useAuthSession();
-
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
@@ -50,14 +46,9 @@ const Index = () => {
         // Fetch featured properties with price_per_sqm and currency
         const {
           data: propertiesData
-        } = await supabase.from('properties')
-          .select('*')
-          .not('feature_image_url', 'is', null)
-          .order('created_at', {
-            ascending: false
-          })
-          .limit(3);
-          
+        } = await supabase.from('properties').select('*').not('feature_image_url', 'is', null).order('created_at', {
+          ascending: false
+        }).limit(3);
         if (propertiesData) {
           // Calculate price_per_sqm if not provided but area and price are available
           const processedProperties = propertiesData.map(property => {
@@ -66,7 +57,6 @@ const Index = () => {
             }
             return property;
           });
-          
           console.log("Fetched properties:", processedProperties);
           setFeaturedProperties(processedProperties);
         }
@@ -78,7 +68,6 @@ const Index = () => {
     };
     fetchData();
   }, []);
-
   const loadMorePosts = async () => {
     try {
       const nextPage = currentPage + 1;
@@ -95,19 +84,15 @@ const Index = () => {
       console.error('Error loading more posts:', error);
     }
   };
-
   const hasMorePosts = newsPosts.length < totalPosts;
-
   if (isLoading) {
     return <LoadingAnimation />;
   }
-
-  return (
-    <div className="min-h-screen flex flex-col relative">
+  return <div className="min-h-screen flex flex-col relative">
       <SEO />
       <StarryBackground />
       <div className="relative z-10 flex-1">
-        <div className="container mx-auto px-4 pb-12 space-y-16">
+        <div className="container mx-auto px-4 pb-12 space-y-16 py-[16px]">
           {/* New Hero Section */}
           <HeroSection />
           
@@ -117,13 +102,7 @@ const Index = () => {
           </div>
           
           {/* News Section */}
-          <NewsSection 
-            newsPosts={newsPosts} 
-            hasMorePosts={hasMorePosts} 
-            loadMorePosts={loadMorePosts} 
-            INITIAL_VISIBLE_POSTS={INITIAL_VISIBLE_POSTS} 
-            POSTS_PER_PAGE={POSTS_PER_PAGE} 
-          />
+          <NewsSection newsPosts={newsPosts} hasMorePosts={hasMorePosts} loadMorePosts={loadMorePosts} INITIAL_VISIBLE_POSTS={INITIAL_VISIBLE_POSTS} POSTS_PER_PAGE={POSTS_PER_PAGE} />
           
           {/* Featured Properties */}
           <FeaturedProperties properties={featuredProperties} />
@@ -133,8 +112,6 @@ const Index = () => {
         </div>
       </div>
       {/* Footer is already included in RootLayout */}
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
