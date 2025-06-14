@@ -79,7 +79,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="mt-auto bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg">
+    <footer className="mt-auto bg-gradient-to-r from-card via-card to-card border-t border-border shadow-lg">
       <div className="container mx-auto py-12 px-4">
         {/* Top section with logo and company info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
@@ -89,10 +89,10 @@ export function Footer() {
         </div>
         
         {/* Newsletter signup form */}
-        <div className="border-t border-gray-700 pt-8 mt-8">
+        <div className="border-t border-border pt-8 mt-8">
           <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-xl font-semibold mb-4">{language === 'es' ? 'Suscríbete a Nuestro Boletín' : 'Subscribe to Our Newsletter'}</h3>
-            <p className="text-gray-300 mb-6">{language === 'es' ? 'Mantente actualizado con nuestras últimas propiedades y noticias inmobiliarias' : 'Stay updated with our latest properties and real estate news'}</p>
+            <h3 className="text-xl font-semibold mb-4 text-foreground">{language === 'es' ? 'Suscríbete a Nuestro Boletín' : 'Subscribe to Our Newsletter'}</h3>
+            <p className="text-muted-foreground mb-6">{language === 'es' ? 'Mantente actualizado con nuestras últimas propiedades y noticias inmobiliarias' : 'Stay updated with our latest properties and real estate news'}</p>
             <NewsletterForm placeholder={settings.subscribe_email} />
           </div>
         </div>
