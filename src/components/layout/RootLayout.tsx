@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Outlet, useLocation } from "react-router-dom"
@@ -9,7 +10,6 @@ import { useState, useEffect } from "react"
 import { SEO } from "@/components/SEO"
 import { ChatAssistantProvider } from "@/contexts/ChatAssistantContext"
 import { ChatBubble } from "@/components/assistant/ChatBubble"
-import { ThemeProvider } from "@/contexts/ThemeContext"
 
 const MINIMUM_LOADING_TIME = 5000; // 5 seconds for initial load/refresh
 
@@ -72,22 +72,20 @@ export default function RootLayout() {
   }, [session, location.pathname]);
 
   return (
-    <ThemeProvider>
-      <ChatAssistantProvider>
-        <div 
-          data-template={profile?.ui_template || "original"} 
-          className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground transition-colors duration-300"
-        >
-          <SEO />
-          {loading && <LoadingScreen />}
-          <TopNavigation session={session} />
-          <main className="flex-1 pt-20">
-            <Outlet />
-          </main>
-          <Footer />
-          <ChatBubble />
-        </div>
-      </ChatAssistantProvider>
-    </ThemeProvider>
+    <ChatAssistantProvider>
+      <div 
+        data-template={profile?.ui_template || "original"} 
+        className="min-h-screen flex flex-col overflow-x-hidden bg-background text-foreground"
+      >
+        <SEO />
+        {loading && <LoadingScreen />}
+        <TopNavigation session={session} />
+        <main className="flex-1 pt-20">
+          <Outlet />
+        </main>
+        <Footer />
+        <ChatBubble />
+      </div>
+    </ChatAssistantProvider>
   );
 }
