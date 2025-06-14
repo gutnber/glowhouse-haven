@@ -7,6 +7,7 @@ import { Session } from "@supabase/supabase-js";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Shield } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeToggle } from "../ThemeToggle";
 
 interface TopNavigationProps {
   session: Session | null;
@@ -40,13 +41,16 @@ export function TopNavigation({
   return (
     <nav 
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 
-        ${scrolled ? 'bg-gradient-to-r from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-md shadow-lg transform-gpu' : 'bg-gradient-to-r from-gray-900/80 via-gray-800/80 to-gray-900/80'}
+        ${scrolled 
+          ? 'bg-white/80 dark:bg-gradient-to-r dark:from-gray-900/95 dark:via-gray-800/95 dark:to-gray-900/95 backdrop-blur-md shadow-lg' 
+          : 'bg-white/30 dark:bg-gradient-to-r dark:from-gray-900/80 dark:via-gray-800/80 dark:to-gray-900/80'
+        }
         ${loaded ? 'translate-y-0 opacity-100' : 'translate-y-[-20px] opacity-0'}
       `}
     >
-      <div className="container mx-auto relative z-50 flex h-16 items-center justify-between px-4 my-[16px] text-white">
+      <div className="container mx-auto relative z-50 flex h-16 items-center justify-between px-4 my-[16px] text-foreground">
         <Logo />
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {isAdmin && <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -60,6 +64,7 @@ export function TopNavigation({
               </Tooltip>
             </TooltipProvider>}
           <LanguageToggle />
+          <ThemeToggle />
           <UserMenu session={session} />
         </div>
       </div>
