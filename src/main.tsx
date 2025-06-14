@@ -11,7 +11,6 @@ import { BrowserRouter } from 'react-router-dom'
 import { LanguageProvider } from './contexts/language'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from "@/components/ui/toaster"
-import { ThemeProvider } from './components/ThemeProvider.tsx'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,10 +26,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <LanguageProvider>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <App />
-            <Toaster />
-          </ThemeProvider>
+          <App />
+          <Toaster />
         </LanguageProvider>
       </BrowserRouter>
     </QueryClientProvider>
