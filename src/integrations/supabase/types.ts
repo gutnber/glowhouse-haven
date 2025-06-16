@@ -135,6 +135,127 @@ export type Database = {
         }
         Relationships: []
       }
+      gestion_usuarios: {
+        Row: {
+          agente_asignado: string | null
+          created_at: string
+          email: string | null
+          estado: Database["public"]["Enums"]["estado_usuario"]
+          fecha_primer_contacto: string | null
+          fecha_siguiente_seguimiento: string | null
+          fecha_ultimo_contacto: string | null
+          fuente: Database["public"]["Enums"]["fuente_usuario"] | null
+          historial_contactos: Json | null
+          id: string
+          nombre_completo: string
+          notas: string | null
+          presupuesto_max: number | null
+          presupuesto_min: number | null
+          prioridad: number | null
+          propiedad_interes: string | null
+          propiedad_interes_id: string | null
+          tags: string[] | null
+          telefono: string | null
+          updated_at: string
+        }
+        Insert: {
+          agente_asignado?: string | null
+          created_at?: string
+          email?: string | null
+          estado?: Database["public"]["Enums"]["estado_usuario"]
+          fecha_primer_contacto?: string | null
+          fecha_siguiente_seguimiento?: string | null
+          fecha_ultimo_contacto?: string | null
+          fuente?: Database["public"]["Enums"]["fuente_usuario"] | null
+          historial_contactos?: Json | null
+          id?: string
+          nombre_completo: string
+          notas?: string | null
+          presupuesto_max?: number | null
+          presupuesto_min?: number | null
+          prioridad?: number | null
+          propiedad_interes?: string | null
+          propiedad_interes_id?: string | null
+          tags?: string[] | null
+          telefono?: string | null
+          updated_at?: string
+        }
+        Update: {
+          agente_asignado?: string | null
+          created_at?: string
+          email?: string | null
+          estado?: Database["public"]["Enums"]["estado_usuario"]
+          fecha_primer_contacto?: string | null
+          fecha_siguiente_seguimiento?: string | null
+          fecha_ultimo_contacto?: string | null
+          fuente?: Database["public"]["Enums"]["fuente_usuario"] | null
+          historial_contactos?: Json | null
+          id?: string
+          nombre_completo?: string
+          notas?: string | null
+          presupuesto_max?: number | null
+          presupuesto_min?: number | null
+          prioridad?: number | null
+          propiedad_interes?: string | null
+          propiedad_interes_id?: string | null
+          tags?: string[] | null
+          telefono?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gestion_usuarios_propiedad_interes_id_fkey"
+            columns: ["propiedad_interes_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      historial_contactos: {
+        Row: {
+          creado_por: string | null
+          created_at: string
+          descripcion: string
+          fecha_contacto: string
+          id: string
+          proximo_seguimiento: string | null
+          resultado: string | null
+          tipo_contacto: string
+          usuario_id: string | null
+        }
+        Insert: {
+          creado_por?: string | null
+          created_at?: string
+          descripcion: string
+          fecha_contacto?: string
+          id?: string
+          proximo_seguimiento?: string | null
+          resultado?: string | null
+          tipo_contacto: string
+          usuario_id?: string | null
+        }
+        Update: {
+          creado_por?: string | null
+          created_at?: string
+          descripcion?: string
+          fecha_contacto?: string
+          id?: string
+          proximo_seguimiento?: string | null
+          resultado?: string | null
+          tipo_contacto?: string
+          usuario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historial_contactos_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "gestion_usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           contact_message: string | null
@@ -549,6 +670,20 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      estado_usuario:
+        | "nuevo"
+        | "contactado"
+        | "interesado"
+        | "bajo_contrato"
+        | "cliente"
+        | "inactivo"
+      fuente_usuario:
+        | "sitio_web"
+        | "referido"
+        | "redes_sociales"
+        | "publicidad"
+        | "evento"
+        | "otro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -665,6 +800,22 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      estado_usuario: [
+        "nuevo",
+        "contactado",
+        "interesado",
+        "bajo_contrato",
+        "cliente",
+        "inactivo",
+      ],
+      fuente_usuario: [
+        "sitio_web",
+        "referido",
+        "redes_sociales",
+        "publicidad",
+        "evento",
+        "otro",
+      ],
     },
   },
 } as const
