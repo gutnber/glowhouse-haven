@@ -11,13 +11,15 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 
+type EstadoUsuario = 'nuevo' | 'contactado' | 'interesado' | 'bajo_contrato' | 'cliente' | 'inactivo'
+
 interface EstadoSelectProps {
   usuarioId: string
-  estadoActual: string
+  estadoActual: EstadoUsuario
   onEstadoUpdate: () => Promise<void>
 }
 
-const getEstadoBadgeColor = (estado: string) => {
+const getEstadoBadgeColor = (estado: EstadoUsuario) => {
   switch (estado) {
     case 'nuevo': return 'bg-blue-100 text-blue-800'
     case 'contactado': return 'bg-yellow-100 text-yellow-800'
@@ -29,7 +31,7 @@ const getEstadoBadgeColor = (estado: string) => {
   }
 }
 
-const getEstadoLabel = (estado: string) => {
+const getEstadoLabel = (estado: EstadoUsuario) => {
   switch (estado) {
     case 'nuevo': return 'Nuevo'
     case 'contactado': return 'Contactado'
@@ -45,7 +47,7 @@ export const EstadoSelect = ({ usuarioId, estadoActual, onEstadoUpdate }: Estado
   const { toast } = useToast()
   const [isUpdating, setIsUpdating] = useState(false)
 
-  const handleEstadoChange = async (nuevoEstado: string) => {
+  const handleEstadoChange = async (nuevoEstado: EstadoUsuario) => {
     setIsUpdating(true)
     try {
       const { error } = await supabase

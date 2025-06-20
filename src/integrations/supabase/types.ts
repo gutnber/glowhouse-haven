@@ -365,6 +365,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          ai_settings: Json | null
           avatar_url: string | null
           company: string | null
           contact_message: string | null
@@ -382,6 +383,7 @@ export type Database = {
           user_type: string | null
         }
         Insert: {
+          ai_settings?: Json | null
           avatar_url?: string | null
           company?: string | null
           contact_message?: string | null
@@ -399,6 +401,7 @@ export type Database = {
           user_type?: string | null
         }
         Update: {
+          ai_settings?: Json | null
           avatar_url?: string | null
           company?: string | null
           contact_message?: string | null
