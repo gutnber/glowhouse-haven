@@ -25,12 +25,14 @@ import { HistorialContactosDialog } from "./HistorialContactosDialog"
 import { Eye, Phone, Mail, Edit, Trash } from "lucide-react"
 import { format } from "date-fns"
 
+type EstadoUsuario = 'nuevo' | 'contactado' | 'interesado' | 'bajo_contrato' | 'cliente' | 'inactivo'
+
 interface Usuario {
   id: string
   nombre_completo: string
   email: string | null
   telefono: string | null
-  estado: string
+  estado: EstadoUsuario
   fuente: string | null
   propiedad_interes: string | null
   presupuesto_min: number | null
@@ -50,7 +52,7 @@ interface TablaUsuariosProps {
   onRefetch: () => Promise<void>
 }
 
-const getEstadoBadgeColor = (estado: string) => {
+const getEstadoBadgeColor = (estado: EstadoUsuario) => {
   switch (estado) {
     case 'nuevo': return 'bg-blue-100 text-blue-800'
     case 'contactado': return 'bg-yellow-100 text-yellow-800'

@@ -61,7 +61,7 @@ export const ChatAssistantProvider = ({ children }: ChatAssistantProviderProps) 
           .single()
 
         if (error) throw error
-        return data?.ai_settings as AISettings | null
+        return data?.ai_settings as unknown as AISettings | null
       } catch (error) {
         console.error("Error fetching AI settings:", error);
         return null;

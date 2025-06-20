@@ -4,6 +4,7 @@ export interface AISettings {
   deepseek_api_key?: string;
   openai_api_key?: string;
   model?: string;
+  [key: string]: any; // Add index signature for Json compatibility
 }
 
 export interface AIProvider {

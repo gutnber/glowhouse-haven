@@ -20,7 +20,7 @@ export function useAISettings() {
         .single()
 
       if (error) throw error
-      return data?.ai_settings as AISettings | null
+      return data?.ai_settings as unknown as AISettings | null
     }
   })
 
@@ -31,7 +31,7 @@ export function useAISettings() {
 
       const { error } = await supabase
         .from('profiles')
-        .update({ ai_settings: newSettings })
+        .update({ ai_settings: newSettings as any })
         .eq('id', session.user.id)
 
       if (error) throw error
