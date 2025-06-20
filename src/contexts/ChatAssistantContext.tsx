@@ -1,10 +1,10 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useLanguage } from './LanguageContext';
 import { toast } from '@/components/ui/use-toast';
+import { AISettings } from '@/types/ai-settings';
 
 type Message = {
   id: string;
@@ -45,6 +45,30 @@ export const ChatAssistantProvider = ({ children }: ChatAssistantProviderProps) 
   
   // Check if current route is a property page
   const propertyId = location.pathname.match(/\/properties\/([a-zA-Z0-9-]+)/)?.[1];
+  
+  // Fetch AI settings
+  const { data: aiSettings } = useQuery({
+    queryKey: ['ai-settings-chat'],
+    queryFn: async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.user) return null
+
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('ai_settings')
+          .eq('id', session.user.id)
+          .single()
+
+        if (error) throw error
+        return data?.ai_settings as AISettings | null
+      } catch (error) {
+        console.error("Error fetching AI settings:", error);
+        return null;
+      }
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
   
   // Fetch properties data for context
   const { data: properties } = useQuery({
@@ -140,7 +164,8 @@ export const ChatAssistantProvider = ({ children }: ChatAssistantProviderProps) 
         body: { 
           messages: formattedMessages,
           propertyData: properties,
-          currentProperty: propertyId 
+          currentProperty: propertyId,
+          aiSettings: aiSettings
         }
       });
       

@@ -13,6 +13,51 @@ interface ChatRequest {
   messages: Array<{role: string, content: string}>;
   propertyData?: any;
   currentProperty?: string;
+  aiSettings?: {
+    provider: 'deepseek' | 'openai';
+    model?: string;
+    deepseek_api_key?: string;
+    openai_api_key?: string;
+  };
+}
+
+async function callDeepSeek(messages: any[], model: string, apiKey: string) {
+  const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: model || "deepseek-chat",
+      messages: messages,
+      temperature: 0.7,
+      max_tokens: 1000,
+      top_p: 0.95,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.0
+    })
+  });
+
+  return await response.json();
+}
+
+async function callOpenAI(messages: any[], model: string, apiKey: string) {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: model || "gpt-4o-mini",
+      messages: messages,
+      temperature: 0.7,
+      max_tokens: 1000
+    })
+  });
+
+  return await response.json();
 }
 
 serve(async (req) => {
@@ -22,9 +67,14 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, propertyData, currentProperty } = await req.json() as ChatRequest;
+    const { messages, propertyData, currentProperty, aiSettings } = await req.json() as ChatRequest;
     
-    console.log("Request received:", { messagesCount: messages.length, hasPropertyData: !!propertyData, currentProperty });
+    console.log("Request received:", { 
+      messagesCount: messages.length, 
+      hasPropertyData: !!propertyData, 
+      currentProperty,
+      provider: aiSettings?.provider || 'deepseek'
+    });
 
     // Create system message with property context if available
     let systemMessage = "Eres un asistente inmobiliario especializado en propiedades en Baja California, México. Responde en el mismo idioma que el usuario (español o inglés). Proporciona información precisa y útil sobre propiedades, el mercado inmobiliario de la región, y el proceso de compra/venta en México.";
@@ -43,31 +93,31 @@ serve(async (req) => {
       { role: "system", content: systemMessage },
       ...messages
     ];
-    
-    console.log("Sending to DeepSeek API with system message");
 
-    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "deepseek-chat", // Using the standard model instead of reasoning
-        messages: fullMessages,
-        temperature: 0.7,
-        max_tokens: 1000,
-        top_p: 0.95, // Adding top_p for faster responses
-        frequency_penalty: 0.0, // Adding standard frequency penalty
-        presence_penalty: 0.0 // Adding standard presence penalty
-      })
-    });
-
-    const data = await response.json();
-    console.log("Response received from DeepSeek", { status: response.status });
+    let data;
+    const provider = aiSettings?.provider || 'deepseek';
     
-    if (!response.ok) {
-      throw new Error(`DeepSeek API error: ${JSON.stringify(data)}`);
+    if (provider === 'openai' && aiSettings?.openai_api_key) {
+      console.log("Using OpenAI provider");
+      data = await callOpenAI(
+        fullMessages, 
+        aiSettings.model || "gpt-4o-mini", 
+        aiSettings.openai_api_key
+      );
+    } else {
+      console.log("Using DeepSeek provider");
+      const apiKey = aiSettings?.deepseek_api_key || DEEPSEEK_API_KEY;
+      data = await callDeepSeek(
+        fullMessages, 
+        aiSettings?.model || "deepseek-chat", 
+        apiKey
+      );
+    }
+    
+    console.log("Response received from AI provider");
+    
+    if (!data.choices || !data.choices[0]) {
+      throw new Error(`AI API error: ${JSON.stringify(data)}`);
     }
 
     return new Response(JSON.stringify(data), {

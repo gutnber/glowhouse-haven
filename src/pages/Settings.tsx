@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
@@ -7,8 +6,10 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ProfileTab } from "@/components/settings/tabs/ProfileTab"
 import { AppearanceTab } from "@/components/settings/tabs/AppearanceTab"
+import { AISettingsTab } from "@/components/settings/tabs/AISettingsTab"
 import { UITemplate } from "@/types/templates"
 import { ProfileFormValues } from "@/components/settings/ProfileForm"
+import { useAISettings } from "@/hooks/useAISettings"
 import { CheckCircle2 } from "lucide-react"
 import { Toaster } from "@/components/ui/toaster"
 
@@ -31,6 +32,11 @@ export default function Settings() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const queryClient = useQueryClient()
+  const { 
+    settings: aiSettings, 
+    updateSettings: updateAISettings, 
+    isUpdating: isUpdatingAI 
+  } = useAISettings()
 
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryKey: ['profile'],
@@ -168,6 +174,7 @@ export default function Settings() {
           <TabsList>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
+            <TabsTrigger value="ai">Asistente IA</TabsTrigger>
           </TabsList>
           
           <TabsContent value="profile">
@@ -185,6 +192,14 @@ export default function Settings() {
               templates={templates}
               currentTemplate={profile?.ui_template || 'original'}
               onApplyTemplate={(templateId) => updateTemplate.mutateAsync(templateId)}
+            />
+          </TabsContent>
+
+          <TabsContent value="ai">
+            <AISettingsTab
+              settings={aiSettings}
+              onSettingsUpdate={updateAISettings}
+              isLoading={isUpdatingAI}
             />
           </TabsContent>
         </Tabs>
