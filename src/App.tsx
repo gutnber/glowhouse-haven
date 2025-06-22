@@ -17,6 +17,7 @@ import Users from "./pages/Users";
 import Tools from "./pages/Tools";
 import Contact from "./pages/Contact";
 import Communications from "./pages/Communications";
+import MapInspiredLandingPage from "./pages/MapInspiredLanding";
 import RootLayout from "./components/layout/RootLayout";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
       <Routes>
         <Route element={<RootLayout />}>
           <Route path="/" element={<Index />} />
+          <Route path="/map-landing" element={<MapInspiredLandingPage />} />
           <Route path="/properties" element={<Properties />} />
           <Route path="/properties/:id" element={<PropertyProfile />} />
           <Route path="/properties/add" element={<AddProperty />} />
