@@ -72,12 +72,12 @@ export const MapInspiredLanding = () => {
             key={i}
             className="absolute w-1 h-1 bg-teal-400/30 rounded-full"
             initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight
+              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800)
             }}
             animate={{
-              y: [null, Math.random() * window.innerHeight],
-              x: [null, Math.random() * window.innerWidth]
+              y: [null, Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800)],
+              x: [null, Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200)]
             }}
             transition={{
               duration: Math.random() * 10 + 10,
@@ -349,3 +349,46 @@ export const MapInspiredLanding = () => {
     </div>
   );
 };
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      staggerChildren: 0.2
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.6 }
+  }
+};
+
+const features = [
+  {
+    icon: <Home className="h-6 w-6" />,
+    title: "Premium Properties",
+    description: "Curated selection of luxury real estate in Baja California"
+  },
+  {
+    icon: <MapPin className="h-6 w-6" />,
+    title: "Prime Locations",
+    description: "Strategic locations with high investment potential"
+  },
+  {
+    icon: <Building2 className="h-6 w-6" />,
+    title: "Expert Guidance",
+    description: "Professional real estate advisory services"
+  },
+  {
+    icon: <Zap className="h-6 w-6" />,
+    title: "Fast Transactions",
+    description: "Streamlined processes for quick property deals"
+  }
+];
