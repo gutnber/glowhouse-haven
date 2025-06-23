@@ -7,24 +7,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-interface EasyBrokerProperty {
-  title: string
-  operation_type: string
-  property_type: string
-  location: {
-    name: string
-  }
-  price: number
-  bedrooms?: number
-  bathrooms?: number
-  parking_spaces?: number
-  construction_size?: number
-  lot_size?: number
-  description?: string
-  show_prices: boolean
-  external_id: string
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -46,36 +28,44 @@ serve(async (req) => {
 
     // Map property types from our system to EasyBroker types
     const propertyTypeMapping: Record<string, string> = {
-      'singleFamily': 'house',
-      'apartment': 'apartment',
-      'condo': 'apartment',
-      'townhouse': 'house',
-      'vacantLand': 'land',
-      'commercial': 'commercial',
-      'other': 'house'
+      'singleFamily': 'House',
+      'apartment': 'Apartment',
+      'condo': 'Apartment',
+      'townhouse': 'House',
+      'vacantLand': 'Land',
+      'commercial': 'Commercial',
+      'other': 'House'
     }
 
-    // Map operation modes
+    // Map operation modes to EasyBroker operation types
     const operationTypeMapping: Record<string, string> = {
       'sale': 'sale',
       'rent': 'rental',
       'lease': 'rental'
     }
 
-    // Prepare EasyBroker payload with only permitted parameters
+    // Prepare the operations array (required field)
+    const operations = [{
+      type: operationTypeMapping[property.mode] || 'sale',
+      amount: property.price,
+      currency: property.currency || 'USD'
+    }]
+
+    // Prepare EasyBroker payload with all required fields
     const easyBrokerPayload: any = {
       title: property.name,
-      operation_type: operationTypeMapping[property.mode] || 'sale',
-      property_type: propertyTypeMapping[property.property_type] || 'house',
+      description: property.description || `${property.name} - ${property.address}`,
+      property_type: propertyTypeMapping[property.property_type] || 'House',
+      status: 'published',
+      operations: operations,
       location: {
         name: property.address
       },
-      price: property.price,
       show_prices: true,
-      external_id: `inma-${property.id}`
+      internal_id: `inma-${property.id}`
     }
 
-    // Only add optional fields if they have values
+    // Add optional fields only if they have valid values
     if (property.bedrooms && property.bedrooms > 0) {
       easyBrokerPayload.bedrooms = property.bedrooms
     }
@@ -91,12 +81,12 @@ serve(async (req) => {
     if (property.width && property.height && property.width > 0 && property.height > 0) {
       easyBrokerPayload.lot_size = property.width * property.height
     }
-    
-    if (property.description && property.description.trim()) {
-      easyBrokerPayload.description = property.description
+
+    if (property.build_year) {
+      easyBrokerPayload.age = property.build_year
     }
 
-    console.log('EasyBroker payload:', easyBrokerPayload)
+    console.log('EasyBroker payload:', JSON.stringify(easyBrokerPayload, null, 2))
 
     // Send to EasyBroker API
     const easyBrokerResponse = await fetch('https://api.easybroker.com/v1/properties', {
@@ -122,7 +112,7 @@ serve(async (req) => {
       .from('easybroker_sync_log')
       .insert({
         property_id: property.id,
-        easybroker_id: responseData.id,
+        easybroker_id: responseData.public_id || responseData.id,
         status: 'success',
         request_payload: easyBrokerPayload,
         response_payload: responseData,
@@ -137,7 +127,8 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         message: 'Property successfully synced to EasyBroker',
-        easybroker_id: responseData.id,
+        easybroker_id: responseData.public_id || responseData.id,
+        public_url: responseData.public_url,
         data: responseData
       }),
       { 
