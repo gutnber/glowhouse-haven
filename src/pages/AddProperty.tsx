@@ -9,11 +9,13 @@ import { useToast } from "@/hooks/use-toast"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { PropertyForm } from "@/components/property/PropertyForm"
 import { propertyFormSchema, PropertyFormValues } from "@/schemas/propertyFormSchema"
+import { useEasyBrokerSync } from "@/hooks/useEasyBrokerSync"
 
 const AddProperty = () => {
   const { toast } = useToast()
   const navigate = useNavigate()
   const { t } = useLanguage()
+  const { syncToEasyBroker } = useEasyBrokerSync()
   
   const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertyFormSchema),
@@ -74,11 +76,16 @@ const AddProperty = () => {
       if (error) throw error
       return data
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Success",
         description: "Property has been added successfully",
       })
+      
+      // Automatically sync to EasyBroker
+      console.log('Auto-syncing property to EasyBroker:', data)
+      syncToEasyBroker(data)
+      
       navigate('/properties')
     },
     onError: (error) => {
