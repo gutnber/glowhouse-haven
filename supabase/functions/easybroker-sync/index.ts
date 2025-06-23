@@ -62,8 +62,8 @@ serve(async (req) => {
       'lease': 'rental'
     }
 
-    // Prepare EasyBroker payload
-    const easyBrokerPayload: EasyBrokerProperty = {
+    // Prepare EasyBroker payload with only permitted parameters
+    const easyBrokerPayload: any = {
       title: property.name,
       operation_type: operationTypeMapping[property.mode] || 'sale',
       property_type: propertyTypeMapping[property.property_type] || 'house',
@@ -71,13 +71,29 @@ serve(async (req) => {
         name: property.address
       },
       price: property.price,
-      bedrooms: property.bedrooms || undefined,
-      bathrooms: property.bathrooms || undefined,
-      construction_size: property.area || undefined,
-      lot_size: property.width && property.height ? property.width * property.height : undefined,
-      description: property.description || '',
       show_prices: true,
       external_id: `inma-${property.id}`
+    }
+
+    // Only add optional fields if they have values
+    if (property.bedrooms && property.bedrooms > 0) {
+      easyBrokerPayload.bedrooms = property.bedrooms
+    }
+    
+    if (property.bathrooms && property.bathrooms > 0) {
+      easyBrokerPayload.bathrooms = property.bathrooms
+    }
+    
+    if (property.area && property.area > 0) {
+      easyBrokerPayload.construction_size = property.area
+    }
+    
+    if (property.width && property.height && property.width > 0 && property.height > 0) {
+      easyBrokerPayload.lot_size = property.width * property.height
+    }
+    
+    if (property.description && property.description.trim()) {
+      easyBrokerPayload.description = property.description
     }
 
     console.log('EasyBroker payload:', easyBrokerPayload)
@@ -96,7 +112,7 @@ serve(async (req) => {
     
     if (!easyBrokerResponse.ok) {
       console.error('EasyBroker API error:', responseData)
-      throw new Error(`EasyBroker API error: ${responseData.message || 'Unknown error'}`)
+      throw new Error(`EasyBroker API error: ${responseData.message || responseData.error || 'Unknown error'}`)
     }
 
     console.log('EasyBroker sync successful:', responseData)
