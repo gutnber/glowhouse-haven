@@ -23,7 +23,7 @@ export const ChatActions: React.FC<ChatActionsProps> = ({
           className="text-gray-300 hover:text-white hover:bg-gray-700"
         >
           <Mail className="h-4 w-4 mr-1" />
-          {language === 'es' ? 'Enviar a tu Email' : 'Email to me'}
+          {language === 'es' ? 'Enviar esta conversacion a tu email' : 'Email to me'}
         </Button>
       </div>
     </div>
