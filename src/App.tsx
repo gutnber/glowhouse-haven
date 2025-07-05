@@ -18,6 +18,7 @@ import Tools from "./pages/Tools";
 import Contact from "./pages/Contact";
 import Communications from "./pages/Communications";
 import MapInspiredLandingPage from "./pages/MapInspiredLanding";
+import FrasaDevelopment from "./pages/FrasaDevelopment";
 import RootLayout from "./components/layout/RootLayout";
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <Route path="/properties/:id" element={<PropertyProfile />} />
           <Route path="/properties/add" element={<AddProperty />} />
           <Route path="/properties/:id/edit" element={<EditProperty />} />
+          <Route path="/frasa" element={<FrasaDevelopment />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/:id" element={<NewsPost />} />
           <Route path="/settings" element={<Settings />} />

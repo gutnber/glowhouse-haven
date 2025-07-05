@@ -448,6 +448,7 @@ export type Database = {
           height: number | null
           id: string
           images: string[] | null
+          is_desarrollo: boolean
           is_featured: boolean | null
           latitude: number | null
           longitude: number | null
@@ -484,6 +485,7 @@ export type Database = {
           height?: number | null
           id?: string
           images?: string[] | null
+          is_desarrollo?: boolean
           is_featured?: boolean | null
           latitude?: number | null
           longitude?: number | null
@@ -520,6 +522,7 @@ export type Database = {
           height?: number | null
           id?: string
           images?: string[] | null
+          is_desarrollo?: boolean
           is_featured?: boolean | null
           latitude?: number | null
           longitude?: number | null

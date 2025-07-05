@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Home, Building, Newspaper, MailPlus, MessageSquare } from "lucide-react";
+import { Home, Building, Newspaper, MailPlus, MessageSquare, MapPin } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -82,6 +82,10 @@ export function Logo() {
         <Link to="/properties" className="flex items-center gap-1.5 text-white/90 hover:text-orange-400 transition-colors duration-200">
           <Building className="h-4 w-4" />
           <span className="font-medium">{capitalizeFirstLetter(t('properties'))}</span>
+        </Link>
+        <Link to="/frasa" className="flex items-center gap-1.5 text-orange-400 hover:text-orange-300 transition-colors duration-200">
+          <MapPin className="h-4 w-4" />
+          <span className="font-medium">Frasa</span>
         </Link>
         <Link to="/news" className="flex items-center gap-1.5 text-white/90 hover:text-orange-400 transition-colors duration-200">
           <Newspaper className="h-4 w-4" />

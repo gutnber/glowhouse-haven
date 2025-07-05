@@ -39,7 +39,8 @@ const AddProperty = () => {
       images: [],
       property_type: "singleFamily",
       mode: "sale",
-      status: "available"
+      status: "available",
+      is_desarrollo: false
     },
   })
 
@@ -68,7 +69,8 @@ const AddProperty = () => {
           images: values.images,
           property_type: values.property_type,
           mode: values.mode,
-          status: values.status
+          status: values.status,
+          is_desarrollo: values.is_desarrollo
         })
         .select()
         .single()

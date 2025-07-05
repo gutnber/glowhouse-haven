@@ -32,6 +32,7 @@ export const propertyFormSchema = z.object({
   area: z.number().min(0).optional().nullable(),
   heated_area: z.number().min(0).optional().nullable(),
   reference_number: z.string().optional().nullable(),
+  is_desarrollo: z.boolean().optional().nullable(),
   images: z.array(z.string()).optional(),
 })
 

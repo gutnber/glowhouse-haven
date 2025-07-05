@@ -135,24 +135,30 @@ const Properties = () => {
           </div>
 
           <div className="flex gap-6 flex-wrap justify-center px-4">
-            {properties?.map(property => (
-              <div key={property.id} className="relative">
-                <PropertyCard property={property} />
-                {isAdmin && (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="absolute top-2 right-2 bg-black/50 hover:bg-black/70" 
-                    onClick={() => toggleFeatured.mutate({
-                      propertyId: property.id,
-                      isFeatured: !property.is_featured
-                    })}
-                  >
-                    <Star className={`h-4 w-4 ${property.is_featured ? 'fill-yellow-500 text-yellow-500' : 'text-white'}`} />
-                  </Button>
-                )}
+        {properties?.map(property => (
+          <div key={property.id} className="relative">
+            <PropertyCard property={property} />
+            {/* Frasa Development Badge */}
+            {property.is_desarrollo && (
+              <div className="absolute top-2 left-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
+                FRASA
               </div>
-            ))}
+            )}
+            {isAdmin && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70" 
+                onClick={() => toggleFeatured.mutate({
+                  propertyId: property.id,
+                  isFeatured: !property.is_featured
+                })}
+              >
+                <Star className={`h-4 w-4 ${property.is_featured ? 'fill-yellow-500 text-yellow-500' : 'text-white'}`} />
+              </Button>
+            )}
+          </div>
+        ))}
           </div>
         </div>
       </main>
