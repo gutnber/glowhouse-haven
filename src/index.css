@@ -49,6 +49,12 @@
     --color-3: 210 100% 63%;
     --color-4: 195 100% 63%;
     --color-5: 90 100% 63%;
+
+    /* Frasa Development Colors - Olive Green Theme */
+    --frasa-primary: 84 80% 30%;
+    --frasa-primary-light: 84 60% 40%;
+    --frasa-secondary: 84 40% 50%;
+    --frasa-accent: 84 20% 60%;
   }
 
   * {

@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard } from "@/components/home/PropertyCard";
-import { PropertiesMap } from "@/components/property/PropertiesMap";
 import { Tables } from "@/integrations/supabase/types";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { TopNavigation } from "@/components/layout/TopNavigation";
@@ -38,8 +37,8 @@ const FrasaDevelopment = () => {
       <main className="flex-1">
         <div className="relative space-y-8 mx-px my-[19px]">
           {/* Hero Section for Frasa Development */}
-          <div className="relative bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-3xl p-8 mx-4">
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-orange-600/10 rounded-3xl backdrop-blur-xl border border-orange-500/20" />
+          <div className="relative bg-gradient-to-r from-[hsl(84,80%,30%)]/20 to-[hsl(84,60%,40%)]/20 rounded-3xl p-8 mx-4">
+            <div className="absolute inset-0 bg-gradient-to-r from-[hsl(84,80%,30%)]/10 to-[hsl(84,60%,40%)]/10 rounded-3xl backdrop-blur-xl border border-[hsl(84,80%,30%)]/20" />
             <div className="relative text-center">
               <h1 className="text-5xl font-bold text-white mb-4">Desarrollo Frasa</h1>
               <p className="text-xl text-white/80 max-w-2xl mx-auto">
@@ -48,12 +47,6 @@ const FrasaDevelopment = () => {
               </p>
             </div>
           </div>
-
-          {properties.length > 0 && (
-            <div className="bg-[#1A1F2C] w-full">
-              <PropertiesMap properties={properties} />
-            </div>
-          )}
 
           <div className="px-4">
             {properties.length === 0 ? (
@@ -76,7 +69,7 @@ const FrasaDevelopment = () => {
                       <div className="relative">
                         <PropertyCard property={property} />
                         {/* Frasa Development Badge */}
-                        <div className="absolute top-2 left-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                        <div className="absolute top-2 left-2 bg-gradient-to-r from-[hsl(84,80%,30%)] to-[hsl(84,60%,40%)] text-white px-3 py-1 rounded-full text-xs font-semibold">
                           FRASA
                         </div>
                       </div>

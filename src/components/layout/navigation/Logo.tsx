@@ -83,7 +83,7 @@ export function Logo() {
           <Building className="h-4 w-4" />
           <span className="font-medium">{capitalizeFirstLetter(t('properties'))}</span>
         </Link>
-        <Link to="/frasa" className="flex items-center gap-1.5 text-orange-400 hover:text-orange-300 transition-colors duration-200">
+        <Link to="/frasa" className="flex items-center gap-1.5 text-[hsl(84,60%,50%)] hover:text-[hsl(84,60%,60%)] transition-colors duration-200">
           <MapPin className="h-4 w-4" />
           <span className="font-medium">Frasa</span>
         </Link>
