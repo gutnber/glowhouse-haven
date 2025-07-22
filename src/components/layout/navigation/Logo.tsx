@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Home, Building, Newspaper, MailPlus, MessageSquare, MapPin } from "lucide-react";
+import { Home, Building, Newspaper, MailPlus, MessageSquare, MapPin, Calendar as CalendarIcon } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -86,6 +86,10 @@ export function Logo() {
         <Link to="/frasa" className="flex items-center gap-1.5 text-[hsl(84,60%,50%)] hover:text-[hsl(84,60%,60%)] transition-colors duration-200">
           <MapPin className="h-4 w-4" />
           <span className="font-medium">Frasa</span>
+        </Link>
+        <Link to="/appointments" className="flex items-center gap-1.5 text-primary hover:text-primary/80 transition-colors duration-200">
+          <CalendarIcon className="h-4 w-4" />
+          <span className="font-medium">Citas</span>
         </Link>
         <Link to="/news" className="flex items-center gap-1.5 text-white/90 hover:text-orange-400 transition-colors duration-200">
           <Newspaper className="h-4 w-4" />

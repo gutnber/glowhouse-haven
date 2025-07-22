@@ -19,7 +19,9 @@ import Contact from "./pages/Contact";
 import Communications from "./pages/Communications";
 import MapInspiredLandingPage from "./pages/MapInspiredLanding";
 import FrasaDevelopment from "./pages/FrasaDevelopment";
+import Appointments from "./pages/Appointments";
 import RootLayout from "./components/layout/RootLayout";
+import { Toaster } from "@/components/ui/toaster";
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
           <Route path="/properties/add" element={<AddProperty />} />
           <Route path="/properties/:id/edit" element={<EditProperty />} />
           <Route path="/frasa" element={<FrasaDevelopment />} />
+          <Route path="/appointments" element={<Appointments />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/:id" element={<NewsPost />} />
           <Route path="/settings" element={<Settings />} />
@@ -43,6 +46,7 @@ function App() {
         </Route>
       </Routes>
       <ScrollToTop />
+      <Toaster />
     </>
   );
 }
