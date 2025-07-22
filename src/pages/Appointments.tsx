@@ -41,12 +41,12 @@ export default function Appointments() {
   const queryClient = useQueryClient();
 
   const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ["appointments", format(selectedDate, "yyyy-MM-dd")],
+    queryKey: ["appointments", "2025-08-02"], // Fixed date for the event
     queryFn: async () => {
       const { data, error } = await supabase
         .from("appointments")
         .select("*")
-        .eq("date", format(selectedDate, "yyyy-MM-dd"));
+        .eq("date", "2025-08-02"); // Fixed date for the expo event
       
       if (error) throw error;
       return data as Appointment[];
@@ -111,7 +111,7 @@ export default function Appointments() {
     }
 
     createAppointmentMutation.mutate({
-      date: format(selectedDate, "yyyy-MM-dd"),
+      date: "2025-08-02", // Fixed date for the expo event
       time_slot: selectedTimeSlot,
       first_name: firstName,
       last_name: lastName,
@@ -141,51 +141,44 @@ export default function Appointments() {
             <div className="relative inline-block">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 blur-3xl rounded-full" />
               <h1 className="relative text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-4">
-                Sistema de Citas
+                Reserva tu Cita
               </h1>
             </div>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Reserva tu cita de manera fácil y rápida. Selecciona una fecha y horario disponible.
+              Eventos exclusivos - Selecciona tu horario preferido
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {/* Calendar Section */}
-            <div className="lg:col-span-1">
-              <div className="bg-card/80 backdrop-blur-xl rounded-3xl border border-border/50 p-6 shadow-2xl">
-                <div className="flex items-center gap-2 mb-6">
-                  <CalendarIcon className="h-6 w-6 text-primary" />
-                  <h2 className="text-2xl font-bold">Seleccionar Fecha</h2>
-                </div>
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => date && setSelectedDate(date)}
-                  disabled={(date) => date < new Date()}
-                  className="rounded-2xl border-0"
-                />
-              </div>
+          {/* Event Image */}
+          <div className="flex justify-center mb-12">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 blur-2xl rounded-3xl" />
+              <img 
+                src="/lovable-uploads/d3a69b02-5aa7-4955-bc0b-3e9000da73dd.png" 
+                alt="Expo Turismo Tijuana 2025" 
+                className="relative max-w-2xl w-full h-auto rounded-3xl shadow-2xl border border-border/20"
+              />
             </div>
-
-            {/* Time Slots Section */}
-            <div className="lg:col-span-2">
-              <div className="bg-card/80 backdrop-blur-xl rounded-3xl border border-border/50 p-6 shadow-2xl">
-                <div className="flex items-center gap-2 mb-6">
-                  <Clock className="h-6 w-6 text-primary" />
-                  <h2 className="text-2xl font-bold">
-                    Horarios - {format(selectedDate, "dd/MM/yyyy")}
-                  </h2>
-                </div>
+          </div>
+          {/* Time Slots Section */}
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-card/80 backdrop-blur-xl rounded-3xl border border-border/50 p-8 shadow-2xl">
+              <div className="flex items-center justify-center gap-2 mb-8">
+                <Clock className="h-6 w-6 text-primary" />
+                <h2 className="text-3xl font-bold text-center">
+                  Horarios Disponibles - 02 de Agosto 2025
+                </h2>
+              </div>
                 
-                {isLoading ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {timeSlots.map((_, index) => (
-                      <div key={index} className="h-24 bg-muted/50 rounded-2xl animate-pulse" />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {timeSlots.map((timeSlot) => {
+              {isLoading ? (
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {timeSlots.map((_, index) => (
+                    <div key={index} className="h-24 bg-muted/50 rounded-2xl animate-pulse" />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {timeSlots.map((timeSlot) => {
                       const bookedAppointment = getBookedAppointment(timeSlot);
                       const isBooked = !!bookedAppointment;
                       
@@ -194,18 +187,18 @@ export default function Appointments() {
                           key={timeSlot}
                           onClick={() => handleTimeSlotClick(timeSlot)}
                           className={cn(
-                            "relative p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer group",
+                            "relative p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer group min-h-[100px]",
                             isBooked
                               ? "bg-muted/70 border-muted text-muted-foreground cursor-not-allowed"
-                              : "bg-gradient-to-br from-card/80 to-card/60 border-primary/20 hover:border-primary/40 hover:scale-105 hover:shadow-lg backdrop-blur-sm"
+                              : "bg-gradient-to-br from-card/80 to-card/60 border-primary/20 hover:border-primary/40 hover:scale-105 hover:shadow-xl backdrop-blur-sm"
                           )}
                         >
                           <div className="text-center">
                             <div className="text-lg font-bold mb-2">
                               {timeSlot.split("-")[0]}
                             </div>
-                            <div className="text-sm text-muted-foreground mb-2">
-                              {timeSlot.split("-")[1]}
+                            <div className="text-sm text-muted-foreground mb-3">
+                              hasta {timeSlot.split("-")[1]}
                             </div>
                             
                             {isBooked ? (
@@ -240,7 +233,6 @@ export default function Appointments() {
                 )}
               </div>
             </div>
-          </div>
         </main>
       </div>
 
